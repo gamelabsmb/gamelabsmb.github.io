@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACIÓN INCLUSIÓN — SISTEMA ÓRBITAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos personalizados para los iconos SVG */
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            display: inline-block;
+        }
+        
+        /* Clase para ocultar visualmente pero mantener accesible */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        /* Mejoras de accesibilidad para focus */
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid rgb(59 130 246);
+            outline-offset: 2px;
+        }
+        
+        /* Mejoras visuales para estados activos */
+        .lock-wheel:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 2px;
+        }
+        
+        /* Animación suave para transiciones */
+        .tab-content {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estilos para el candado final */
+        .final-lock-system {
+            border-color: rgb(255 191 0) !important;
+            background: rgba(255, 191, 0, 0.05) !important;
+        }
+        
+        .final-lock-title {
+            color: rgb(255 191 0) !important;
+            text-shadow: 0 0 10px rgb(255 191 0) !important;
+        }
+        
+        .final-unlock-btn {
+            font-size: 1rem;
+            padding: 14px 28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="relative min-h-screen text-slate-100">
+        <!-- Fondo espacial -->
+        <div class="absolute inset-0 bg-[#05070d]">
+            <canvas id="stars" class="w-full h-full"></canvas>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,30,60,0.35),transparent_60%)]"></div>
+            <div class="pointer-events-none absolute inset-0 [background:repeating-linear-gradient(0deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_3px)]"></div>
+      </div>
+
+        <div class="relative max-w-7xl mx-auto p-4 md:p-8">
+            <!-- Header Principal -->
+            <header class="main-header mb-8">
+                <div class="text-center mb-6">
+                    <h1 class="glitch-title mb-4" id="title">OPERACIÓN INCLUSIÓN</h1>
+                    <div class="subtitle-section">
+                        <span class="terminal-text">SISTEMA ÓRBITAS</span>
+                    </div>
+                    <div class="info-line mt-4">Desbloquea órbitas • Resuelve códigos • Completa la misión</div>
+                </div>
+                
+                <!-- Información del Evento -->
+                <div class="event-info-grid">
+                    <div class="event-info-block">
+                        <div class="info-line-item">
+                            <span class="info-label">GRUPO:</span>
+                            <span class="info-value" id="groupNumberHeader">Sin asignar</span>
+                        </div>
+                        <div class="info-line-item">
+                            <span class="info-label">INTEGRANTES:</span>
+                            <span class="info-value">5 personas</span>
+                        </div>
+                        <div class="info-line-item">
+                            <span class="info-label">MISIÓN:</span>
+                            <span class="info-value">Desbloquear 5 órbitas</span>
+                        </div>
+                    </div>
+                    <div class="event-controls">
+                        <button id="btnConfig" class="action-btn" aria-label="Configurar">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurar</span>
+                        </button>
+                        <button id="btnReset" class="action-btn secondary" aria-label="Reiniciar">
+                            <i class="fas fa-redo"></i>
+                            <span>Reiniciar</span>
+                        </button>
+                </div>
+          </div>
+        </header>
+
+            <!-- Tabs de Navegación -->
+            <div class="mb-6">
+                <div class="tabs-container">
+                    <button id="tabPanel" class="tab-btn active">
+                        <i class="fas fa-desktop"></i>
+                        <span>Panel Principal</span>
+                    </button>
+                    <button id="tabStats" class="tab-btn">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Estadísticas</span>
+                    </button>
+                    <button id="tabLogros" class="tab-btn">
+                        <i class="fas fa-trophy"></i>
+                        <span>Logros</span>
+                    </button>
+                    <button id="tabPistas" class="tab-btn">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Pistas</span>
+                    </button>
+                    <button id="tabActividades" class="tab-btn">
+                        <i class="fas fa-tasks"></i>
+                        <span>Actividades</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PANEL PRINCIPAL UNIFICADO (Panel + Consola) -->
+            <div id="panelContent" class="tab-content">
+                <!-- Sistema Solar Interactivo - Órbitas Planetarias Visuales -->
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-globe"></i>
+                        <span>Sistema Solar de Órbitas Planetarias</span>
+                    </h2>
+                    <div class="solar-system-container">
+                        <div class="solar-system-wrapper">
+                            <svg id="orbitsCanvas" class="orbits-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+                                <!-- Las órbitas y planetas se dibujarán aquí dinámicamente -->
+                                <defs>
+                                    <radialGradient id="planetGradient" cx="50%" cy="50%">
+                                        <stop offset="0%" style="stop-color:rgba(59, 130, 246, 0.8);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:rgba(59, 130, 246, 0.2);stop-opacity:0.3" />
+                                    </radialGradient>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <!-- Centro del sistema -->
+                                <circle id="systemCenter" cx="400" cy="400" r="30" fill="url(#planetGradient)" filter="url(#glow)" class="system-center">
+                                    <animate attributeName="r" values="30;35;30" dur="3s" repeatCount="indefinite"/>
+                                </circle>
+                                <text x="400" y="440" text-anchor="middle" fill="rgb(59, 130, 246)" font-size="14" font-family="Orbitron" font-weight="bold">CENTRO</text>
+                            </svg>
+                            <!-- Planetas flotantes sobre el SVG -->
+                            <div id="planetsContainer" class="planets-overlay">
+                                <!-- Los planetas se generarán dinámicamente aquí -->
+                            </div>
+                        </div>
+                        <!-- Leyenda y controles -->
+                        <div class="orbit-legend">
+                            <div class="legend-title">Estado de los Planetas</div>
+                            <div id="orbitsLegend" class="legend-grid">
+                                <!-- Leyenda dinámica -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sistema de Ventanas Progresivas -->
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Progreso de Misión</span>
+                    </h2>
+                    <div class="progress-windows-grid">
+                    <div class="window-level border border-sky-600/40 bg-slate-950/70 rounded p-4" id="level1" data-level="1">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 1: Visual</span>
+                            </div>
+                            <div class="window-status" id="statusLevel1">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel1Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel1">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel1" class="bg-sky-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-rose-600/40 bg-slate-950/70 rounded p-4" id="level2" data-level="2">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 2: Auditiva</span>
+                            </div>
+                            <div class="window-status" id="statusLevel2">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel2Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel2">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel2" class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-emerald-600/40 bg-slate-950/70 rounded p-4" id="level3" data-level="3">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 3: Lenguaje-Aprendizaje</span>
+                            </div>
+                            <div class="window-status" id="statusLevel3">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel3Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel3">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel3" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-purple-600/40 bg-slate-950/70 rounded p-4" id="level4" data-level="4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 4: TEA</span>
+                            </div>
+                            <div class="window-status" id="statusLevel4">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel4Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel4">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel4" class="bg-purple-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-yellow-600/40 bg-slate-950/70 rounded p-4" id="level5" data-level="5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 5: TDAH</span>
+                            </div>
+                            <div class="window-status" id="statusLevel5">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel5Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel5">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel5" class="bg-yellow-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-orange-600/40 bg-slate-950/70 rounded p-4" id="level6" data-level="6">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 6: Motora</span>
+                            </div>
+                            <div class="window-status" id="statusLevel6">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel6Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel6">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel6" class="bg-orange-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-indigo-600/40 bg-slate-950/70 rounded p-4" id="level7" data-level="7">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Planeta 7: Intelectual/Desarrollo</span>
+                            </div>
+                            <div class="window-status" id="statusLevel7">
+                                <span class="text-xs px-2 py-1 rounded" id="statusLevel7Text">🔒 CERRADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Progreso</span>
+                                <span class="text-slate-300" id="progressLevel7">0/1 completado</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel7" class="bg-indigo-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="window-level border border-amber-600/40 bg-amber-900/10 rounded p-4" id="level8" data-level="8">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="font-semibold text-amber-200">Motor de la Inclusión (Final)</span>
+                            </div>
+                            <div class="window-status" id="statusLevel8">
+                                <span class="text-xs px-2 py-1 rounded bg-amber-900/50" id="statusLevel8Text">🔒 BLOQUEADO</span>
+                            </div>
+                        </div>
+                        <div class="progress-indicator mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-amber-300">Progreso</span>
+                                <span class="text-amber-300" id="progressLevel8">0/7 planetas estabilizados</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div id="progressBarLevel8" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Información del Grupo y Roles -->
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        <span>Información del Equipo</span>
+                    </h2>
+                    <div class="team-info-grid">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-slate-100 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                Información del Grupo
+                            </h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-400">Grupo:</span>
+                                    <span class="font-mono font-bold text-sky-400" id="groupNumber">Sin asignar</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-400">Integrantes:</span>
+                                    <span class="text-slate-300">5 personas</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-slate-100 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                Roles del Equipo
+                            </h3>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex items-center gap-2 p-2 bg-slate-900/50 rounded">
+                                    <span class="text-sky-400 font-semibold">👨‍💻 Piloto:</span>
+                                    <span class="text-slate-300">Maneja la web y la consola</span>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-slate-900/50 rounded">
+                                    <span class="text-rose-400 font-semibold">🧩 Analista:</span>
+                                    <span class="text-slate-300">Resuelve puzzles y lecturas</span>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-slate-900/50 rounded">
+                                    <span class="text-emerald-400 font-semibold">⏱️ Coordinador/a:</span>
+                                    <span class="text-slate-300">Gestiona tareas y tiempo</span>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-slate-900/50 rounded">
+                                    <span class="text-violet-400 font-semibold">📝 Registro:</span>
+                                    <span class="text-slate-300">Anota hallazgos y códigos</span>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-slate-900/50 rounded">
+                                    <span class="text-amber-400 font-semibold">👁️ Observador/a:</span>
+                                    <span class="text-slate-300">Vigila decisiones inclusivas</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 p-2 bg-amber-900/20 border border-amber-700/50 rounded text-xs text-amber-200">
+                                💡 <strong>Rotación:</strong> Cambiad los roles cada 10 minutos para que todos pasen por el rol de Observador/a de inclusión.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Estaciones Físicas Espaciales -->
+                <section class="section-block mb-8" id="stationsSection">
+                    <h2 class="section-title">
+                        <i class="fas fa-rocket"></i>
+                        <span>Estaciones Físicas del Sistema</span>
+                    </h2>
+                    <div id="stationsContainer" class="stations-grid">
+                        <!-- Las estaciones se generarán dinámicamente -->
+                    </div>
+                </section>
+
+                <!-- Órbitas y Consola -->
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-circle-notch"></i>
+                        <span>Órbitas del Sistema</span>
+                    </h2>
+                    <div class="orbits-grid">
+                    <!-- Órbita Visual -->
+                    <div id="cardVisual" class="card" style="border-color: rgb(59, 130, 246); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(59, 130, 246);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelVisual" style="color: rgb(147, 197, 253);">Órbita Visual (🔵)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusVisual" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptVisual" style="color: rgb(226, 232, 240);">Combina fragmentos: ALTO + FORMA = ALTOFORMA (o 1220 numérico)</p>
+                            <label for="inputVisual" class="sr-only">Fragmentos para Planeta Visual</label>
+                            <input type="text" id="inputVisual" placeholder="Ej.: ALTO FORMA" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce los fragmentos para calcular el código">
+                            <div id="verifyVisual"></div>
+                            
+                            <!-- Satélites del Planeta Visual -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(59, 130, 246, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(147, 197, 253);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorVisual" style="color: rgb(96, 165, 250);">Fragmentos: 0/3</div>
+                                    </div>
+                                <div id="satellitesVisual" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                    </div>
+                                <div class="mt-3 p-3 rounded-lg border text-xs" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.5); color: rgb(147, 197, 253);">
+                                    <div class="font-semibold mb-1">📍 Estación Física:</div>
+                                    <div id="stationVisual" style="color: rgb(96, 165, 250);">Consulta tu asignación de estación</div>
+                                </div>
+                                <div class="mt-2 p-3 rounded-lg border text-xs" style="background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.3);">
+                                    <div class="font-semibold mb-1" style="color: rgb(96, 165, 250);">💡 Uso:</div>
+                                    <div class="font-mono" style="color: rgb(147, 197, 253);">Usa el comando: <span style="color: rgb(34, 197, 94);">fragment visual S1 ALTO</span></div>
+                                    <div class="mt-1 text-xs opacity-80">O completa la actividad física del satélite para obtener el fragmento automáticamente.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Órbita Auditiva -->
+                    <div id="cardAuditiva" class="card" style="border-color: rgb(139, 92, 246); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(139, 92, 246);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelAuditiva" style="color: rgb(196, 181, 253);">Órbita Auditiva (🔊)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusAuditiva" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptAuditiva" style="color: rgb(226, 232, 240);">Decodifica PICTOS → regla 1,2,3,5,6 = PICOS</p>
+                            <label for="inputAuditiva" class="sr-only">Palabra base para Planeta Auditiva</label>
+                            <input type="text" id="inputAuditiva" placeholder="Ej.: PICTOS" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce la palabra base">
+                            <div id="verifyAuditiva"></div>
+                            
+                            <!-- Satélites del Planeta Auditiva -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(139, 92, 246, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(196, 181, 253);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorAuditiva" style="color: rgb(168, 85, 247);">Fragmentos: 0/3</div>
+                                    </div>
+                                <div id="satellitesAuditiva" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planeta Lenguaje-Aprendizaje -->
+                    <div id="cardLenguaje" class="card" style="border-color: rgb(6, 182, 212); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(6, 182, 212);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelLenguaje" style="color: rgb(165, 243, 252);">PLANETA LENGUAJE-APRENDIZAJE (💬)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusLenguaje" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptLenguaje" style="color: rgb(226, 232, 240);">Introduce CLARO o código direccional ↑→↓→</p>
+                            <label for="inputLenguaje" class="sr-only">Código para Planeta Lenguaje</label>
+                            <input type="text" id="inputLenguaje" placeholder="Ej.: CLARO o ↑→↓→" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce el código">
+                            <div id="verifyLenguaje"></div>
+                            
+                            <!-- Satélites del Planeta Lenguaje -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(6, 182, 212, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(165, 243, 252);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorLenguaje" style="color: rgb(34, 211, 238);">Fragmentos: 0/3</div>
+                                    </div>
+                                <div id="satellitesLenguaje" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planeta TEA -->
+                    <div id="cardTEA" class="card" style="border-color: rgb(147, 51, 234); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(147, 51, 234);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelTEA" style="color: rgb(196, 181, 253);">PLANETA TEA (🧩)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusTEA" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptTEA" style="color: rgb(226, 232, 240);">Introduce código numérico: A-D + AGENDA + CALMA → 1974</p>
+                            <label for="inputTEA" class="sr-only">Código para Planeta TEA</label>
+                            <input type="text" id="inputTEA" placeholder="Ej.: 1974" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce el código numérico">
+                            <div id="verifyTEA"></div>
+                            
+                            <!-- Satélites del Planeta TEA -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(147, 51, 234, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(196, 181, 253);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorTEA" style="color: rgb(168, 85, 247);">Fragmentos: 0/3</div>
+                                </div>
+                                <div id="satellitesTEA" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planeta TDAH -->
+                    <div id="cardTDAH" class="card" style="border-color: rgb(34, 211, 238); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(34, 211, 238);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelTDAH" style="color: rgb(165, 243, 252);">PLANETA TDAH (⚡)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusTDAH" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptTDAH" style="color: rgb(226, 232, 240);">Suma tiempos: 3-0-1-4 → 3014</p>
+                            <label for="inputTDAH" class="sr-only">Código para Planeta TDAH</label>
+                            <input type="text" id="inputTDAH" placeholder="Ej.: 3014" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce el código numérico">
+                            <div id="verifyTDAH"></div>
+                            
+                            <!-- Satélites del Planeta TDAH -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(34, 211, 238, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(165, 243, 252);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorTDAH" style="color: rgb(34, 211, 238);">Fragmentos: 0/3</div>
+                                </div>
+                                <div id="satellitesTDAH" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planeta Motora -->
+                    <div id="cardMotora" class="card" style="border-color: rgb(96, 165, 250); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(96, 165, 250);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelMotora" style="color: rgb(147, 197, 253);">PLANETA MOTORA (🏃)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusMotora" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptMotora" style="color: rgb(226, 232, 240);">RAMPA/BAJA/80CM → código numérico 6854</p>
+                            <label for="inputMotora" class="sr-only">Código para Planeta Motora</label>
+                            <input type="text" id="inputMotora" placeholder="Ej.: 6854" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce el código numérico">
+                            <div id="verifyMotora"></div>
+                            
+                            <!-- Satélites del Planeta Motora -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(96, 165, 250, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(147, 197, 253);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorMotora" style="color: rgb(96, 165, 250);">Fragmentos: 0/3</div>
+                                </div>
+                                <div id="satellitesMotora" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planeta Intelectual -->
+                    <div id="cardIntelectual" class="card" style="border-color: rgb(168, 85, 247); background: rgba(15, 23, 42, 0.85);">
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="icon" style="color: rgb(168, 85, 247);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                                <h2 class="text-lg font-semibold tracking-wide" id="labelIntelectual" style="color: rgb(196, 181, 253);">PLANETA INTELECTUAL/DESARROLLO (🧠)</h2>
+                                <div class="ml-auto flex items-center gap-1 text-xs">
+                                    <span id="statusIntelectual" style="color: rgb(148, 163, 184);">CERRADO</span>
+                                </div>
+                            </div>
+                            <p class="text-sm mb-2" id="promptIntelectual" style="color: rgb(226, 232, 240);">Matriz de apoyos → código numérico 5092</p>
+                            <label for="inputIntelectual" class="sr-only">Código para Planeta Intelectual</label>
+                            <input type="text" id="inputIntelectual" placeholder="Ej.: 5092" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all" style="color: rgb(226, 232, 240);" aria-label="Introduce el código numérico">
+                            <div id="verifyIntelectual"></div>
+                            
+                            <!-- Satélites del Planeta Intelectual -->
+                            <div class="mt-4 pt-4 border-t" style="border-color: rgba(168, 85, 247, 0.3);">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs font-semibold" style="color: rgb(196, 181, 253);">🛰️ SATÉLITES - Fragmentos del Planeta</div>
+                                    <div class="text-xs fragment-indicator" id="fragmentIndicatorIntelectual" style="color: rgb(168, 85, 247);">Fragmentos: 0/3</div>
+                                </div>
+                                <div id="satellitesIntelectual" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
+                                    <!-- Los satélites se generarán dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- CONSOLA INTEGRADA -->
+                    <div class="border border-slate-700 bg-slate-950/70 rounded">
+                        <div class="border-b border-slate-700 p-3 bg-slate-900/50 rounded-t">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="font-semibold text-slate-200">Terminal de Comandos</span>
+                            </div>
+                        </div>
+                        <div id="consoleOutput" class="h-64 overflow-auto font-mono text-sm p-4 space-y-1 text-slate-200"></div>
+                        <div class="flex items-center gap-2 p-3 border-t border-slate-800">
+                            <span class="text-slate-400 font-mono text-sm" aria-label="Prompt de consola">ORBITAS@system:~$</span>
+                            <label for="consoleInput" class="sr-only">Comando de consola</label>
+                            <input type="text" id="consoleInput" placeholder="help | status | scan visual ALTO CONTRASTE | decrypt visual | unlock visual 1220" class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all" aria-label="Introduce un comando de consola">
+                            <button id="consoleSend" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 border border-slate-600 rounded transition-all focus:ring-2 focus:ring-sky-500 focus:outline-none" aria-label="Enviar comando">Enviar</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sistema de Candados -->
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-lock"></i>
+                        <span>Sistema de Desbloqueo Orbital</span>
+                    </h2>
+                    <div class="locks-grid">
+                        <!-- Candado Visual (Palabra: ALTOFORMA o Numérico: 1220) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta Visual</div>
+                            <div class="lock-container">
+                                <div class="lock-display lock-display-word" role="group" aria-label="Candado del Planeta Visual">
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual1" tabindex="0" role="button" aria-label="Letra 1" data-lock="visual" data-position="1">A</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual2" tabindex="0" role="button" aria-label="Letra 2" data-lock="visual" data-position="2">L</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual3" tabindex="0" role="button" aria-label="Letra 3" data-lock="visual" data-position="3">T</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual4" tabindex="0" role="button" aria-label="Letra 4" data-lock="visual" data-position="4">O</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual5" tabindex="0" role="button" aria-label="Letra 5" data-lock="visual" data-position="5">F</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual6" tabindex="0" role="button" aria-label="Letra 6" data-lock="visual" data-position="6">O</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual7" tabindex="0" role="button" aria-label="Letra 7" data-lock="visual" data-position="7">R</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual8" tabindex="0" role="button" aria-label="Letra 8" data-lock="visual" data-position="8">M</div>
+                                    <div class="lock-wheel lock-wheel-word text-center" id="lockVisual9" tabindex="0" role="button" aria-label="Letra 9" data-lock="visual" data-position="9">A</div>
+                                </div>
+                                <button id="unlockVisualBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta Visual">ABRIR</button>
+                                <div id="lockVisualStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado Auditiva (Alfanumérico: PICOS) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta Auditiva</div>
+                            <div class="lock-container">
+                                <div class="lock-display" role="group" aria-label="Candado del Planeta Auditiva">
+                                    <div class="lock-wheel lock-wheel-alnum text-center" id="lockAuditiva1" tabindex="0" role="button" aria-label="Letra 1">P</div>
+                                    <div class="lock-wheel lock-wheel-alnum text-center" id="lockAuditiva2" tabindex="0" role="button" aria-label="Letra 2">I</div>
+                                    <div class="lock-wheel lock-wheel-alnum text-center" id="lockAuditiva3" tabindex="0" role="button" aria-label="Letra 3">C</div>
+                                    <div class="lock-wheel lock-wheel-alnum text-center" id="lockAuditiva4" tabindex="0" role="button" aria-label="Letra 4">O</div>
+                                    <div class="lock-wheel lock-wheel-alnum text-center" id="lockAuditiva5" tabindex="0" role="button" aria-label="Letra 5">S</div>
+                                </div>
+                                <button id="unlockAuditivaBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta Auditiva">ABRIR</button>
+                                <div id="lockAuditivaStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado Lenguaje (Direccional: ↑→↓→) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta Lenguaje</div>
+                            <div class="lock-container">
+                                <div class="lock-display lock-display-directional" role="group" aria-label="Candado del Planeta Lenguaje">
+                                    <div class="lock-wheel lock-wheel-directional text-center" id="lockLenguaje1" tabindex="0" role="button" aria-label="Dirección 1">↑</div>
+                                    <div class="lock-wheel lock-wheel-directional text-center" id="lockLenguaje2" tabindex="0" role="button" aria-label="Dirección 2">→</div>
+                                    <div class="lock-wheel lock-wheel-directional text-center" id="lockLenguaje3" tabindex="0" role="button" aria-label="Dirección 3">↓</div>
+                                    <div class="lock-wheel lock-wheel-directional text-center" id="lockLenguaje4" tabindex="0" role="button" aria-label="Dirección 4">→</div>
+                                </div>
+                                <button id="unlockLenguajeBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta Lenguaje">ABRIR</button>
+                                <div id="lockLenguajeStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado TEA (Numérico: 1974) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta TEA</div>
+                            <div class="lock-container">
+                                <div class="lock-display" role="group" aria-label="Candado del Planeta TEA">
+                                    <div class="lock-wheel text-center" id="lockTEA1" tabindex="0" role="button" aria-label="Dígito 1">1</div>
+                                    <div class="lock-wheel text-center" id="lockTEA2" tabindex="0" role="button" aria-label="Dígito 2">9</div>
+                                    <div class="lock-wheel text-center" id="lockTEA3" tabindex="0" role="button" aria-label="Dígito 3">7</div>
+                                    <div class="lock-wheel text-center" id="lockTEA4" tabindex="0" role="button" aria-label="Dígito 4">4</div>
+                                </div>
+                                <button id="unlockTEABtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta TEA">ABRIR</button>
+                                <div id="lockTEAStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado TDAH (Numérico: 3014) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta TDAH</div>
+                            <div class="lock-container">
+                                <div class="lock-display" role="group" aria-label="Candado del Planeta TDAH">
+                                    <div class="lock-wheel text-center" id="lockTDAH1" tabindex="0" role="button" aria-label="Dígito 1">3</div>
+                                    <div class="lock-wheel text-center" id="lockTDAH2" tabindex="0" role="button" aria-label="Dígito 2">0</div>
+                                    <div class="lock-wheel text-center" id="lockTDAH3" tabindex="0" role="button" aria-label="Dígito 3">1</div>
+                                    <div class="lock-wheel text-center" id="lockTDAH4" tabindex="0" role="button" aria-label="Dígito 4">4</div>
+                                </div>
+                                <button id="unlockTDAHBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta TDAH">ABRIR</button>
+                                <div id="lockTDAHStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado Motora (Numérico: 6854) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta Motora</div>
+                            <div class="lock-container">
+                                <div class="lock-display" role="group" aria-label="Candado del Planeta Motora">
+                                    <div class="lock-wheel text-center" id="lockMotora1" tabindex="0" role="button" aria-label="Dígito 1">6</div>
+                                    <div class="lock-wheel text-center" id="lockMotora2" tabindex="0" role="button" aria-label="Dígito 2">8</div>
+                                    <div class="lock-wheel text-center" id="lockMotora3" tabindex="0" role="button" aria-label="Dígito 3">5</div>
+                                    <div class="lock-wheel text-center" id="lockMotora4" tabindex="0" role="button" aria-label="Dígito 4">4</div>
+                                </div>
+                                <button id="unlockMotoraBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta Motora">ABRIR</button>
+                                <div id="lockMotoraStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Candado Intelectual (Numérico: 5092) -->
+                        <div class="lock-system">
+                            <div class="lock-title">Planeta Intelectual</div>
+                            <div class="lock-container">
+                                <div class="lock-display" role="group" aria-label="Candado del Planeta Intelectual">
+                                    <div class="lock-wheel text-center" id="lockIntelectual1" tabindex="0" role="button" aria-label="Dígito 1">5</div>
+                                    <div class="lock-wheel text-center" id="lockIntelectual2" tabindex="0" role="button" aria-label="Dígito 2">0</div>
+                                    <div class="lock-wheel text-center" id="lockIntelectual3" tabindex="0" role="button" aria-label="Dígito 3">9</div>
+                                    <div class="lock-wheel text-center" id="lockIntelectual4" tabindex="0" role="button" aria-label="Dígito 4">2</div>
+                                </div>
+                                <button id="unlockIntelectualBtn" class="unlock-btn" disabled aria-label="Abrir candado del Planeta Intelectual">ABRIR</button>
+                                <div id="lockIntelectualStatus" class="lock-status" role="status" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candado Final -->
+                    <div class="lock-system final-lock-system mt-6">
+                        <div class="lock-title final-lock-title">Caja Motor (Final)</div>
+                        <div class="lock-container">
+                            <div class="lock-display">
+                                <div class="lock-wheel lock-wheel-master text-center" id="lockFinal1" tabindex="0" role="button" aria-label="Dígito 1 del candado final">4</div>
+                                <div class="lock-wheel lock-wheel-master text-center" id="lockFinal2" tabindex="0" role="button" aria-label="Dígito 2 del candado final">3</div>
+                                <div class="lock-wheel lock-wheel-master text-center" id="lockFinal3" tabindex="0" role="button" aria-label="Dígito 3 del candado final">2</div>
+                                <div class="lock-wheel lock-wheel-master text-center" id="lockFinal4" tabindex="0" role="button" aria-label="Dígito 4 del candado final">1</div>
+                            </div>
+                            <button id="unlockFinalBtn" class="unlock-btn final-unlock-btn" disabled aria-label="Desbloquear sistema final">DESBLOQUEAR SISTEMA</button>
+                            <div id="lockFinalStatus" class="lock-status" role="status" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ESTADÍSTICAS -->
+            <div id="statsContent" class="tab-content hidden">
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Estadísticas de Misión</span>
+                    </h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 class="stat-title">⏱️ Tiempo Transcurrido</h3>
+                            <div class="stat-value" id="timerDisplay">00:00:00</div>
+                            <div class="stat-description">Tiempo desde el inicio de la sesión</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="stat-title">📈 Progreso General</h3>
+                            <div class="mb-2">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-slate-300">Planetas estabilizados</span>
+                                    <span class="text-slate-300" id="progressText" aria-live="polite">0/7</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7" aria-label="Progreso de planetas">
+                                    <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-description mt-2">Completa los 7 planetas para desbloquear el Motor de la Inclusión</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="stat-title">🎯 Intentos</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-2xl font-mono font-bold text-rose-400" id="attemptsTotal" aria-live="polite">0</div>
+                                    <div class="text-xs text-slate-400">Total intentos</div>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-mono font-bold text-emerald-400" id="attemptsSuccess" aria-live="polite">0</div>
+                                    <div class="text-xs text-slate-400">Exitosos</div>
+                                </div>
+                            </div>
+                            <div class="stat-description mt-4">
+                                <div>Ratio de éxito: <span id="successRate" class="font-bold" aria-live="polite">0%</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="stat-title">📊 Actividad</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Comandos ejecutados</span>
+                                    <span class="text-slate-100 font-mono" id="commandsCount" aria-live="polite">0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Códigos calculados</span>
+                                    <span class="text-slate-100 font-mono" id="codesCalculated" aria-live="polite">0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Órbitas abiertas</span>
+                                    <span class="text-slate-100 font-mono" id="orbitsOpened" aria-live="polite">0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Tiempo promedio/código</span>
+                                    <span class="text-slate-100 font-mono" id="avgTime" aria-live="polite">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- LOGROS -->
+            <div id="logrosContent" class="tab-content hidden">
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        <span>Logros Desbloqueados</span>
+                    </h2>
+                    <div class="achievements-grid">
+                        <div id="achievementFirst" class="achievement-card opacity-50" role="region" aria-label="Logro: Primer Código">
+                            <div class="achievement-icon" aria-hidden="true">🎯</div>
+                            <div class="achievement-title">Primer Código</div>
+                            <div class="achievement-description">Calcula tu primer código</div>
+                        </div>
+                        <div id="achievementMaster" class="achievement-card opacity-50">
+                            <div class="achievement-icon">🧠</div>
+                            <div class="achievement-title">Maestro Descifrador</div>
+                            <div class="achievement-description">Calcula 10 códigos correctos</div>
+                        </div>
+                        <div id="achievementSpeed" class="achievement-card opacity-50">
+                            <div class="achievement-icon">⚡</div>
+                            <div class="achievement-title">Velocidad Luminosa</div>
+                            <div class="achievement-description">Abre una órbita en menos de 5 minutos</div>
+                        </div>
+                        <div id="achievementPerfect" class="achievement-card opacity-50">
+                            <div class="achievement-icon">💯</div>
+                            <div class="achievement-title">Perfecto</div>
+                            <div class="achievement-description">Abre todas las órbitas sin errores</div>
+                        </div>
+                        <div id="achievementExplorer" class="achievement-card opacity-50">
+                            <div class="achievement-icon">🔍</div>
+                            <div class="achievement-title">Explorador</div>
+                            <div class="achievement-description">Usa 20 comandos en la consola</div>
+                        </div>
+                        <div id="achievementComplete" class="achievement-card opacity-50">
+                            <div class="achievement-icon">🏆</div>
+                            <div class="achievement-title">Completista</div>
+                            <div class="achievement-description">Abre la Caja Motor</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PISTAS -->
+            <div id="pistasContent" class="tab-content hidden">
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Pistas y Ayuda</span>
+                    </h2>
+                    <div class="hints-grid">
+                        <div class="hint-category-card">
+                            <h3 class="hint-category-title">💡 Pistas Generales</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="hint-item border-l-2 border-sky-500">
+                                    <div class="font-semibold text-sky-300 mb-1">Órbita Visual (Observación / Representación)</div>
+                                    <div class="text-slate-300 mb-2">Cada letra se convierte en su posición en el alfabeto (A=1, B=2...). Los números se mantienen.</div>
+                                    <div class="text-xs text-slate-400">
+                                        <div class="font-semibold mb-1">Actividades:</div>
+                                        <div>• Vista de aula: alto contraste (1220)</div>
+                                        <div>• Horario accesible (3146)</div>
+                                        <div>• Mapa de aula (2789)</div>
+                                        <div>• Constelaciones de apoyos (V5)</div>
+                                    </div>
+                                </div>
+                                <div class="hint-item border-l-2 border-rose-500">
+                                    <div class="font-semibold text-rose-300 mb-1">Órbita Auditiva (Escucha / Discriminación)</div>
+                                    <div class="text-slate-300 mb-2">Elimina el 4º carácter si no es un dígito. Mantén las posiciones 1, 2, 3, 5 y 6.</div>
+                                    <div class="text-xs text-slate-400">
+                                        <div class="font-semibold mb-1">Actividades:</div>
+                                        <div>• Morse inclusivo (PICOS)</div>
+                                        <div>• Ruido y atención (0314)</div>
+                                        <div>• Lectura a dos voces (2856)</div>
+                                        <div>• Indicaciones multil canal (6412)</div>
+                                    </div>
+                                </div>
+                                <div class="hint-item border-l-2 border-emerald-500">
+                                    <div class="font-semibold text-emerald-300 mb-1">Órbita Lógica (Planificación / Patrones)</div>
+                                    <div class="text-slate-300 mb-2">Sigue la ruta marcada por las balizas y suma los números encontrados.</div>
+                                    <div class="text-xs text-slate-400">
+                                        <div class="font-semibold mb-1">Actividades:</div>
+                                        <div>• Ruta por balizas (2378)</div>
+                                        <div>• Asignación de recursos (5092)</div>
+                                        <div>• Alineación orbital 2+1 (1507)</div>
+                                        <div>• Calendario inclusivo (4215)</div>
+                                    </div>
+                                </div>
+                                <div class="hint-item border-l-2 border-violet-500">
+                                    <div class="font-semibold text-violet-300 mb-1">Órbita Social (Decisiones / Casos Reales)</div>
+                                    <div class="text-slate-300 mb-2">Responde las preguntas en papel siguiendo el patrón indicado.</div>
+                                    <div class="text-xs text-slate-400">
+                                        <div class="font-semibold mb-1">Actividades:</div>
+                                        <div>• Casos breves A/B/C (8462)</div>
+                                        <div>• Comunicación con familias (5624)</div>
+                                        <div>• Roles de equipo (1974)</div>
+                                        <div>• Evaluación flexible (8351)</div>
+                                    </div>
+                                </div>
+                                <div class="hint-item border-l-2 border-yellow-500">
+                                    <div class="font-semibold text-yellow-300 mb-1">Órbita Temporal (Metacognición / Autorregulación)</div>
+                                    <div class="text-slate-300 mb-2">Gestiona tiempo, planifica y reflexiona sobre el proceso de aprendizaje.</div>
+                                    <div class="text-xs text-slate-400">
+                                        <div class="font-semibold mb-1">Actividades:</div>
+                                        <div>• Planificación temporal (5151)</div>
+                                        <div>• Reflexión metacognitiva (7234)</div>
+                                        <div>• Gestión de tiempo (6123)</div>
+                                        <div>• Autorregulación (4891)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hint-category-card">
+                        <h3 class="hint-category-title">🎮 Ayuda Interactiva</h3>
+                        <div class="space-y-3">
+                            <button id="hintVisual" class="interactive-hint-btn">
+                                <div class="font-semibold text-sky-300 mb-1">💡 Pista: Órbita Visual</div>
+                                <div class="text-xs text-slate-400" id="hintVisualText">Haz clic para revelar</div>
+                            </button>
+                            <button id="hintAuditiva" class="interactive-hint-btn">
+                                <div class="font-semibold text-rose-300 mb-1">💡 Pista: Órbita Auditiva</div>
+                                <div class="text-xs text-slate-400" id="hintAuditivaText">Haz clic para revelar</div>
+                            </button>
+                            <button id="hintLogica" class="interactive-hint-btn">
+                                <div class="font-semibold text-emerald-300 mb-1">💡 Pista: Órbita Lógica</div>
+                                <div class="text-xs text-slate-400" id="hintLogicaText">Haz clic para revelar</div>
+                            </button>
+                            <button id="hintSocial" class="interactive-hint-btn">
+                                <div class="font-semibold text-violet-300 mb-1">💡 Pista: Órbita Social</div>
+                                <div class="text-xs text-slate-400" id="hintSocialText">Haz clic para revelar</div>
+                            </button>
+                            <button id="hintTemporal" class="interactive-hint-btn">
+                                <div class="font-semibold text-yellow-300 mb-1">💡 Pista: Órbita Temporal</div>
+                                <div class="text-xs text-slate-400" id="hintTemporalText">Haz clic para revelar</div>
+                            </button>
+                        </div>
+                        <div class="mt-4 p-3 bg-amber-900/20 border border-amber-700/50 rounded text-xs text-amber-200">
+                            💭 Usa el comando <code class="bg-slate-900 px-1 rounded">decrypt &lt;orbita&gt;</code> en la consola para calcular códigos automáticamente.
+                        </div>
+                    </div>
+                </div>
+                </section>
+            </div>
+
+            <!-- ACTIVIDADES -->
+            <div id="actividadesContent" class="tab-content hidden">
+                <section class="section-block mb-8">
+                    <h2 class="section-title">
+                        <i class="fas fa-tasks"></i>
+                        <span>Actividades Detalladas</span>
+                    </h2>
+                    <div class="activities-detail-grid">
+                        <!-- Órbita Visual -->
+                        <div class="activity-orbit-card border-sky-600/40">
+                            <h3 class="activity-orbit-title text-sky-300"><span>🔵</span> Órbita Visual (Observación / Representación)</h3>
+                            <p class="activity-orbit-description">Vista de aula: alto contraste. Propósito: detectar barreras visuales.</p>
+                            <div id="activitiesVisual" class="activity-list-grid"></div>
+                        </div>
+
+                        <!-- Órbita Auditiva -->
+                        <div class="activity-orbit-card border-rose-600/40">
+                            <h3 class="activity-orbit-title text-rose-300"><span>🔴</span> Órbita Auditiva (Escucha / Discriminación)</h3>
+                            <p class="activity-orbit-description">Morse inclusivo. Propósito: atención a señales mínimas.</p>
+                            <div id="activitiesAuditiva" class="activity-list-grid"></div>
+                        </div>
+
+                        <!-- Órbita Lógica -->
+                        <div class="activity-orbit-card border-emerald-600/40">
+                            <h3 class="activity-orbit-title text-emerald-300"><span>🟢</span> Órbita Lógica (Planificación / Patrones)</h3>
+                            <p class="activity-orbit-description">Ruta por balizas. Propósito: planificar recorrido 'sin cruces'.</p>
+                            <div id="activitiesLogica" class="activity-list-grid"></div>
+                        </div>
+
+                        <!-- Órbita Social -->
+                        <div class="activity-orbit-card border-violet-600/40">
+                            <h3 class="activity-orbit-title text-violet-300"><span>🟣</span> Órbita Social (Decisiones / Casos Reales)</h3>
+                            <p class="activity-orbit-description">Casos breves A/B/C. Propósito: elegir intervención inclusiva.</p>
+                            <div id="activitiesSocial" class="activity-list-grid"></div>
+                        </div>
+
+                        <!-- Órbita Temporal -->
+                        <div class="activity-orbit-card border-yellow-600/40">
+                            <h3 class="activity-orbit-title text-yellow-300"><span>🟡</span> Órbita Temporal (Metacognición / Autorregulación)</h3>
+                            <p class="activity-orbit-description">Planificación temporal. Propósito: gestionar tiempo y reflexionar sobre el proceso.</p>
+                            <div id="activitiesTemporal" class="activity-list-grid"></div>
+                        </div>
+
+                        <!-- Caja Motor -->
+                        <div class="activity-orbit-card border-amber-600/40">
+                            <h3 class="activity-orbit-title text-amber-300"><span>⚙️</span> Caja Motor (Transversales / Meta)</h3>
+                            <p class="activity-orbit-description">Plantillas-ventana. Propósito: integración de resultados.</p>
+                            <div id="activitiesFinal" class="activity-list-grid"></div>
+                        </div>
+                    </div>
+                </section>
+          </div>
+
+            <!-- ESTADO FINAL -->
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-flag-checkered"></i>
+                    <span>Estado Final de la Misión</span>
+                </h2>
+                <div class="final-status-card" role="region" aria-label="Estado final de la misión">
+                    <div class="p-5 flex items-center gap-3">
+                        <svg id="finalIcon" class="icon text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <div class="flex-1">
+                            <div class="text-sm text-amber-200/90" id="labelFinal">Caja Motor (Final)</div>
+                            <div class="text-2xl tracking-widest font-mono" id="finalCode" aria-live="polite" aria-label="Código final de la Caja Motor">••••</div>
+                            <div class="text-xs text-slate-400 mt-1">Cuando las cinco órbitas estén abiertas, aparecerá el código de la Caja Motor.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="text-center text-xs text-slate-400 mt-6 opacity-80 py-4">
+          Modo offline • Progreso guardado localmente • Estilo HUD espacial
+        </footer>
+      </div>
+    </div>
+
+    <!-- Contenedor de notificaciones toast -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Canvas para efectos de partículas -->
+    <canvas id="particlesCanvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+    <!-- Modal de Configuración -->
+    <div id="modalConfig" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="bg-slate-950/90 backdrop-blur border border-slate-700 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-auto">
+            <h2 class="text-xl font-semibold mb-4 text-slate-100">Configuración de sesión</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Centro</div>
+                    <input type="text" id="cfgCenter" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Fecha</div>
+                    <input type="date" id="cfgDate" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta Visual (🔵) — Código objetivo</div>
+                    <input type="text" id="cfgTargetVisual" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta Auditiva (🔴) — Código objetivo</div>
+                    <input type="text" id="cfgTargetAuditiva" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta Lenguaje-Aprendizaje (🟢) — Código objetivo</div>
+                    <input type="text" id="cfgTargetLenguaje" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta TEA (🟣) — Código objetivo</div>
+                    <input type="text" id="cfgTargetTEA" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta TDAH (🟡) — Código objetivo</div>
+                    <input type="text" id="cfgTargetTDAH" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta Motora (🟠) — Código objetivo</div>
+                    <input type="text" id="cfgTargetMotora" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Planeta Intelectual/Desarrollo (⚪) — Código objetivo</div>
+                    <input type="text" id="cfgTargetIntelectual" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+                <label class="text-slate-300 text-sm space-y-1">
+                    <div class="opacity-80">Motor de la Inclusión (Final) — Código objetivo</div>
+                    <input type="text" id="cfgTargetFinal" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-100">
+                </label>
+            </div>
+            <div class="flex justify-end gap-2 mt-6">
+                <button id="cfgCancel" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 border border-slate-600 rounded transition-all focus:ring-2 focus:ring-slate-500 focus:outline-none" aria-label="Cancelar configuración">Cancelar</button>
+                <button id="cfgSave" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 rounded transition-all focus:ring-2 focus:ring-sky-500 focus:outline-none" aria-label="Guardar configuración">Guardar</button>
+          </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
