@@ -85,7 +85,7 @@
         .locks-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
         @media (min-width: 640px) { .locks-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .locks-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1400px) { .locks-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1600px) { .locks-grid { grid-template-columns: repeat(3, 1fr); } }
         
         .achievements-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
         @media (min-width: 640px) { .achievements-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -111,9 +111,256 @@
         .lock-system { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; }
         .lock-title { font-size: 1.1rem; font-weight: 700; color: rgb(226, 232, 240); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif; }
         .lock-container { display: flex; flex-direction: column; gap: 0.75rem; }
-        .lock-display { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-        .lock-wheel { width: 48px; height: 48px; border: 2px solid rgba(148, 163, 184, 0.4); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: bold; background: rgba(15, 23, 42, 0.7); color: rgb(226, 232, 240); }
+        .lock-display { 
+            display: flex; 
+            flex-direction: column;
+            gap: 0.75rem; 
+            justify-content: center; 
+            align-items: center; 
+            max-width: 100%;
+        }
+        .lock-wheel { 
+            flex-shrink: 0;
+            min-width: 48px;
+            width: 48px; 
+            height: 48px; 
+            border: 2px solid rgba(148, 163, 184, 0.4); 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Orbitron', monospace; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            background: rgba(15, 23, 42, 0.7); 
+            color: rgb(226, 232, 240);
+            transition: all 0.3s ease;
+        }
+        .lock-wheel:hover {
+            transform: scale(1.1);
+        }
         .lock-status { text-align: center; font-size: 0.9rem; }
+        
+        /* Estilos mejorados para el sistema solar */
+        .solar-system-container {
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.08) 0%, rgba(15, 23, 42, 0.4) 50%, rgba(15, 23, 42, 0.8) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+        
+        .solar-system-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            min-height: 600px;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            overflow: visible;
+        }
+        
+        .orbits-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: visible;
+            pointer-events: none;
+        }
+        
+        .planets-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: visible;
+        }
+        
+        .planet-orbit {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: all;
+            z-index: 3;
+        }
+        
+        .planet-orbit.locked {
+            opacity: 0.65;
+            filter: grayscale(0.7) brightness(0.8);
+        }
+        
+        .planet-orbit.active {
+            opacity: 1;
+            filter: none;
+            animation: planet-pulse 2.5s ease-in-out infinite;
+        }
+        
+        .planet-orbit:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            z-index: 4;
+        }
+        
+        .planet-orbit.active:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        
+        @keyframes planet-pulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px currentColor);
+            }
+            50% {
+                filter: drop-shadow(0 0 20px currentColor) drop-shadow(0 0 30px currentColor);
+            }
+        }
+        
+        .planet-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .planet-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: planet-rotate 12s linear infinite;
+        }
+        
+        @keyframes planet-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .planet-number {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+        
+        .planet-orbit:hover .planet-number {
+            transform: scale(1.2);
+        }
+        
+        .planet-label {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            font-family: 'Orbitron', monospace;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .planet-orbit:hover .planet-label,
+        .planet-orbit.active .planet-label {
+            opacity: 1;
+        }
+        
+        .orbit-path {
+            transition: all 0.5s ease;
+        }
+        
+        /* Estilos mejorados para las pestañas de navegación */
+        .tabs-container {
+            display: flex;
+            gap: 0.75rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 0.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.25rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: transparent;
+            color: rgb(148, 163, 184);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .tab-btn i {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: rgb(226, 232, 240);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .tab-btn.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: rgb(147, 197, 253);
+            border-color: rgb(59, 130, 246);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), inset 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+        
+        .tab-btn.active i {
+            opacity: 1;
+            color: rgb(147, 197, 253);
+        }
+        
+        .tab-btn:focus-visible {
+            outline: 2px solid rgb(59, 130, 246);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
@@ -205,24 +452,38 @@
                 </h2>
                 <div class="solar-system-container">
                     <div class="solar-system-wrapper">
-                        <svg id="orbitsCanvas" class="orbits-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+                        <svg id="orbitsCanvas" class="orbits-svg" viewBox="0 0 900 900" preserveAspectRatio="xMidYMid meet">
                             <defs>
                                 <radialGradient id="planetGradient" cx="50%" cy="50%">
-                                    <stop offset="0%" style="stop-color:rgba(59, 130, 246, 0.8);stop-opacity:1" />
+                                    <stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.9);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgba(59, 130, 246, 0.8);stop-opacity:1" />
                                     <stop offset="100%" style="stop-color:rgba(59, 130, 246, 0.2);stop-opacity:0.3" />
                                 </radialGradient>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                                <filter id="orbitGlow">
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
                                     <feMerge>
                                         <feMergeNode in="coloredBlur"/>
                                         <feMergeNode in="SourceGraphic"/>
                                     </feMerge>
                                 </filter>
                             </defs>
-                            <circle id="systemCenter" cx="400" cy="400" r="30" fill="url(#planetGradient)" filter="url(#glow)" class="system-center">
-                                <animate attributeName="r" values="30;35;30" dur="3s" repeatCount="indefinite"/>
+                            <!-- Centro del sistema con efecto mejorado -->
+                            <circle id="systemCenter" cx="450" cy="450" r="35" fill="url(#planetGradient)" filter="url(#glow)" opacity="0.9">
+                                <animate attributeName="r" values="30;38;30" dur="4s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.8;1;0.8" dur="4s" repeatCount="indefinite"/>
                             </circle>
-                            <text x="400" y="440" text-anchor="middle" fill="rgb(59, 130, 246)" font-size="14" font-family="Orbitron" font-weight="bold">CENTRO</text>
+                            <circle cx="450" cy="450" r="40" fill="none" stroke="rgba(59, 130, 246, 0.3)" stroke-width="2" opacity="0.6">
+                                <animate attributeName="r" values="35;45;35" dur="4s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="450" y="495" text-anchor="middle" fill="rgb(59, 130, 246)" font-size="16" font-family="Orbitron" font-weight="bold" opacity="0.9">CENTRO</text>
                         </svg>
                         <div id="planetsContainer" class="planets-overlay"></div>
                     </div>
@@ -316,7 +577,7 @@
     </div>
 
     <!-- Contenedor de notificaciones toast -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <div id="toastContainer" class="fixed top-4 right-4 z-50" style="max-width: 400px; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;"></div>
 
     <script>
         // ============================================================
@@ -1241,24 +1502,50 @@
             renderAll();
         };
 
-        const showToast = (message, type = "info") => {
+        const showToast = (message, type = "info", duration = 4000) => {
             const container = document.getElementById("toastContainer");
             if (!container) return;
             const toast = document.createElement("div");
-            toast.className = `px-4 py-3 rounded-lg shadow-lg font-medium ${
-                type === "success" ? "bg-green-600 text-white" :
-                type === "error" ? "bg-red-600 text-white" :
-                "bg-blue-600 text-white"
+            toast.className = `px-4 py-3 rounded-lg shadow-2xl font-medium transition-all duration-300 ${
+                type === "success" ? "bg-green-600 text-white border-2 border-green-400" :
+                type === "error" ? "bg-red-600 text-white border-2 border-red-400" :
+                type === "warning" ? "bg-amber-600 text-white border-2 border-amber-400" :
+                "bg-blue-600 text-white border-2 border-blue-400"
             }`;
-            toast.textContent = message;
+            toast.style.opacity = "0";
+            toast.style.transform = "translateX(100%)";
+            toast.style.pointerEvents = "auto";
+            toast.style.cursor = "pointer";
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.25rem; flex-shrink: 0;">${type === "success" ? "✅" : type === "error" ? "❌" : type === "warning" ? "⚠️" : "ℹ️"}</span>
+                    <span style="flex: 1;">${message}</span>
+                </div>
+            `;
+            
+            // Permitir cerrar haciendo clic
+            toast.addEventListener("click", () => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateX(100%)";
+                setTimeout(() => toast.remove(), 300);
+            });
+            
             container.appendChild(toast);
+            
+            // Animación de entrada
+            setTimeout(() => {
+                toast.style.opacity = "1";
+                toast.style.transform = "translateX(0)";
+            }, 10);
+            
+            // Auto-remover después de la duración
             setTimeout(() => {
                 toast.style.opacity = "0";
-                toast.style.transform = "translateY(-10px)";
-            }, 10);
+                toast.style.transform = "translateX(100%)";
             setTimeout(() => {
                 toast.remove();
-            }, 3000);
+                }, 300);
+            }, duration);
         };
 
         const formatDuration = (ms) => {
@@ -1295,13 +1582,44 @@
 
         const evaluatePlanet = (planetKey, silent = false) => {
             const planet = getPlanetByKey(planetKey);
-            const allFragments = planet.satellites.every(sat => Boolean(state.fragments[planetKey][sat.id]));
+            const fragmentsSolved = planet.satellites.filter(sat => Boolean(state.fragments[planetKey][sat.id])).length;
+            const totalFragments = planet.satellites.length;
+            const allFragments = fragmentsSolved === totalFragments;
+            
+            // Alerta cuando se completan todos los fragmentos
+            if (allFragments && !silent) {
+                const code = computePlanetCode(planetKey);
+                if (code === planet.lock.target) {
+                    // Planeta completamente estabilizado
+                    if (!state.openPlanets[planetKey]) {
+                        showToast(`🎉 ¡${planet.name} estabilizado! Código: ${code}`, "success", 5000);
+                        // Notificación adicional más destacada
+                        setTimeout(() => {
+                            showToast(`✨ ${planet.name} completamente desbloqueado. ¡Continúa con los demás planetas!`, "success", 4000);
+                        }, 500);
+                    }
+                    state.openPlanets[planetKey] = true;
+                } else {
+                    // Todos los fragmentos obtenidos pero código incorrecto
+                    if (!state.openPlanets[planetKey]) {
+                        showToast(`⚠️ Todos los fragmentos de ${planet.name} obtenidos. Código actual: ${code}. Revisa la combinación.`, "warning", 5000);
+                    }
+                    state.openPlanets[planetKey] = false;
+                }
+            } else if (fragmentsSolved > 0 && fragmentsSolved < totalFragments && !silent) {
+                // Feedback cuando se obtiene un fragmento
+                const progressPercent = Math.round((fragmentsSolved / totalFragments) * 100);
+                if (fragmentsSolved === totalFragments - 1) {
+                    showToast(`📊 ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos. ¡Solo falta uno!`, "info", 3000);
+                } else {
+                    showToast(`📊 ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos obtenidos (${progressPercent}%)`, "info", 2500);
+                }
+            }
+            
+            // Evaluación final del estado
             if (allFragments) {
                 const code = computePlanetCode(planetKey);
                 if (code === planet.lock.target) {
-                    if (!state.openPlanets[planetKey] && !silent) {
-                        showToast(`${planet.name} estabilizado. Código ${code}`, "success");
-                    }
                     state.openPlanets[planetKey] = true;
                 } else {
                     state.openPlanets[planetKey] = false;
@@ -1314,6 +1632,13 @@
         const markFragment = (planetKey, satelliteId, fragmentValue) => {
             if (!state.fragments[planetKey][satelliteId]) {
                 state.fragments[planetKey][satelliteId] = String(fragmentValue);
+                const planet = getPlanetByKey(planetKey);
+                const satellite = planet.satellites.find(sat => sat.id === satelliteId);
+                
+                // Feedback inmediato del fragmento obtenido
+                showToast(`✅ Fragmento obtenido: ${fragmentValue} (${satellite.title})`, "success", 3000);
+                
+                // Evaluar el planeta (esto mostrará alertas adicionales si es necesario)
                 evaluatePlanet(planetKey);
                 saveState();
                 renderAll();
@@ -1338,14 +1663,15 @@
         // ============================================================
         // RENDERIZADO DEL SISTEMA SOLAR
         // ============================================================
+        // Órbitas circulares con mayor separación
         const ORBIT_LAYOUT = [
-            { key: "visual", radius: 145, angle: 110 },
-            { key: "auditiva", radius: 190, angle: 160 },
-            { key: "lenguaje", radius: 225, angle: 220 },
-            { key: "tea", radius: 260, angle: 280 },
-            { key: "tdah", radius: 300, angle: 330 },
-            { key: "motora", radius: 330, angle: 40 },
-            { key: "intelectual", radius: 310, angle: 70 }
+            { key: "visual", radius: 120, angle: 90 },
+            { key: "auditiva", radius: 170, angle: 145 },
+            { key: "lenguaje", radius: 220, angle: 200 },
+            { key: "tea", radius: 270, angle: 255 },
+            { key: "tdah", radius: 320, angle: 310 },
+            { key: "motora", radius: 370, angle: 20 },
+            { key: "intelectual", radius: 350, angle: 65 }
         ];
 
         const renderSolarSystem = () => {
@@ -1358,31 +1684,61 @@
             overlay.innerHTML = "";
             legend.innerHTML = "";
 
-            const centerX = 400;
-            const centerY = 400;
+            const centerX = 450;
+            const centerY = 450;
 
             ORBIT_LAYOUT.forEach((config, index) => {
                 const planetData = PLANETS.find(p => p.key === config.key) || {};
                 const color = planetData.ringColor || "rgb(96, 165, 250)";
                 const isActive = !!state.openPlanets[config.key];
 
-                const orbitPath = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+                // Crear órbita CIRCULAR con efecto de línea punteada animada
+                const orbitPath = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 orbitPath.setAttribute("cx", centerX.toString());
                 orbitPath.setAttribute("cy", centerY.toString());
-                orbitPath.setAttribute("rx", config.radius.toString());
-                orbitPath.setAttribute("ry", (config.radius * 0.68).toString());
+                orbitPath.setAttribute("r", config.radius.toString());
                 orbitPath.setAttribute("fill", "none");
                 orbitPath.setAttribute("stroke", color);
-                orbitPath.setAttribute("stroke-width", isActive ? "3" : "2");
-                orbitPath.setAttribute("opacity", isActive ? "0.9" : "0.6");
+                orbitPath.setAttribute("stroke-width", isActive ? "2.5" : "1.5");
+                orbitPath.setAttribute("opacity", isActive ? "0.85" : "0.4");
+                orbitPath.setAttribute("stroke-dasharray", isActive ? "8 4" : "6 6");
+                orbitPath.setAttribute("stroke-dashoffset", "0");
+                orbitPath.setAttribute("filter", isActive ? "url(#orbitGlow)" : "none");
+                orbitPath.style.transition = "all 0.5s ease";
+                
+                // Animación de la línea punteada
+                if (isActive) {
+                    const animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+                    animate.setAttribute("attributeName", "stroke-dashoffset");
+                    animate.setAttribute("values", "0;-20");
+                    animate.setAttribute("dur", "3s");
+                    animate.setAttribute("repeatCount", "indefinite");
+                    orbitPath.appendChild(animate);
+                }
+                
                 orbitPath.classList.add("orbit-path");
                 svg.appendChild(orbitPath);
 
+                // Órbita de fondo con glow sutil (circular)
+                if (isActive) {
+                    const orbitGlow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    orbitGlow.setAttribute("cx", centerX.toString());
+                    orbitGlow.setAttribute("cy", centerY.toString());
+                    orbitGlow.setAttribute("r", (config.radius + 3).toString());
+                    orbitGlow.setAttribute("fill", "none");
+                    orbitGlow.setAttribute("stroke", color);
+                    orbitGlow.setAttribute("stroke-width", "4");
+                    orbitGlow.setAttribute("opacity", "0.15");
+                    orbitGlow.setAttribute("filter", "url(#orbitGlow)");
+                    svg.appendChild(orbitGlow);
+                }
+
+                // Cálculo para órbitas circulares
                 const angleRad = (config.angle * Math.PI) / 180;
                 const planetX = centerX + config.radius * Math.cos(angleRad);
-                const planetY = centerY + (config.radius * 0.68) * Math.sin(angleRad);
-                const relativeX = (planetX / 800) * 100;
-                const relativeY = (planetY / 800) * 100;
+                const planetY = centerY + config.radius * Math.sin(angleRad);
+                const relativeX = (planetX / 900) * 100;
+                const relativeY = (planetY / 900) * 100;
 
                 const shortName = (planetData.name || config.key).replace(/^Órbita\s*/i, "");
                 const icon = planetData.icon || "🪐";
@@ -1398,11 +1754,11 @@
                 planetEl.style.color = color;
 
                 planetEl.innerHTML = `
-                    <div class="planet-icon" style="border-color:${color};">
-                        <span style="font-size:1.6rem;">${icon}</span>
+                    <div class="planet-icon" style="border-color:${color}; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), ${color}40, rgba(15,23,42,0.95)); box-shadow: 0 0 20px ${color}80, inset 0 0 25px rgba(0,0,0,0.4);">
+                        <span style="font-size:1.8rem; filter: drop-shadow(0 0 4px ${color});">${icon}</span>
                     </div>
-                    <div class="planet-number" style="border-color:${color};color:${color};">${index + 1}</div>
-                    <div class="planet-label" style="color:${color};">${shortName}</div>
+                    <div class="planet-number" style="border-color:${color};color:${color}; background: rgba(15,23,42,0.95); box-shadow: 0 0 12px ${color}60;">${index + 1}</div>
+                    <div class="planet-label" style="color:${color}; text-shadow: 0 0 10px ${color}80;">${shortName}</div>
                 `;
 
                 const scrollToCard = () => {
@@ -1466,17 +1822,37 @@
                 const totalFragments = planet.satellites.length;
                 const progressPercent = (fragmentsSolved / totalFragments) * 100;
                 
+                // Dividir los dígitos en filas si son más de 4
+                const digitsPerRow = 4;
+                const digitsArray = displayed.split("");
+                const rows = [];
+                for (let i = 0; i < digitsArray.length; i += digitsPerRow) {
+                    rows.push(digitsArray.slice(i, i + digitsPerRow));
+                }
+                
                 return `
                     <div class="lock-system" role="article" aria-label="Candado del ${planet.name}">
                         <div class="lock-title">${planet.icon} ${planet.name}</div>
                         <div class="lock-container">
                             <div class="lock-display" role="group" aria-label="Código del candado del ${planet.name}">
-                                ${displayed.split("").map((ch, i) => `
-                                    <div class="lock-wheel text-center" 
-                                         aria-label="Dígito ${i + 1}: ${ch === '·' ? 'sin definir' : ch}"
-                                         style="border-color: ${open ? 'rgba(34, 197, 94, 0.6)' : (ch !== '·' ? planet.ringColor : 'rgba(148, 163, 184, 0.4)')}; 
-                                                color: ${open ? 'rgb(34, 197, 94)' : (ch !== '·' ? planet.ringColor : 'rgb(148, 163, 184)')};">
-                                        ${ch}
+                                ${rows.map((row, rowIndex) => `
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center; width: 100%; flex-wrap: wrap;">
+                                        ${row.map((ch, i) => {
+                                            const globalIndex = rowIndex * digitsPerRow + i;
+                                            const colorValue = ch !== '·' ? (open ? 'rgba(34, 197, 94, 0.6)' : planet.ringColor) : 'rgba(148, 163, 184, 0.4)';
+                                            const textColor = ch !== '·' ? (open ? 'rgb(34, 197, 94)' : planet.ringColor) : 'rgb(148, 163, 184)';
+                                            const glowColor = ch !== '·' ? (open ? 'rgba(34, 197, 94, 0.5)' : planet.ringColor + '60') : 'none';
+                                            return `
+                                                <div class="lock-wheel text-center" 
+                                                     aria-label="Dígito ${globalIndex + 1}: ${ch === '·' ? 'sin definir' : ch}"
+                                                     style="border-color: ${colorValue}; 
+                                                            color: ${textColor};
+                                                            box-shadow: ${glowColor !== 'none' ? `0 0 12px ${glowColor}, inset 0 0 8px ${glowColor}40` : 'none'};
+                                                            background: ${ch !== '·' ? `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), ${colorValue}30, rgba(15,23,42,0.9))` : 'rgba(15, 23, 42, 0.7)'};">
+                                                    ${ch}
+                                                </div>
+                                            `;
+                                        }).join("")}
                                     </div>
                                 `).join("")}
                             </div>
@@ -1679,7 +2055,7 @@
 
             if (option.correct) {
                 markFragment(planetKey, satelliteId, satellite.fragment);
-                showToast(`${satellite.title}: fragmento ${satellite.fragment} obtenido`, "success");
+                // El markFragment ya muestra el toast, no hace falta duplicar
             } else {
                 incrementAttempt(planetKey, satelliteId);
                 feedbackEl.textContent = option.feedback;
