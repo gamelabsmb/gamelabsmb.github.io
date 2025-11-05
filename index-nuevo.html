@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACIÓN INCLUSIÓN — SISTEMA ÓRBITAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos personalizados */
+        .icon { width: 1.5rem; height: 1.5rem; display: inline-block; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        button:focus-visible, input:focus-visible { outline: 2px solid rgb(59 130 246); outline-offset: 2px; }
+        .tab-content { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Estilos para satélites con preguntas */
+        .satellite-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+        .satellite-card.completed { border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
+        .satellite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .satellite-title { font-size: 1.1rem; font-weight: 700; color: rgb(226, 232, 240); }
+        .fragment-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); border-radius: 999px; padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .question-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
+        .question-prompt { font-weight: 600; margin-bottom: 1rem; color: rgb(248, 250, 252); font-size: 1rem; }
+        .option-list { display: grid; gap: 0.75rem; }
+        .option { display: flex; gap: 0.75rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 8px; padding: 0.75rem; align-items: flex-start; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: rgba(59, 130, 246, 0.5); background: rgba(15, 23, 42, 0.9); }
+        .option input[type="radio"] { margin-top: 0.25rem; cursor: pointer; }
+        .option label { cursor: pointer; color: rgb(226, 232, 240); line-height: 1.5; flex: 1; }
+        .satellite-actions { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+        .btn-satellite { padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid rgba(96, 165, 250, 0.4); background: rgba(59, 130, 246, 0.2); color: rgb(226, 232, 240); cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+        .btn-satellite:hover:not(:disabled) { background: rgba(59, 130, 246, 0.4); border-color: rgba(96, 165, 250, 0.6); }
+        .btn-satellite:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-satellite.secondary { border-color: rgba(148, 163, 184, 0.4); background: rgba(15, 23, 42, 0.7); }
+        .feedback { margin-top: 1rem; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; }
+        .feedback.success { background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.5); color: rgb(134, 239, 172); }
+        .feedback.error { background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.5); color: rgb(254, 202, 202); }
+        .feedback.info { background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); color: rgb(253, 230, 138); }
+        
+        /* Estilos para planetas y deck */
+        .deck { display: grid; gap: 2rem; }
+        .planet-card { background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; }
+        .planet-header { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+        .planet-header .icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .planet-header .meta h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(226, 232, 240); }
+        .planet-header .focus { font-size: 0.9rem; color: rgb(148, 163, 184); margin-top: 0.25rem; }
+        .planet-summary { margin: 1rem 0; color: rgb(226, 232, 240); line-height: 1.6; }
+        .planet-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .planet-chip { background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 999px; padding: 0.4rem 0.8rem; font-size: 0.85rem; color: rgb(148, 163, 184); }
+        .lock-panel { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .lock-panel header { display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(148, 163, 184); margin-bottom: 1rem; }
+        .code-preview { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .code-preview .digit { width: 50px; height: 50px; border-radius: 8px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: bold; }
+        .lock-panel .clue { margin-top: 1rem; font-size: 0.9rem; color: rgb(148, 163, 184); line-height: 1.5; }
+        .satellite-grid { display: grid; gap: 1rem; }
+        .planet-footer { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: 12px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.35); color: rgb(226, 232, 240); line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <!-- Skip link para accesibilidad -->
+    <a href="#panelContent" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-sky-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-sky-400">
+        Saltar al contenido principal
+    </a>
+    
+    <!-- Fondo espacial -->
+    <div class="absolute inset-0 bg-[#05070d]">
+        <canvas id="stars" class="w-full h-full"></canvas>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,30,60,0.35),transparent_60%)]"></div>
+        <div class="pointer-events-none absolute inset-0 [background:repeating-linear-gradient(0deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_3px)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto p-4 md:p-8">
+        <!-- Header Principal -->
+        <header class="main-header mb-8">
+            <div class="text-center mb-6">
+                <h1 class="glitch-title mb-4" id="title">OPERACIÓN INCLUSIÓN</h1>
+                <div class="subtitle-section">
+                    <span class="terminal-text">SISTEMA ÓRBITAS</span>
+                </div>
+                <div class="info-line mt-4">Desbloquea órbitas • Resuelve códigos • Completa la misión</div>
+            </div>
+            
+            <!-- Información del Evento -->
+            <div class="event-info-grid">
+                <div class="event-info-block">
+                    <div class="info-line-item">
+                        <span class="info-label">GRUPO:</span>
+                        <span class="info-value" id="groupNumberHeader">Sin asignar</span>
+                    </div>
+                    <div class="info-line-item">
+                        <span class="info-label">INTEGRANTES:</span>
+                        <span class="info-value">5 personas</span>
+                    </div>
+                    <div class="info-line-item">
+                        <span class="info-label">MISIÓN:</span>
+                        <span class="info-value">Desbloquear 7 planetas</span>
+                    </div>
+                </div>
+                <div class="event-controls">
+                    <button id="btnConfig" class="action-btn" aria-label="Configurar">
+                        <i class="fas fa-cog"></i>
+                        <span>Configurar</span>
+                    </button>
+                    <button id="btnReset" class="action-btn secondary" aria-label="Reiniciar">
+                        <i class="fas fa-redo"></i>
+                        <span>Reiniciar</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs de Navegación -->
+        <nav class="mb-6" role="tablist" aria-label="Navegación principal">
+            <div class="tabs-container">
+                <button id="tabPanel" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panelContent" tabindex="0">
+                    <i class="fas fa-desktop" aria-hidden="true"></i>
+                    <span>Panel Principal</span>
+                </button>
+                <button id="tabPlanetas" class="tab-btn" role="tab" aria-selected="false" aria-controls="planetasContent" tabindex="-1">
+                    <i class="fas fa-globe" aria-hidden="true"></i>
+                    <span>Planetas y Satélites</span>
+                </button>
+                <button id="tabStats" class="tab-btn" role="tab" aria-selected="false" aria-controls="statsContent" tabindex="-1">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span>Estadísticas</span>
+                </button>
+                <button id="tabLogros" class="tab-btn" role="tab" aria-selected="false" aria-controls="logrosContent" tabindex="-1">
+                    <i class="fas fa-trophy" aria-hidden="true"></i>
+                    <span>Logros</span>
+                </button>
+                <button id="tabPistas" class="tab-btn" role="tab" aria-selected="false" aria-controls="pistasContent" tabindex="-1">
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                    <span>Pistas</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- PANEL PRINCIPAL -->
+        <main id="panelContent" class="tab-content" role="tabpanel" aria-labelledby="tabPanel" aria-label="Panel principal">
+            <!-- Sistema Solar Interactivo -->
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-globe"></i>
+                    <span>Sistema Solar de Órbitas Planetarias</span>
+                </h2>
+                <div class="solar-system-container">
+                    <div class="solar-system-wrapper">
+                        <svg id="orbitsCanvas" class="orbits-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                                <radialGradient id="planetGradient" cx="50%" cy="50%">
+                                    <stop offset="0%" style="stop-color:rgba(59, 130, 246, 0.8);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgba(59, 130, 246, 0.2);stop-opacity:0.3" />
+                                </radialGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <circle id="systemCenter" cx="400" cy="400" r="30" fill="url(#planetGradient)" filter="url(#glow)" class="system-center">
+                                <animate attributeName="r" values="30;35;30" dur="3s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="400" y="440" text-anchor="middle" fill="rgb(59, 130, 246)" font-size="14" font-family="Orbitron" font-weight="bold">CENTRO</text>
+                        </svg>
+                        <div id="planetsContainer" class="planets-overlay"></div>
+                    </div>
+                    <div class="orbit-legend">
+                        <div class="legend-title">Estado de los Planetas</div>
+                        <div id="orbitsLegend" class="legend-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sistema de Candados -->
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-lock"></i>
+                    <span>Sistema de Desbloqueo Orbital</span>
+                </h2>
+                <div class="locks-grid" id="locksContainer"></div>
+            </section>
+        </main>
+
+        <!-- PLANETAS Y SATÉLITES -->
+        <section id="planetasContent" class="tab-content hidden" role="tabpanel" aria-labelledby="tabPlanetas" aria-label="Planetas y satélites">
+            <div id="planetsDeck" class="deck"></div>
+        </section>
+
+        <!-- ESTADÍSTICAS -->
+        <section id="statsContent" class="tab-content hidden" role="tabpanel" aria-labelledby="tabStats" aria-label="Estadísticas de la misión">
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Estadísticas de Misión</span>
+                </h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 class="stat-title">⏱️ Tiempo Transcurrido</h3>
+                        <div class="stat-value" id="timerDisplay">00:00:00</div>
+                        <div class="stat-description">Tiempo desde el inicio de la sesión</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-title">📈 Progreso General</h3>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300">Planetas estabilizados</span>
+                                <span class="text-slate-300" id="progressText" aria-live="polite">0/7</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7" aria-label="Progreso de planetas">
+                                <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-description mt-2">Completa los 7 planetas para desbloquear el Motor de la Inclusión</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-title">🛰️ Fragmentos Resueltos</h3>
+                        <div class="stat-value" id="fragmentsSolved">0</div>
+                        <div class="stat-description">Fragmentos obtenidos de los satélites</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-title">💡 Pistas Usadas</h3>
+                        <div class="stat-value" id="hintsUsed">0</div>
+                        <div class="stat-description">Pistas solicitadas durante la misión</div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- LOGROS -->
+        <section id="logrosContent" class="tab-content hidden" role="tabpanel" aria-labelledby="tabLogros" aria-label="Logros desbloqueados">
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    <span>Logros Desbloqueados</span>
+                </h2>
+                <div class="achievements-grid" id="achievementsContainer"></div>
+            </section>
+        </section>
+
+        <!-- PISTAS -->
+        <section id="pistasContent" class="tab-content hidden" role="tabpanel" aria-labelledby="tabPistas" aria-label="Pistas y ayuda">
+            <section class="section-block mb-8">
+                <h2 class="section-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Pistas y Ayuda</span>
+                </h2>
+                <div class="hints-grid" id="hintsContainer"></div>
+            </section>
+        </section>
+
+        <footer class="text-center text-xs text-slate-400 mt-6 opacity-80 py-4" role="contentinfo">
+            Modo offline • Progreso guardado localmente • Estilo HUD espacial
+        </footer>
+    </div>
+
+    <!-- Contenedor de notificaciones toast -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // ============================================================
+        // DATOS DE LOS PLANETAS (SIMPLIFICADOS Y MEJOR EXPLICADOS)
+        // ============================================================
+        const PLANETS = [
+            {
+                key: "visual",
+                name: "Órbita Visual",
+                icon: "🔵",
+                ringColor: "rgb(59, 130, 246)",
+                focus: "Acceso sensorial",
+                estimated: "6-7 min",
+                summary: "Garantizad contraste alto, redundancia icono+texto y tipografías legibles para que cualquier persona pueda interpretar la señalética de aula.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "1287",
+                    clue: "Concatena el contraste óptimo (12), la altura accesible (8) y la tipografía legible (7).",
+                },
+                finalContribution: "6",
+                generalHint: "Piensa en redundancia: icono + palabra + contraste = acceso visual universal.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Filtro de contraste",
+                        goal: "Comprobad qué panel mantiene contraste AA al activar el filtro rojo virtual.",
+                        materials: ["Simulación 'Filtro Lumen'", "Acetato rojo físico (opcional)"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Observa los tres paneles que se muestran.\n2. Imagina que aplicas un filtro rojo sobre cada uno.\n3. El panel que mantiene mejor contraste (>70%) es el correcto.\n4. Anota el fragmento que aparece cuando aciertas.",
+                        fragment: "12",
+                        order: 1,
+                        quickHint: "💡 PISTA: La opción válida conserva contraste AA incluso tras aplicar el filtro rojo.",
+                        successMessage: "✅ Perfecto: contraste estable por encima del 70 %. Fragmento obtenido: 12",
+                        question: {
+                            prompt: "¿Qué panel conserva contraste AA tras activar el filtro rojo?",
+                            options: [
+                                {
+                                    value: "panelA",
+                                    label: "Cartel azul claro con tipografía blanca fina (contraste 58 %)",
+                                    correct: false,
+                                    feedback: "❌ 58 % no asegura lectura. Busca un contraste superior al 70 %."
+                                },
+                                {
+                                    value: "panelB",
+                                    label: "Cartel negro con tipografía blanca gruesa y pictograma (contraste 72 %)",
+                                    correct: true,
+                                    feedback: "✅ Exacto: 72 % se mantiene tras el filtro. Fragmento = 12."
+                                },
+                                {
+                                    value: "panelC",
+                                    label: "Cartel naranja con texto crema (contraste 61 %)",
+                                    correct: false,
+                                    feedback: "❌ 61 % sigue siendo bajo. Necesitas al menos 70%."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Señal redundante",
+                        goal: "Elegid la señal que combina icono y texto a altura accesible.",
+                        materials: ["Mockup señalización", "Regla o cinta métrica (opcional)"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Lee las tres opciones de señalización.\n2. Busca la que está a 0,80 m del suelo (altura accesible).\n3. Debe tener icono + texto (redundancia).\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "8",
+                        order: 2,
+                        quickHint: "💡 PISTA: Busca la señal accesible a 80 cm con doble canal (icono + palabra).",
+                        successMessage: "✅ Señal acertada: altura 0,80 m y doble canal. Fragmento obtenido: 8",
+                        question: {
+                            prompt: "¿Cuál de las opciones garantiza redundancia y altura accesible?",
+                            options: [
+                                {
+                                    value: "signalA",
+                                    label: "Cartel solo texto a 1,60 m del suelo",
+                                    correct: false,
+                                    feedback: "❌ Demasiado alto (1,60 m) y sin icono. No es accesible."
+                                },
+                                {
+                                    value: "signalB",
+                                    label: "Icono + palabra en relieve a 0,80 m del suelo",
+                                    correct: true,
+                                    feedback: "✅ Correcto: redundancia + altura accesible. Fragmento = 8."
+                                },
+                                {
+                                    value: "signalC",
+                                    label: "Panel LED con animaciones a 1,90 m",
+                                    correct: false,
+                                    feedback: "❌ La animación puede distraer y queda fuera de alcance (1,90 m)."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Tipografía legible",
+                        goal: "Seleccionad la maqueta que optimiza interlineado y espaciado.",
+                        materials: ["Maquetas impresas A y B"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Compara las tres opciones de texto.\n2. Busca la que tiene: interlineado 1.5, mayúsculas/minúsculas, párrafos cortos.\n3. Evita texto justificado o todo en mayúsculas.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "7",
+                        order: 3,
+                        quickHint: "💡 PISTA: Recuerda: bloques cortos + interlineado amplio = lectura ágil.",
+                        successMessage: "✅ Lectura fácil asegurada. Fragmento obtenido: 7",
+                        question: {
+                            prompt: "¿Qué maqueta facilita la lectura a primera vista?",
+                            options: [
+                                {
+                                    value: "typoA",
+                                    label: "Texto justificado, todo en mayúsculas, interlineado 1",
+                                    correct: false,
+                                    feedback: "❌ Produce efecto 'muro de texto'. Difícil de leer."
+                                },
+                                {
+                                    value: "typoB",
+                                    label: "Párrafos cortos, interlineado 1.5 y mayúsculas/minúsculas",
+                                    correct: true,
+                                    feedback: "✅ Exacto: la maqueta B añade el dígito 7."
+                                },
+                                {
+                                    value: "typoC",
+                                    label: "Texto centrado con letras condensadas",
+                                    correct: false,
+                                    feedback: "❌ Centrado y condensado dificulta la lectura continua."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "auditiva",
+                name: "Órbita Auditiva",
+                icon: "🔊",
+                ringColor: "rgb(139, 92, 246)",
+                focus: "Acceso auditivo",
+                estimated: "6 min",
+                summary: "Transformad la información sonora en apoyos alternativos y controlad los focos de ruido ambiental.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "5409",
+                    clue: "La tira morse (54) + reducción de ruido a cero + señal visual (9).",
+                },
+                finalContribution: "1",
+                generalHint: "Pensad siempre en multicanal: audio + visual + control del ruido.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Morse inclusivo",
+                        goal: "Decodificad la tira morse eliminando elementos no numéricos en la posición 4.",
+                        materials: ["Tira morse impresa", "Tabla de equivalencias"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. La palabra es PICTOS.\n2. Aplica la regla: toma posiciones 1, 2, 3, 5, 6 (elimina la posición 4).\n3. El resultado es PICOS.\n4. Convierte PICOS a números: P=16, I=9, C=3, O=15, S=19.\n5. Simplifica: 16+9+3+15+19 = 62 → 6+2 = 8... pero espera, revisa la pregunta.",
+                        fragment: "54",
+                        order: 1,
+                        quickHint: "💡 PISTA: Convertid a texto PICOS y eliminad la letra en cuarta posición.",
+                        successMessage: "✅ Decodificación completa. Fragmento obtenido: 54",
+                        question: {
+                            prompt: "¿Qué resultado obtenéis al aplicar la regla 1,2,3,5,6 sobre PICTOS?",
+                            options: [
+                                {
+                                    value: "picts",
+                                    label: "PICTS",
+                                    correct: false,
+                                    feedback: "❌ Revisa: la cuarta posición se descarta si no es número."
+                                },
+                                {
+                                    value: "picos",
+                                    label: "PICOS",
+                                    correct: true,
+                                    feedback: "✅ Correcto: PICOS -> 54 como fragmento inicial."
+                                },
+                                {
+                                    value: "ptcos",
+                                    label: "PTCOS",
+                                    correct: false,
+                                    feedback: "❌ Has eliminado la vocal equivocada. La posición 4 es la T."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Ruido base",
+                        goal: "Priorizad la acción que reduce el ruido ambiental en la clase.",
+                        materials: ["Plano de aula", "Medidor de ruido (opcional)"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Piensa en qué reduce el ruido REALMENTE.\n2. No es aumentar el volumen, eso añade más sonido.\n3. Busca cerrar fuentes de ruido: puertas, ventiladores, etc.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "0",
+                        order: 2,
+                        quickHint: "💡 PISTA: Antes de subir volumen, eliminad ruido de fondo.",
+                        successMessage: "✅ Ambiente controlado: la base vuelve a cero. Fragmento obtenido: 0",
+                        question: {
+                            prompt: "¿Qué acción es más eficaz para reducir el ruido de fondo?",
+                            options: [
+                                {
+                                    value: "increaseVolume",
+                                    label: "Subir el volumen del altavoz principal",
+                                    correct: false,
+                                    feedback: "❌ Solo añade más sonido sobre el ruido. No lo reduce."
+                                },
+                                {
+                                    value: "closeDoors",
+                                    label: "Cerrar la puerta, apagar ventilador y añadir panel absorbente",
+                                    correct: true,
+                                    feedback: "✅ Exacto: ruido base cercano a 0."
+                                },
+                                {
+                                    value: "clapPattern",
+                                    label: "Usar palmadas como clave de atención",
+                                    correct: false,
+                                    feedback: "❌ Es un apoyo, pero no reduce el ruido ambiental."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Apoyo visual",
+                        goal: "Seleccionad el recurso que acompaña la información auditiva con apoyo visual.",
+                        materials: ["Plantilla de subtítulos", "Pictogramas"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Busca algo que combine audio + visual.\n2. Debe ayudar a quien necesita leer los labios.\n3. Pictograma de labios + palabras clave funciona bien.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "9",
+                        order: 3,
+                        quickHint: "💡 PISTA: Busca sincronía boca-palabra en la misma señal.",
+                        successMessage: "✅ Perfecto: apoyo visual añadido. Fragmento obtenido: 9",
+                        question: {
+                            prompt: "¿Qué recurso multiplica canales para quien necesita lectura labial?",
+                            options: [
+                                {
+                                    value: "textoCompleto",
+                                    label: "Transcripción completa en la pizarra",
+                                    correct: false,
+                                    feedback: "❌ Útil, pero no sincroniza con lectura labial."
+                                },
+                                {
+                                    value: "pictos",
+                                    label: "Pictograma de labios + palabras clave resaltadas",
+                                    correct: true,
+                                    feedback: "✅ ¡Ese es! Añade 9 al candado."
+                                },
+                                {
+                                    value: "audioRec",
+                                    label: "Grabación de audio para repasar después",
+                                    correct: false,
+                                    feedback: "❌ No ayuda en el momento ni aporta canal visual."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "lenguaje",
+                name: "Órbita Lenguaje-Comprensión",
+                icon: "💬",
+                ringColor: "rgb(6, 182, 212)",
+                focus: "Comunicación y lectoescritura",
+                estimated: "6 min",
+                summary: "Reformulad consignas en lectura fácil, modelad ejemplos y destacad vocabulario clave.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "3471",
+                    clue: "Tres pasos claros (3) + demostración guiada (4) + vocabulario esencial (71).",
+                },
+                finalContribution: "5",
+                generalHint: "Dividid los mensajes en pasos concretos y mostrad cómo se hace antes de pedirlo.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Consigna en 3 pasos",
+                        goal: "Detectad la instrucción que respeta lectura fácil en tres pasos.",
+                        materials: ["Plantillas de consignas A y B"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una consigna clara tiene pasos numerados.\n2. Cada paso empieza con un verbo de acción.\n3. Busca la que dice: '1) Observa... 2) Copia... 3) Cuenta...'\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "3",
+                        order: 1,
+                        quickHint: "💡 PISTA: Busca la que empieza por '1. Observa ...', '2. ...', '3. ...'.",
+                        successMessage: "✅ Consigna lista. Fragmento obtenido: 3",
+                        question: {
+                            prompt: "¿Cuál de estas consignas sigue lectura fácil?",
+                            options: [
+                                {
+                                    value: "consignaA",
+                                    label: "Describe libremente lo que ves en el cartel",
+                                    correct: false,
+                                    feedback: "❌ Carece de pasos claros. Demasiado abierto."
+                                },
+                                {
+                                    value: "consignaB",
+                                    label: "1) Observa la maqueta. 2) Copia el ejemplo. 3) Cuenta qué cambiarías.",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 3."
+                                },
+                                {
+                                    value: "consignaC",
+                                    label: "Explica tu idea en un párrafo de 10 líneas",
+                                    correct: false,
+                                    feedback: "❌ Demasiado abierto, sin guía paso a paso."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Demostración",
+                        goal: "Escoged el recurso que modela la tarea antes de pedirla.",
+                        materials: ["Vídeo corto de demostración", "Ficha de autoevaluación"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El modelado muestra CÓMO hacer algo.\n2. Un vídeo con audio y subtítulos es perfecto.\n3. No es suficiente una lista escrita sin ejemplo.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "4",
+                        order: 2,
+                        quickHint: "💡 PISTA: Si se ve cómo se hace, baja la carga de memoria.",
+                        successMessage: "✅ Demostración incorporada. Fragmento obtenido: 4",
+                        question: {
+                            prompt: "¿Qué apoyo asegura modelado explícito?",
+                            options: [
+                                {
+                                    value: "checklist",
+                                    label: "Checklist escrita sin ejemplo",
+                                    correct: false,
+                                    feedback: "❌ Útil, pero no muestra cómo se hace."
+                                },
+                                {
+                                    value: "video",
+                                    label: "Vídeo de 40 segundos con audio y subtítulos",
+                                    correct: true,
+                                    feedback: "✅ Correcto. Añade el dígito 4."
+                                },
+                                {
+                                    value: "poster",
+                                    label: "Póster motivacional con frase inspiradora",
+                                    correct: false,
+                                    feedback: "❌ No modela el proceso."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Vocabulario ancla",
+                        goal: "Destacad las palabras esenciales para asegurar comprensión.",
+                        materials: ["Texto original", "Marcadores"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Las palabras clave son verbos de acción.\n2. Ejemplos: 'Recorta', 'Conecta', 'Comparte'.\n3. No son palabras decorativas como 'bonito' o 'creativo'.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "71",
+                        order: 3,
+                        quickHint: "💡 PISTA: Resaltad verbos y elementos materiales esenciales.",
+                        successMessage: "✅ Vocabulario clave listo. Fragmento obtenido: 71",
+                        question: {
+                            prompt: "¿Qué conjunto de palabras clave facilita la comprensión inmediata?",
+                            options: [
+                                {
+                                    value: "decorativo",
+                                    label: "Creativo, bonito, libre",
+                                    correct: false,
+                                    feedback: "❌ No guía la acción concreta."
+                                },
+                                {
+                                    value: "accion",
+                                    label: "Recorta, conecta, comparte",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Con esto obtienes 71."
+                                },
+                                {
+                                    value: "emocion",
+                                    label: "Confianza, imaginación, energía",
+                                    correct: false,
+                                    feedback: "❌ Conceptos motivadores, pero no operativos."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "tea",
+                name: "Órbita TEA",
+                icon: "🧩",
+                ringColor: "rgb(147, 51, 234)",
+                focus: "Estructura y anticipación",
+                estimated: "6 min",
+                summary: "Reducid incertidumbre anticipando rutinas, diseñando agendas visuales y ofreciendo espacios de autorregulación.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "1974",
+                    clue: "Secuencia ahora-después (19) + agenda secuenciada (7) + zona de calma (4).",
+                },
+                finalContribution: "4",
+                generalHint: "Anticipar qué viene después reduce ansiedad y fomenta autonomía.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Ahora / Después",
+                        goal: "Ordenad la secuencia correcta que explica qué pasa tras el reto.",
+                        materials: ["Tarjetas 'Ahora' y 'Después'", "Fotos de actividades"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Busca una secuencia que muestre 'Ahora' (actividad actual) y 'Después' (siguiente actividad).\n2. Debe ser específica, no 'ya veremos'.\n3. Ejemplo: 'Ahora: montar experimento · Después: compartir en parejas'.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "19",
+                        order: 1,
+                        quickHint: "💡 PISTA: Incluid la actividad actual y la que sigue justo después.",
+                        successMessage: "✅ Secuencia anticipada lista. Fragmento obtenido: 19",
+                        question: {
+                            prompt: "¿Qué pareja de tarjetas anticipa correctamente el final de la actividad?",
+                            options: [
+                                {
+                                    value: "improvisa",
+                                    label: "Ahora: improvisar · Después: ya veremos",
+                                    correct: false,
+                                    feedback: "❌ No aporta seguridad. 'Ya veremos' genera ansiedad."
+                                },
+                                {
+                                    value: "parejas",
+                                    label: "Ahora: montar experimento · Después: compartir en parejas",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 19."
+                                },
+                                {
+                                    value: "descanso",
+                                    label: "Ahora: descanso libre · Después: aún sin definir",
+                                    correct: false,
+                                    feedback: "❌ Sigue sin prever lo que ocurrirá."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Agenda visual",
+                        goal: "Seleccionad la agenda que permite tachar pasos y anticipar tiempos.",
+                        materials: ["Agenda visual con pictos", "Reloj visual"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una buena agenda tiene pictogramas (dibujos).\n2. Muestra tiempo estimado para cada actividad.\n3. Tiene casillas para marcar cuando terminas.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "7",
+                        order: 2,
+                        quickHint: "💡 PISTA: Busca pictogramas + tiempo estimado + checkboxes.",
+                        successMessage: "✅ Agenda visual preparada. Fragmento obtenido: 7",
+                        question: {
+                            prompt: "¿Cuál de las agendas ofrece mayor claridad?",
+                            options: [
+                                {
+                                    value: "texto",
+                                    label: "Listado textual continuo",
+                                    correct: false,
+                                    feedback: "❌ Sin pictogramas ni tiempo."
+                                },
+                                {
+                                    value: "pictos",
+                                    label: "Tarjetas con pictograma, reloj y casilla de completado",
+                                    correct: true,
+                                    feedback: "✅ Perfecto. Fragmento = 7."
+                                },
+                                {
+                                    value: "bullet",
+                                    label: "Bullet journal con frases largas",
+                                    correct: false,
+                                    feedback: "❌ Puede abrumar con demasiada escritura."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Zona de calma",
+                        goal: "Elegid el plano que incluye un espacio de regulación sensorial.",
+                        materials: ["Planos A y B del aula"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una zona de calma es un rincón tranquilo.\n2. Tiene luz regulable (se puede cambiar).\n3. Tiene apoyos blandos (cojines).\n4. No es un escondite sin luz.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "4",
+                        order: 3,
+                        quickHint: "💡 PISTA: Busca un rincón delimitado con estímulos controlados.",
+                        successMessage: "✅ Zona de calma localizada. Fragmento obtenido: 4",
+                        question: {
+                            prompt: "¿Qué plano incorpora un espacio de calma real?",
+                            options: [
+                                {
+                                    value: "filas",
+                                    label: "Filas alineadas sin zona libre",
+                                    correct: false,
+                                    feedback: "❌ No ofrece alternativa cuando aparece saturación."
+                                },
+                                {
+                                    value: "rincón",
+                                    label: "Rincón con luz regulable, panel acústico y cojines",
+                                    correct: true,
+                                    feedback: "✅ Genial. Añade el 4."
+                                },
+                                {
+                                    value: "armario",
+                                    label: "Espacio detrás del armario sin iluminación",
+                                    correct: false,
+                                    feedback: "❌ Es un escondite improvisado, no un espacio de calma."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "tdah",
+                name: "Órbita TDAH",
+                icon: "⚡",
+                ringColor: "rgb(34, 211, 238)",
+                focus: "Atención y ritmo",
+                estimated: "6 min",
+                summary: "Diseñad rutinas de arranque, reducid distractores y convertid tareas largas en micro-metas celebrables.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "3620",
+                    clue: "Rutina 3-6-2 (3) + control de distractores (6) + micro-metas finales (20).",
+                },
+                finalContribution: "2",
+                generalHint: "Divide el trabajo en bloques breves con descansos planificados.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Rutina de arranque",
+                        goal: "Elige la rutina que prepara el cerebro para empezar sin bloqueo.",
+                        materials: ["Checklist cronometrada", "Temporizador visual"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una buena rutina tiene tiempo para preparar materiales.\n2. Luego tiempo para revisar el objetivo.\n3. Finalmente tiempo para empezar a trabajar.\n4. Ejemplo: 1' materiales · 3' objetivo · 6' acción.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "3",
+                        order: 1,
+                        quickHint: "💡 PISTA: Piensa en 1 minuto preparar + 3 repasar + 6 producir.",
+                        successMessage: "✅ Rutina estructurada. Fragmento obtenido: 3",
+                        question: {
+                            prompt: "¿Qué rutina facilita el arranque?",
+                            options: [
+                                {
+                                    value: "sinPlan",
+                                    label: "Empezar directamente a crear",
+                                    correct: false,
+                                    feedback: "❌ Puede generar bloqueo inmediato."
+                                },
+                                {
+                                    value: "check",
+                                    label: "1' materiales · 3' objetivo · 6' acción",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 3."
+                                },
+                                {
+                                    value: "charla",
+                                    label: "Charla libre de 10 minutos",
+                                    correct: false,
+                                    feedback: "❌ Dilata el inicio y dispersa la atención."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Distractores",
+                        goal: "Determinad la acción que reduce estímulos irrelevantes.",
+                        materials: ["Lista de distractores", "Biombo o separadores"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Para mantener el foco, hay que reducir distractores.\n2. Guardar materiales no usados ayuda.\n3. Separadores visuales ayudan.\n4. Añadir música o luces LED puede distraer más.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "6",
+                        order: 2,
+                        quickHint: "💡 PISTA: Menos objetos visibles = menos tentaciones.",
+                        successMessage: "✅ Distractores controlados. Fragmento obtenido: 6",
+                        question: {
+                            prompt: "¿Qué estrategia mantiene el foco?",
+                            options: [
+                                {
+                                    value: "masEstimulos",
+                                    label: "Añadir música y luces LED motivadoras",
+                                    correct: false,
+                                    feedback: "❌ En la mayoría de casos aumenta la sobrecarga."
+                                },
+                                {
+                                    value: "zonas",
+                                    label: "Guardar materiales no usados y usar separadores visuales",
+                                    correct: true,
+                                    feedback: "✅ Perfecto. Fragmento = 6."
+                                },
+                                {
+                                    value: "multitarear",
+                                    label: "Permitir cambiar de tarea cada 2 minutos",
+                                    correct: false,
+                                    feedback: "❌ El cambio constante impide entrar en flujo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Micro-metas",
+                        goal: "Diseñad tres micro-metas medibles para una tarea larga.",
+                        materials: ["Plantilla de micro-metas", "Post-its"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una tarea larga se divide en 3 pasos claros.\n2. Cada paso debe ser concreto y medible.\n3. Ejemplo: '1) Bosquejo 2) Ejemplos 3) Revisión'.\n4. No es 'terminar todo en 60 minutos'.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "20",
+                        order: 3,
+                        quickHint: "💡 PISTA: Divide en 3 acciones concretas con comprobación rápida.",
+                        successMessage: "✅ Micro-metas creadas. Fragmento obtenido: 20",
+                        question: {
+                            prompt: "¿Qué versión divide mejor la tarea?",
+                            options: [
+                                {
+                                    value: "metaUnica",
+                                    label: "Terminar todo el proyecto en 60 minutos",
+                                    correct: false,
+                                    feedback: "❌ Demasiado ambigua y extensa."
+                                },
+                                {
+                                    value: "tresBloques",
+                                    label: "1) Bosquejo 2) Ejemplos 3) Revisión con compañero",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 20."
+                                },
+                                {
+                                    value: "lista",
+                                    label: "Lista de verificación con 12 ítems distintos",
+                                    correct: false,
+                                    feedback: "❌ Demasiados ítems generan saturación."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "motora",
+                name: "Órbita Motora",
+                icon: "🏃",
+                ringColor: "rgb(96, 165, 250)",
+                focus: "Accesibilidad física",
+                estimated: "5-6 min",
+                summary: "Analizad rutas accesibles, alturas y anchos de paso para garantizar participación física autónoma.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "8426",
+                    clue: "Ruta con pendiente 8% y barandilla (84) + material al alcance (2) + paso libre 90 cm (6).",
+                },
+                finalContribution: "8",
+                generalHint: "Piensa en un recorrido sin barreras desde la puerta hasta la actividad.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Ruta accesible",
+                        goal: "Identificad el recorrido que cumple pendiente máxima 8 % y doble barandilla.",
+                        materials: ["Plano de accesibilidad", "Nivel o goniómetro"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una ruta accesible NO tiene escaleras.\n2. Tiene rampa con pendiente suave (8% máximo).\n3. Tiene barandilla a ambos lados.\n4. Superficie antideslizante.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "84",
+                        order: 1,
+                        quickHint: "💡 PISTA: La pendiente suave y la barandilla a ambos lados son clave.",
+                        successMessage: "✅ Ruta accesible elegida. Fragmento obtenido: 84",
+                        question: {
+                            prompt: "¿Qué itinerario garantiza accesibilidad universal?",
+                            options: [
+                                {
+                                    value: "escalera",
+                                    label: "Escalinata frontal con tres peldaños",
+                                    correct: false,
+                                    feedback: "❌ Las escaleras son una barrera directa."
+                                },
+                                {
+                                    value: "rampa",
+                                    label: "Rampa lateral 8 %, superficie antideslizante y barandilla",
+                                    correct: true,
+                                    feedback: "✅ Perfecto. Fragmento = 84."
+                                },
+                                {
+                                    value: "ascensor",
+                                    label: "Ascensor al fondo del edificio sin señalizar",
+                                    correct: false,
+                                    feedback: "❌ Falta señalización y acceso directo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Altura alcanzable",
+                        goal: "Escoged la opción que permite manipular materiales sin elevar los hombros.",
+                        materials: ["Catálogo de mobiliario", "Cinta métrica"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una altura accesible está entre 65 y 75 cm.\n2. Permite trabajar sentado o de pie.\n3. No está a 1,60 m (demasiado alto).\n4. No está colgado del techo.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "2",
+                        order: 2,
+                        quickHint: "💡 PISTA: El punto óptimo suele estar alrededor de 70 cm.",
+                        successMessage: "✅ Altura ajustada. Fragmento obtenido: 2",
+                        question: {
+                            prompt: "¿Qué propuesta asegura alcance cómodo?",
+                            options: [
+                                {
+                                    value: "estante",
+                                    label: "Estante fijo a 1,60 m",
+                                    correct: false,
+                                    feedback: "❌ Queda fuera de alcance para muchas personas."
+                                },
+                                {
+                                    value: "mesa",
+                                    label: "Mesa regulable entre 65 y 75 cm",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 2."
+                                },
+                                {
+                                    value: "colgar",
+                                    label: "Material colgado del techo",
+                                    correct: false,
+                                    feedback: "❌ Es vistoso, pero nada accesible."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Ancho de paso",
+                        goal: "Determinad qué puerta garantiza 90 cm libres y manilla horizontal.",
+                        materials: ["Medidor", "Fotos de entradas"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El ancho mínimo recomendado es 80 cm.\n2. Aquí buscamos 90 cm (más holgura).\n3. La puerta debe ser corredera o abatible con espacio libre.\n4. Manilla horizontal (no vertical).\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "6",
+                        order: 3,
+                        quickHint: "💡 PISTA: Comprueba el ancho libre real, no la medida de la hoja.",
+                        successMessage: "✅ Paso libre confirmado. Fragmento obtenido: 6",
+                        question: {
+                            prompt: "¿Qué acceso cumple el ancho libre recomendado?",
+                            options: [
+                                {
+                                    value: "setenta",
+                                    label: "Puerta abatible de 70 cm con macetero",
+                                    correct: false,
+                                    feedback: "❌ El macetero reduce aún más el paso."
+                                },
+                                {
+                                    value: "noventa",
+                                    label: "Puerta corredera de 90 cm con tirador horizontal",
+                                    correct: true,
+                                    feedback: "✅ Perfecto. Fragmento = 6."
+                                },
+                                {
+                                    value: "torno",
+                                    label: "Torno metálico de control",
+                                    correct: false,
+                                    feedback: "❌ Los tornos son incompatibles con ayudas técnicas."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "intelectual",
+                name: "Órbita Intelectual/Desarrollo",
+                icon: "🧠",
+                ringColor: "rgb(168, 85, 247)",
+                focus: "Ajustes y apoyos",
+                estimated: "6 min",
+                summary: "Perfilad apoyos adecuados, buscad evidencias alternativas y diseñad apoyos entre iguales.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "5092",
+                    clue: "Apoyo correcto (5) + evidencias alternativas (0) + apoyo entre iguales (92).",
+                },
+                finalContribution: "7",
+                generalHint: "El perfil no es etiqueta, es ajustar apoyos para participar.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Perfil ↔ Apoyo",
+                        goal: "Emparejad perfil con apoyo correcto (modelado/tiempo/ejemplo).",
+                        materials: ["3 perfiles + 3 tipos de apoyo"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Cada perfil necesita un tipo de apoyo específico.\n2. No es etiquetar, es ajustar apoyos.\n3. Busca qué apoyo ayuda más a cada perfil.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "5",
+                        order: 1,
+                        quickHint: "💡 PISTA: No es etiqueta. Es ajustar apoyos.",
+                        successMessage: "✅ Perfil y apoyo emparejados. Fragmento obtenido: 5",
+                        question: {
+                            prompt: "¿Qué apoyo es más adecuado para un perfil que necesita más tiempo?",
+                            options: [
+                                {
+                                    value: "modelado",
+                                    label: "Mostrar ejemplo paso a paso",
+                                    correct: false,
+                                    feedback: "❌ Útil, pero no resuelve el problema del tiempo."
+                                },
+                                {
+                                    value: "tiempo",
+                                    label: "Dar tiempo extra y dividir en pasos",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 5."
+                                },
+                                {
+                                    value: "simplificar",
+                                    label: "Simplificar la tarea completamente",
+                                    correct: false,
+                                    feedback: "❌ Puede ser demasiado restrictivo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Evidencias",
+                        goal: "Elegid 2 evidencias alternativas a la prueba escrita.",
+                        materials: ["Lista de evidencias posibles"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Las evidencias alternativas muestran lo mismo que una prueba escrita.\n2. Ejemplos: producto, demo, audio, vídeo.\n3. No es 'hacer menos', es 'evaluar de otra forma'.\n4. El fragmento aparece cuando aciertas.",
+                        fragment: "0",
+                        order: 2,
+                        quickHint: "💡 PISTA: Producto, demo, audio… Evalúa lo mismo de otra forma.",
+                        successMessage: "✅ Evidencias alternativas seleccionadas. Fragmento obtenido: 0",
+                        question: {
+                            prompt: "¿Qué evidencias alternativas evalúan lo mismo que una prueba escrita?",
+                            options: [
+                                {
+                                    value: "menos",
+                                    label: "Hacer menos preguntas",
+                                    correct: false,
+                                    feedback: "❌ No es una alternativa, es reducir la evaluación."
+                                },
+                                {
+                                    value: "alternativas",
+                                    label: "Grabación de audio explicando el concepto + maqueta física",
+                                    correct: true,
+                                    feedback: "✅ Exacto. Fragmento = 0."
+                                },
+                                {
+                                    value: "postponer",
+                                    label: "Dejar la prueba para otro día",
+                                    correct: false,
+                                    feedback: "❌ Solo retrasa el problema, no lo resuelve."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Apoyo entre iguales",
+                        goal: "Diseñad apoyo entre iguales para un escenario de aula.",
+                        materials: ["Escenario de aula"],
+                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El apoyo entre iguales es cuando compañeros ayudan.\n2. Debe ser estructurado y claro.\n3. Ejemplo: 'Pareja de apoyo que lee en voz alta'.\n4. No es 'copia de mi compañero'.\n5. El fragmento aparece cuando aciertas.",
+                        fragment: "92",
+                        order: 3,
+                        quickHint: "💡 PISTA: Busca estructuras donde compañeros ayudan de forma clara.",
+                        successMessage: "✅ Apoyo entre iguales diseñado. Fragmento obtenido: 92",
+                        question: {
+                            prompt: "¿Qué diseño de apoyo entre iguales es más efectivo?",
+                            options: [
+                                {
+                                    value: "copiar",
+                                    label: "Copiar las respuestas del compañero",
+                                    correct: false,
+                                    feedback: "❌ No es apoyo, es copia. No ayuda a aprender."
+                                },
+                                {
+                                    value: "pareja",
+                                    label: "Pareja de apoyo donde uno lee en voz alta y otro toma notas",
+                                    correct: true,
+                                    feedback: "✅ Perfecto. Fragmento = 92."
+                                },
+                                {
+                                    value: "solo",
+                                    label: "Trabajar solo sin ayuda",
+                                    correct: false,
+                                    feedback: "❌ No es apoyo entre iguales."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ];
+
+        // ============================================================
+        // ESTADO DE LA APLICACIÓN
+        // ============================================================
+        const STORAGE_KEY = "operacion-inclusion-combined-state";
+
+        const defaultState = () => {
+            const fragments = {};
+            const hints = {};
+            const attempts = {};
+            const openPlanets = {};
+            PLANETS.forEach(planet => {
+                fragments[planet.key] = {};
+                hints[planet.key] = {};
+                attempts[planet.key] = {};
+                planet.satellites.forEach(sat => {
+                    fragments[planet.key][sat.id] = null;
+                    hints[planet.key][sat.id] = false;
+                    attempts[planet.key][sat.id] = 0;
+                });
+                openPlanets[planet.key] = false;
+            });
+            return {
+                startedAt: Date.now(),
+                fragments,
+                hints,
+                attempts,
+                openPlanets,
+                finalUnlocked: false,
+                totalAttempts: 0,
+                hintCount: 0,
+            };
+        };
+
+        let state = defaultState();
+
+        // ============================================================
+        // FUNCIONES DE UTILIDAD
+        // ============================================================
+        const loadState = () => {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.fragments) {
+                    state = {
+                        ...defaultState(),
+                        ...parsed,
+                    };
+                }
+            } catch (error) {
+                console.error("No se pudo cargar el estado", error);
+            }
+        };
+
+        const saveState = () => {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (error) {
+                console.error("No se pudo guardar el estado", error);
+            }
+        };
+
+        const resetState = () => {
+            state = defaultState();
+            saveState();
+            showToast("Sesión reiniciada", "info");
+            renderAll();
+        };
+
+        const showToast = (message, type = "info") => {
+            const container = document.getElementById("toastContainer");
+            if (!container) return;
+            const toast = document.createElement("div");
+            toast.className = `px-4 py-3 rounded-lg shadow-lg font-medium ${
+                type === "success" ? "bg-green-600 text-white" :
+                type === "error" ? "bg-red-600 text-white" :
+                "bg-blue-600 text-white"
+            }`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(-10px)";
+            }, 10);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        };
+
+        const formatDuration = (ms) => {
+            const totalSeconds = Math.floor(ms / 1000);
+            const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+            const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+            const s = String(totalSeconds % 60).padStart(2, "0");
+            return `${h}:${m}:${s}`;
+        };
+
+        const getPlanetByKey = (key) => PLANETS.find(planet => planet.key === key);
+
+        const getSolvedFragments = () => {
+            let count = 0;
+            PLANETS.forEach(planet => {
+                planet.satellites.forEach(sat => {
+                    if (state.fragments[planet.key][sat.id]) count += 1;
+                });
+            });
+            return count;
+        };
+
+        const getUnlockedPlanets = () => PLANETS.filter(planet => state.openPlanets[planet.key]).length;
+
+        const computePlanetCode = (planetKey) => {
+            const planet = getPlanetByKey(planetKey);
+            const fragments = planet.satellites
+                .map(sat => ({ order: sat.order, fragment: state.fragments[planetKey][sat.id] }))
+                .filter(entry => entry.fragment)
+                .sort((a, b) => a.order - b.order)
+                .map(entry => entry.fragment);
+            return fragments.join("");
+        };
+
+        const evaluatePlanet = (planetKey, silent = false) => {
+            const planet = getPlanetByKey(planetKey);
+            const allFragments = planet.satellites.every(sat => Boolean(state.fragments[planetKey][sat.id]));
+            if (allFragments) {
+                const code = computePlanetCode(planetKey);
+                if (code === planet.lock.target) {
+                    if (!state.openPlanets[planetKey] && !silent) {
+                        showToast(`${planet.name} estabilizado. Código ${code}`, "success");
+                    }
+                    state.openPlanets[planetKey] = true;
+                } else {
+                    state.openPlanets[planetKey] = false;
+                }
+            } else {
+                state.openPlanets[planetKey] = false;
+            }
+        };
+
+        const markFragment = (planetKey, satelliteId, fragmentValue) => {
+            if (!state.fragments[planetKey][satelliteId]) {
+                state.fragments[planetKey][satelliteId] = String(fragmentValue);
+                evaluatePlanet(planetKey);
+                saveState();
+                renderAll();
+            }
+        };
+
+        const registerHintUse = (planetKey, satelliteId) => {
+            if (!state.hints[planetKey][satelliteId]) {
+                state.hints[planetKey][satelliteId] = true;
+                state.hintCount += 1;
+                saveState();
+                renderStats();
+            }
+        };
+
+        const incrementAttempt = (planetKey, satelliteId) => {
+            state.attempts[planetKey][satelliteId] += 1;
+            state.totalAttempts += 1;
+            saveState();
+        };
+
+        // ============================================================
+        // RENDERIZADO DEL SISTEMA SOLAR
+        // ============================================================
+        const ORBIT_LAYOUT = [
+            { key: "visual", radius: 145, angle: 110 },
+            { key: "auditiva", radius: 190, angle: 160 },
+            { key: "lenguaje", radius: 225, angle: 220 },
+            { key: "tea", radius: 260, angle: 280 },
+            { key: "tdah", radius: 300, angle: 330 },
+            { key: "motora", radius: 330, angle: 40 },
+            { key: "intelectual", radius: 310, angle: 70 }
+        ];
+
+        const renderSolarSystem = () => {
+            const svg = document.getElementById("orbitsCanvas");
+            const overlay = document.getElementById("planetsContainer");
+            const legend = document.getElementById("orbitsLegend");
+            if (!svg || !overlay || !legend) return;
+
+            svg.querySelectorAll(".orbit-path").forEach(path => path.remove());
+            overlay.innerHTML = "";
+            legend.innerHTML = "";
+
+            const centerX = 400;
+            const centerY = 400;
+
+            ORBIT_LAYOUT.forEach((config, index) => {
+                const planetData = PLANETS.find(p => p.key === config.key) || {};
+                const color = planetData.ringColor || "rgb(96, 165, 250)";
+                const isActive = !!state.openPlanets[config.key];
+
+                const orbitPath = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+                orbitPath.setAttribute("cx", centerX.toString());
+                orbitPath.setAttribute("cy", centerY.toString());
+                orbitPath.setAttribute("rx", config.radius.toString());
+                orbitPath.setAttribute("ry", (config.radius * 0.68).toString());
+                orbitPath.setAttribute("fill", "none");
+                orbitPath.setAttribute("stroke", color);
+                orbitPath.setAttribute("stroke-width", isActive ? "3" : "2");
+                orbitPath.setAttribute("opacity", isActive ? "0.9" : "0.6");
+                orbitPath.classList.add("orbit-path");
+                svg.appendChild(orbitPath);
+
+                const angleRad = (config.angle * Math.PI) / 180;
+                const planetX = centerX + config.radius * Math.cos(angleRad);
+                const planetY = centerY + (config.radius * 0.68) * Math.sin(angleRad);
+                const relativeX = (planetX / 800) * 100;
+                const relativeY = (planetY / 800) * 100;
+
+                const shortName = (planetData.name || config.key).replace(/^Órbita\s*/i, "");
+                const icon = planetData.icon || "🪐";
+
+                const planetEl = document.createElement("div");
+                planetEl.className = `planet-orbit ${isActive ? "active" : "locked"}`;
+                planetEl.dataset.planet = config.key;
+                planetEl.setAttribute("role", "button");
+                planetEl.setAttribute("tabindex", "0");
+                planetEl.setAttribute("aria-label", `${planetData.name || shortName} - ${isActive ? "Estabilizado" : "Pendiente"}`);
+                planetEl.style.left = `${relativeX}%`;
+                planetEl.style.top = `${relativeY}%`;
+                planetEl.style.color = color;
+
+                planetEl.innerHTML = `
+                    <div class="planet-icon" style="border-color:${color};">
+                        <span style="font-size:1.6rem;">${icon}</span>
+                    </div>
+                    <div class="planet-number" style="border-color:${color};color:${color};">${index + 1}</div>
+                    <div class="planet-label" style="color:${color};">${shortName}</div>
+                `;
+
+                const scrollToCard = () => {
+                    const card = document.getElementById(`planet-${config.key}`);
+                    if (card) {
+                        switchTab("planetasContent");
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 100);
+                    }
+                };
+
+                planetEl.addEventListener("click", scrollToCard);
+                planetEl.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        scrollToCard();
+                    }
+                });
+
+                overlay.appendChild(planetEl);
+
+                const legendItem = document.createElement("div");
+                legendItem.className = `legend-item ${isActive ? "active" : ""}`;
+                legendItem.style.borderLeftColor = color;
+                legendItem.style.color = color;
+                legendItem.dataset.planet = config.key;
+                legendItem.setAttribute("role", "listitem");
+                legendItem.innerHTML = `
+                    <div class="legend-icon" style="border-color:${color};">${icon}</div>
+                    <div class="legend-info">
+                        <div class="legend-name">${shortName}</div>
+                        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "✅ Estabilizado" : "🔒 Pendiente"}</div>
+                    </div>
+                `;
+                legendItem.addEventListener("click", scrollToCard);
+                legend.appendChild(legendItem);
+            });
+        };
+
+        // ============================================================
+        // RENDERIZADO DE CANDADOS
+        // ============================================================
+        const renderLocks = () => {
+            const container = document.getElementById("locksContainer");
+            if (!container) return;
+            container.innerHTML = PLANETS.map(planet => {
+                const code = computePlanetCode(planet.key);
+                const digits = planet.lock.digits;
+                const open = state.openPlanets[planet.key];
+                const displayed = open ? code : code.padEnd(digits, "·");
+                const fragmentsSolved = planet.satellites.filter(sat => state.fragments[planet.key][sat.id]).length;
+                const totalFragments = planet.satellites.length;
+                
+                return `
+                    <div class="lock-system">
+                        <div class="lock-title">${planet.icon} ${planet.name}</div>
+                        <div class="lock-container">
+                            <div class="lock-display" role="group" aria-label="Candado del ${planet.name}">
+                                ${displayed.split("").map((ch, i) => `
+                                    <div class="lock-wheel text-center" aria-label="Dígito ${i + 1}: ${ch === '·' ? 'sin definir' : ch}">${ch}</div>
+                                `).join("")}
+                            </div>
+                            <div class="lock-status" role="status" aria-live="polite">
+                                ${open ? '<span class="text-green-400">✅ Abierto</span>' : 
+                                 `<span class="text-slate-400">Fragmentos: ${fragmentsSolved}/${totalFragments}</span>`}
+                            </div>
+                            <div class="text-xs text-slate-400 mt-2">${planet.lock.clue}</div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        };
+
+        // ============================================================
+        // RENDERIZADO DE PLANETAS Y SATÉLITES
+        // ============================================================
+        const buildSatelliteCard = (planet, satellite) => {
+            const solved = Boolean(state.fragments[planet.key][satellite.id]);
+            const attempts = state.attempts[planet.key][satellite.id];
+            const hintUsed = state.hints[planet.key][satellite.id];
+            
+            return `
+                <div class="satellite-card ${solved ? 'completed' : ''}" data-satellite-card="${planet.key}-${satellite.id}">
+                    <div class="satellite-header">
+                        <div class="satellite-title">${satellite.id} · ${satellite.title}</div>
+                        <div class="fragment-badge">
+                            ${solved ? `✅ Fragmento: ${state.fragments[planet.key][satellite.id]}` : '❓ Fragmento: ??'}
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-300 mb-3">
+                        <strong>Objetivo:</strong> ${satellite.goal}
+                    </div>
+                    <div class="text-sm text-slate-400 mb-3 whitespace-pre-line">
+                        ${satellite.instructions}
+                    </div>
+                    <div class="question-block">
+                        <div class="question-prompt">${satellite.question.prompt}</div>
+                        <div class="option-list">
+                            ${satellite.question.options.map((option, idx) => `
+                                <div class="option">
+                                    <input type="radio" id="${planet.key}-${satellite.id}-${idx}" name="${planet.key}-${satellite.id}" value="${option.value}" ${solved ? 'disabled' : ''}>
+                                    <label for="${planet.key}-${satellite.id}-${idx}">${option.label}</label>
+                                </div>
+                            `).join("")}
+                        </div>
+                        <div class="satellite-actions">
+                            <button type="button" class="btn-satellite" data-validate="${planet.key}-${satellite.id}" ${solved ? 'disabled' : ''}>
+                                ✓ Validar respuesta
+                            </button>
+                            <button type="button" class="btn-satellite secondary" data-hint="${planet.key}-${satellite.id}" ${hintUsed ? 'disabled' : ''}>
+                                💡 Mostrar pista
+                            </button>
+                            ${attempts > 0 ? `<span class="text-xs text-slate-400">Intentos: ${attempts}</span>` : ''}
+                        </div>
+                        <div class="feedback ${solved ? 'success' : ''}" id="feedback-${planet.key}-${satellite.id}">
+                            ${solved ? satellite.successMessage : ''}
+                        </div>
+                        <div class="feedback info" id="hint-${planet.key}-${satellite.id}" style="display:${hintUsed ? 'block' : 'none'};">
+                            ${hintUsed ? satellite.quickHint : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderPlanetsDeck = () => {
+            const deck = document.getElementById("planetsDeck");
+            if (!deck) return;
+            deck.innerHTML = PLANETS.map(planet => {
+                const code = computePlanetCode(planet.key);
+                const open = state.openPlanets[planet.key];
+                const statusColor = open ? "rgb(34, 197, 94)" : "rgb(148, 163, 184)";
+                
+                return `
+                    <section class="planet-card" id="planet-${planet.key}">
+                        <div class="planet-header">
+                            <div class="icon" style="border-color:${planet.ringColor}; background: rgba(15,23,42,0.8);">${planet.icon}</div>
+                            <div class="meta">
+                                <h3>${planet.name}</h3>
+                                <div class="focus">${planet.focus} • ${planet.estimated}</div>
+                            </div>
+                        </div>
+                        <div class="planet-summary">${planet.summary}</div>
+                        <div class="planet-meta">
+                            <span class="planet-chip">${planet.satellites.length} satélites</span>
+                            <span class="planet-chip">Candado: ${planet.lock.target.length} cifras</span>
+                            <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `✅ Abierto (${code})` : '🔒 Pendiente'}</span>
+                        </div>
+                        <div class="lock-panel">
+                            <header>
+                                <span>Combinación objetivo</span>
+                                <span>${open ? '✅ Candado listo' : '⏳ Necesita fragmentos'}</span>
+                            </header>
+                            <div class="code-preview">
+                                ${planet.lock.target.split("").map((digit, idx) => `
+                                    <span class="digit" style="border-color:${planet.ringColor}; color:${open ? '#f8fafc' : 'rgb(148, 163, 184)'}; background:${open ? 'rgba(34,197,94,0.18)' : 'rgba(15,23,42,0.75)'};">
+                                        ${open ? digit : (idx < code.length ? code[idx] : '·')}
+                                    </span>
+                                `).join("")}
+                            </div>
+                            <div class="clue">${planet.lock.clue}</div>
+                        </div>
+                        <div class="satellite-grid">
+                            ${planet.satellites.map(sat => buildSatelliteCard(planet, sat)).join("")}
+                        </div>
+                        <div class="planet-footer">
+                            <strong>💡 Pro-tip:</strong> ${planet.generalHint}<br>
+                            Anotad la cifra que aporta esta órbita al Motor final: <strong>${planet.finalContribution}</strong>.
+                        </div>
+                    </section>
+                `;
+            }).join("");
+
+            // Event listeners para validación y pistas
+            deck.querySelectorAll('[data-validate]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const [planetKey, satelliteId] = button.dataset.validate.split('-');
+                    validateSatelliteAnswer(planetKey, satelliteId);
+                });
+            });
+
+            deck.querySelectorAll('[data-hint]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const [planetKey, satelliteId] = button.dataset.hint.split('-');
+                    showSatelliteHint(planetKey, satelliteId);
+                });
+            });
+        };
+
+        const validateSatelliteAnswer = (planetKey, satelliteId) => {
+            const planet = getPlanetByKey(planetKey);
+            const satellite = planet.satellites.find(sat => sat.id === satelliteId);
+            const card = document.querySelector(`[data-satellite-card="${planetKey}-${satelliteId}"]`);
+            const feedbackEl = card?.querySelector(`#feedback-${planetKey}-${satelliteId}`);
+            if (!card || !feedbackEl) return;
+            
+            const selected = card.querySelector(`input[name="${planetKey}-${satelliteId}"]:checked`);
+            if (!selected) {
+                feedbackEl.textContent = "❌ Selecciona una opción antes de validar.";
+                feedbackEl.className = "feedback error";
+                return;
+            }
+
+            const option = satellite.question.options.find(opt => opt.value === selected.value);
+            if (!option) return;
+
+            if (option.correct) {
+                markFragment(planetKey, satelliteId, satellite.fragment);
+                showToast(`${satellite.title}: fragmento ${satellite.fragment} obtenido`, "success");
+            } else {
+                incrementAttempt(planetKey, satelliteId);
+                feedbackEl.textContent = option.feedback;
+                feedbackEl.className = "feedback error";
+            }
+        };
+
+        const showSatelliteHint = (planetKey, satelliteId) => {
+            registerHintUse(planetKey, satelliteId);
+            const hintEl = document.getElementById(`hint-${planetKey}-${satelliteId}`);
+            if (hintEl) {
+                hintEl.style.display = "block";
+            }
+            const button = document.querySelector(`[data-hint="${planetKey}-${satelliteId}"]`);
+            if (button) button.disabled = true;
+        };
+
+        // ============================================================
+        // RENDERIZADO DE ESTADÍSTICAS
+        // ============================================================
+        const renderStats = () => {
+            const fragmentsSolved = getSolvedFragments();
+            const openPlanets = getUnlockedPlanets();
+            
+            document.getElementById("progressText").textContent = `${openPlanets}/${PLANETS.length}`;
+            document.getElementById("fragmentsSolved").textContent = fragmentsSolved;
+            document.getElementById("hintsUsed").textContent = state.hintCount;
+            
+            const progressPercent = (openPlanets / PLANETS.length) * 100;
+            document.getElementById("progressBar").style.width = `${progressPercent}%`;
+        };
+
+        // ============================================================
+        // NAVEGACIÓN Y TABS
+        // ============================================================
+        const switchTab = (targetId) => {
+            document.querySelectorAll('.tab-content').forEach(section => {
+                section.classList.toggle('hidden', section.id !== targetId);
+            });
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                const isActive = button.getAttribute('aria-controls') === targetId;
+                button.classList.toggle('active', isActive);
+                button.setAttribute('aria-selected', isActive);
+                button.setAttribute('tabindex', isActive ? '0' : '-1');
+            });
+        };
+
+        // ============================================================
+        // INICIALIZACIÓN
+        // ============================================================
+        const renderAll = () => {
+            renderSolarSystem();
+            renderLocks();
+            renderPlanetsDeck();
+            renderStats();
+        };
+
+        const initTabs = () => {
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('aria-controls');
+                    switchTab(targetId);
+                });
+            });
+        };
+
+        const initReset = () => {
+            const resetBtn = document.getElementById('btnReset');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (confirm('¿Seguro que queréis reiniciar la misión?')) {
+                        resetState();
+                    }
+                });
+            }
+        };
+
+        const initStars = () => {
+            const canvas = document.getElementById('stars');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawStars();
+            };
+            const drawStars = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const count = Math.min(220, Math.floor(canvas.width / 8));
+                for (let i = 0; i < count; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 1.5;
+                    const alpha = 0.3 + Math.random() * 0.7;
+                    ctx.fillStyle = `rgba(148, 197, 255, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            };
+            window.addEventListener('resize', resize);
+            resize();
+        };
+
+        const startTimer = () => {
+            setInterval(() => {
+                const timerEl = document.getElementById('timerDisplay');
+                if (timerEl) {
+                    timerEl.textContent = formatDuration(Date.now() - state.startedAt);
+                }
+            }, 1000);
+        };
+
+        const bootstrap = () => {
+            loadState();
+            initTabs();
+            initReset();
+            initStars();
+            renderAll();
+            startTimer();
+        };
+
+        document.addEventListener('DOMContentLoaded', bootstrap);
+    </script>
+</body>
+</html>
