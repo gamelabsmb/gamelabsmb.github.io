@@ -1,0 +1,1963 @@
+/* ============================================
+   PALETA DE COLORES ESPACIAL COHESIVA
+   ============================================ */
+   :root {
+    /* Colores principales espaciales */
+    --space-primary: rgb(59, 130, 246);
+    --space-primary-light: rgb(96, 165, 250);
+    --space-primary-dark: rgb(30, 64, 175);
+    
+    /* Colores secundarios */
+    --space-cyan: rgb(6, 182, 212);
+    --space-cyan-light: rgb(34, 211, 238);
+    --space-purple: rgb(147, 51, 234);
+    --space-purple-light: rgb(168, 85, 247);
+    
+    /* Colores de estado */
+    --space-success: rgb(34, 197, 94);
+    --space-success-glow: rgb(74, 222, 128);
+    --space-warning: rgb(251, 191, 36);
+    --space-error: rgb(239, 68, 68);
+    
+    /* Fondos */
+    --space-bg-dark: rgb(15, 23, 42);
+    --space-bg-darker: rgb(2, 6, 23);
+    --space-bg-card: rgba(15, 23, 42, 0.85);
+    --space-bg-glass: rgba(15, 23, 42, 0.7);
+    
+    /* Bordes y brillos */
+    --space-border: rgba(59, 130, 246, 0.3);
+    --space-border-active: rgba(59, 130, 246, 0.6);
+    --space-glow: rgba(59, 130, 246, 0.4);
+    
+    /* Textos */
+    --space-text-primary: rgb(226, 232, 240);
+    --space-text-secondary: rgb(148, 163, 184);
+    --space-text-muted: rgb(100, 116, 139);
+    
+    /* Planetas - Paleta espacial cohesiva */
+    --planet-1: rgb(59, 130, 246);      /* Visual - Azul */
+    --planet-2: rgb(139, 92, 246);      /* Auditiva - Púrpura */
+    --planet-3: rgb(6, 182, 212);       /* Lenguaje - Cian */
+    --planet-4: rgb(147, 51, 234);       /* TEA - Púrpura oscuro */
+    --planet-5: rgb(34, 211, 238);       /* TDAH - Cian brillante */
+    --planet-6: rgb(96, 165, 250);      /* Motora - Azul claro */
+    --planet-7: rgb(168, 85, 247);      /* Intelectual - Púrpura claro */
+}
+
+/* Estilos personalizados para el sistema de órbitas */
+
+/* Estilos para secciones */
+.section-block {
+    background: var(--space-bg-glass);
+    border: 1px solid var(--space-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 
+                0 0 1px var(--space-border);
+    transition: all 0.3s ease;
+}
+
+.section-block:hover {
+    border-color: var(--space-border-active);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4), 
+                0 0 2px var(--space-glow);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--space-text-primary);
+    margin-bottom: 1.5rem;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px var(--space-glow);
+}
+
+.section-title i {
+    color: var(--space-cyan);
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px var(--space-cyan-light));
+}
+
+/* Estilos para el header */
+.main-header {
+    background: linear-gradient(135deg, 
+        var(--space-bg-glass), 
+        rgba(15, 23, 42, 0.9));
+    border: 2px solid var(--space-border);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 1px var(--space-border);
+    margin-bottom: 2rem;
+}
+
+.glitch-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--space-cyan-light);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 
+        0 0 10px var(--space-cyan),
+        0 0 20px var(--space-cyan-light),
+        0 0 30px rgba(34, 211, 238, 0.5);
+    background: linear-gradient(90deg, 
+        var(--space-cyan-light),
+        var(--space-purple-light),
+        var(--space-cyan-light));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes text-shimmer {
+    0%, 100% {
+        background-position: 0% center;
+    }
+    50% {
+        background-position: 100% center;
+    }
+}
+
+.subtitle-section {
+    margin-top: 1rem;
+}
+
+.terminal-text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    color: rgb(16 185 129);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+}
+
+.info-line {
+    color: rgb(148 163 184);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.event-info-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: start;
+}
+
+.event-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-line-item {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.info-label {
+    color: rgb(148 163 184);
+    font-weight: 600;
+}
+
+.info-value {
+    color: rgb(203 213 225);
+    font-weight: 500;
+}
+
+.event-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    border-radius: 8px;
+    color: rgb(147 197 253);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.action-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.action-btn.secondary {
+    background: rgba(148, 163, 184, 0.2);
+    border-color: rgba(148, 163, 184, 0.5);
+    color: rgb(203 213 225);
+}
+
+.action-btn.secondary:hover {
+    background: rgba(148, 163, 184, 0.3);
+    box-shadow: 0 0 15px rgba(148, 163, 184, 0.4);
+}
+
+.card {
+    border-radius: 12px;
+    border-width: 2px;
+    border-style: solid;
+    background: var(--space-bg-card);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--space-glow), 
+        transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4),
+                0 0 20px var(--space-glow);
+}
+
+/* Colores específicos por planeta usando la nueva paleta */
+#cardVisual {
+    border-color: var(--planet-1);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+#cardVisual:hover {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+}
+
+#cardAuditiva {
+    border-color: var(--planet-2);
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+}
+
+#cardAuditiva:hover {
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+}
+
+#cardLenguaje {
+    border-color: var(--planet-3);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+}
+
+#cardLenguaje:hover {
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.5);
+}
+
+#cardTEA {
+    border-color: var(--planet-4);
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
+}
+
+#cardTEA:hover {
+    box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
+}
+
+#cardTDAH {
+    border-color: var(--planet-5);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+#cardTDAH:hover {
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
+}
+
+#cardMotora {
+    border-color: var(--planet-6);
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.2);
+}
+
+#cardMotora:hover {
+    box-shadow: 0 0 25px rgba(96, 165, 250, 0.5);
+}
+
+#cardIntelectual {
+    border-color: var(--planet-7);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+#cardIntelectual:hover {
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+}
+
+/* Contenedor de tabs */
+.tabs-container {
+    background: var(--space-bg-glass);
+    border: 1px solid var(--space-border);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.tab-btn {
+    background: transparent;
+    color: var(--space-text-secondary);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--space-text-primary);
+    border-color: var(--space-border);
+}
+
+.tab-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--space-cyan-light);
+    border-color: var(--space-cyan);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.tab-btn i {
+    font-size: 1rem;
+}
+
+.tab-content {
+    display: block;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Estilos para los inputs */
+input[type="text"],
+input[type="date"] {
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: var(--space-cyan);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2),
+                0 0 15px rgba(6, 182, 212, 0.3);
+    outline: none;
+}
+
+/* Estilos para los botones */
+button {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Scrollbar personalizado para la consola */
+#consoleOutput::-webkit-scrollbar {
+    width: 8px;
+}
+
+#consoleOutput::-webkit-scrollbar-track {
+    background: rgb(15 23 42);
+}
+
+#consoleOutput::-webkit-scrollbar-thumb {
+    background: rgb(51 65 85);
+    border-radius: 4px;
+}
+
+#consoleOutput::-webkit-scrollbar-thumb:hover {
+    background: rgb(71 85 105);
+}
+
+/* Modal */
+#modalConfig.hidden {
+    display: none;
+}
+
+#modalConfig:not(.hidden) {
+    display: flex;
+}
+
+/* Animación de estrellas (ya está en el canvas) */
+#stars {
+    display: block;
+}
+
+/* Animaciones para notificaciones toast */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-slide-out {
+    animation: slideOut 0.3s ease-in;
+}
+
+/* Estilos para candados - Estilo circular estilo AACC con tema espacial - MEJORADO */
+.lock-wheel {
+    width: clamp(45px, 8vw, 60px);
+    height: clamp(45px, 8vw, 60px);
+    min-width: 45px;
+    min-height: 45px;
+    border: 2px solid rgb(0 255 0);
+    border-radius: 50%;
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(30 41 59));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: bold;
+    font-family: 'Orbitron', monospace;
+    color: rgb(0 255 0);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    text-shadow: 0 0 10px rgb(0 255 0);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+    touch-action: manipulation;
+}
+
+.lock-wheel:hover {
+    background: linear-gradient(145deg, rgb(30 41 59), rgb(51 65 85));
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    transform: scale(1.1);
+    border-color: rgb(0 255 128);
+}
+
+.lock-wheel:focus {
+    outline: 3px solid rgb(255 255 0);
+    outline-offset: 3px;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+}
+
+.lock-wheel:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+.lock-wheel.unlocked {
+    border-color: rgb(0 255 128);
+    background: linear-gradient(145deg, rgb(6 78 59), rgb(16 185 129));
+    color: rgb(0 255 128);
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.8);
+    animation: unlock-pulse 1s ease-in-out;
+}
+
+@keyframes unlock-pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 128, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 255, 128, 1);
+    }
+}
+
+.lock-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 10px);
+    padding: clamp(12px, 3vw, 15px);
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgb(0 255 0);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 80px;
+}
+
+/* Variantes de candados con tema espacial */
+/* Candado alfanumérico (Auditiva) - 5 caracteres */
+.lock-wheel-alnum {
+    border-color: rgb(0 255 157);
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(6 78 59));
+    color: rgb(0 255 157);
+    text-shadow: 0 0 10px rgb(0 255 157);
+    animation: pulse-alnum 2s ease-in-out infinite;
+}
+
+.lock-wheel-alnum:hover {
+    border-color: rgb(0 255 200);
+    box-shadow: 0 0 20px rgba(0, 255, 157, 0.6);
+}
+
+@keyframes pulse-alnum {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 157, 0.8);
+    }
+}
+
+/* Candado rotatorio (Temporal) - 4 dígitos con efecto rotatorio */
+.lock-wheel-rotary {
+    border-color: rgb(255 255 0);
+    background: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(59 130 246) 100%);
+    color: rgb(255 255 0);
+    text-shadow: 0 0 10px rgb(255 255 0);
+    border-width: 3px;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 12px rgba(255, 255, 0, 0.4);
+}
+
+.lock-wheel-rotary:hover {
+    border-color: rgb(255 255 128);
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+}
+
+.lock-wheel-rotary:active {
+    transform: rotate(-5deg) scale(0.95);
+}
+
+/* Candado maestro (Final) - más grande y brillante */
+.lock-wheel-master {
+    width: clamp(55px, 10vw, 70px);
+    height: clamp(55px, 10vw, 70px);
+    min-width: 55px;
+    min-height: 55px;
+    border-color: rgb(255 191 0);
+    background: linear-gradient(145deg, rgb(15 23 42) 0%, rgb(30 41 59) 50%, rgb(15 23 42) 100%);
+    color: rgb(255 191 0);
+    text-shadow: 0 0 15px rgb(255 191 0);
+    border-width: 3px;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: 900;
+    position: relative;
+    box-shadow: 0 0 15px rgba(255, 191, 0, 0.4), inset 0 0 15px rgba(255, 191, 0, 0.1);
+}
+
+.lock-wheel-master::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, transparent, rgba(255, 191, 0, 0.4), transparent);
+    border-radius: 50%;
+    z-index: -1;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.3;
+        transform: rotate(0deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: rotate(180deg);
+    }
+}
+
+.lock-wheel-master:hover {
+    border-color: rgb(255 215 0);
+    box-shadow: 0 0 25px rgba(255, 191, 0, 0.8), inset 0 0 20px rgba(255, 191, 0, 0.3);
+    transform: scale(1.15);
+}
+
+.lock-wheel-master.unlocked {
+    border-color: rgb(0 255 128);
+    background: linear-gradient(145deg, rgb(6 78 59) 0%, rgb(16 185 129) 50%, rgb(6 78 59) 100%);
+    color: rgb(0 255 128);
+    box-shadow: 0 0 30px rgba(0, 255, 128, 1);
+    animation: unlock-glow 1s ease-in-out;
+}
+
+@keyframes unlock-glow {
+    0% {
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(16, 185, 129, 1);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+    }
+}
+
+/* Sistema de candado con contenedor tipo AACC - MEJORADO */
+.lock-system {
+    margin: 15px 0;
+    padding: clamp(15px, 4vw, 20px);
+    border: 2px solid rgb(0 255 0);
+    border-radius: 12px;
+    background: rgba(0, 255, 0, 0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+}
+
+.lock-system:hover {
+    background: rgba(0, 255, 0, 0.08);
+    border-color: rgb(0 255 128);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+.lock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 3vw, 15px);
+    width: 100%;
+}
+
+.lock-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    font-weight: bold;
+    color: rgb(0 255 0);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgb(0 255 0);
+    margin-bottom: 10px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.unlock-btn {
+    padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 24px);
+    background: linear-gradient(145deg, rgb(239 68 68), rgb(220 38 38));
+    border: none;
+    border-radius: 8px;
+    color: rgb(255 255 255);
+    font-family: 'Orbitron', monospace;
+    font-weight: bold;
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    min-width: 100px;
+    width: auto;
+    touch-action: manipulation;
+}
+
+.unlock-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, rgb(220 38 38), rgb(239 68 68));
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px);
+}
+
+.unlock-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.unlock-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.unlock-btn:focus {
+    outline: 2px solid rgb(255 255 0);
+    outline-offset: 2px;
+}
+
+.lock-status {
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    font-weight: bold;
+    text-align: center;
+    min-height: 24px;
+    font-family: 'Orbitron', monospace;
+    margin-top: 8px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.lock-status.success {
+    color: rgb(0 255 128);
+    text-shadow: 0 0 10px rgb(0 255 128);
+    animation: status-success 0.5s ease;
+}
+
+@keyframes status-success {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lock-status.error {
+    color: rgb(239 68 68);
+    text-shadow: 0 0 10px rgb(239 68 68);
+    animation: status-error 0.5s ease;
+}
+
+@keyframes status-error {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Grid para candados - MEJORADO */
+.locks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(15px, 4vw, 20px);
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Candado de palabra (Visual) - 9 letras - MEJORADO */
+.lock-wheel-word {
+    width: clamp(40px, 7vw, 50px);
+    height: clamp(40px, 7vw, 50px);
+    min-width: 40px;
+    min-height: 40px;
+    border-color: rgb(59 130 246);
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(30 41 59));
+    color: rgb(59 130 246);
+    text-shadow: 0 0 8px rgb(59 130 246);
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    font-weight: bold;
+}
+
+.lock-wheel-word:hover {
+    border-color: rgb(96 165 250);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+    transform: scale(1.1);
+}
+
+.lock-display-word {
+    display: flex;
+    gap: clamp(6px, 1.5vw, 8px);
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Candado direccional (Lenguaje) - 4 direcciones - MEJORADO */
+.lock-wheel-directional {
+    width: clamp(50px, 9vw, 60px);
+    height: clamp(50px, 9vw, 60px);
+    min-width: 50px;
+    min-height: 50px;
+    border-color: rgb(16 185 129);
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(6 78 59));
+    color: rgb(16 185 129);
+    text-shadow: 0 0 10px rgb(16 185 129);
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    font-weight: bold;
+}
+
+.lock-wheel-directional:hover {
+    border-color: rgb(52 211 153);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+    transform: scale(1.15);
+}
+
+.lock-display-directional {
+    display: flex;
+    gap: clamp(8px, 2vw, 10px);
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Grid mejorado para planetas */
+.orbits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Mejoras de distribución para satélites */
+[id^="satellites"] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+[id^="satellites"] > div {
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid;
+    border-opacity: 0.3;
+}
+
+[id^="satellites"] > div:hover {
+    transform: translateY(-2px);
+    border-opacity: 0.6;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive mejorado */
+@media (max-width: 1024px) {
+    .orbits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    [id^="satellites"] {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .orbits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    [id^="satellites"] {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-block {
+        padding: 1.5rem;
+    }
+    
+    .glitch-title {
+        font-size: 1.75rem;
+    }
+}
+    
+    .lock-system {
+        padding: 15px;
+    }
+    
+    .lock-display {
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .lock-wheel-word {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .lock-wheel-directional {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .lock-wheel-master {
+        width: 55px;
+        height: 55px;
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .lock-display-word {
+        gap: 5px;
+    }
+    
+    .lock-wheel-word {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+    }
+    
+    .lock-wheel {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+    
+    .lock-wheel-directional {
+        width: 48px;
+        height: 48px;
+        font-size: 1.15rem;
+    }
+    
+    .lock-wheel-master {
+        width: 52px;
+        height: 52px;
+        font-size: 1.15rem;
+    }
+    
+    .unlock-btn {
+        padding: 10px 18px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .lock-wheel,
+    .lock-wheel-master,
+    .lock-wheel-word,
+    .lock-wheel-directional,
+    .lock-wheel-alnum {
+        animation: none;
+        transition: none;
+    }
+    
+    .lock-wheel:hover,
+    .lock-wheel-master:hover {
+        transform: none;
+    }
+}
+
+/* Estado de carga/transición */
+.lock-wheel.changing {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Final lock system - destacado */
+.final-lock-system {
+    border-color: rgb(255 191 0) !important;
+    background: rgba(255, 191, 0, 0.08) !important;
+    box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
+}
+
+.final-lock-system:hover {
+    background: rgba(255, 191, 0, 0.12) !important;
+    box-shadow: 0 0 30px rgba(255, 191, 0, 0.5);
+}
+
+.final-lock-title {
+    color: rgb(255 191 0) !important;
+    text-shadow: 0 0 15px rgb(255 191 0) !important;
+    font-size: clamp(1rem, 3.5vw, 1.4rem) !important;
+}
+
+.final-unlock-btn {
+    font-size: clamp(0.8rem, 2.8vw, 1rem) !important;
+    padding: clamp(12px, 3.5vw, 14px) clamp(24px, 6vw, 28px) !important;
+    background: linear-gradient(145deg, rgb(255 191 0), rgb(255 215 0)) !important;
+    color: rgb(15 23 42) !important;
+}
+
+.final-unlock-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, rgb(255 215 0), rgb(255 191 0)) !important;
+    box-shadow: 0 0 25px rgba(255, 191, 0, 0.7) !important;
+}
+
+/* Mapeo de direcciones para candado direccional */
+.direction-map {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: rgb(148 163 184);
+}
+
+/* Estaciones físicas con tema espacial */
+.station-card {
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(30 41 59));
+    border: 2px solid rgb(59 130 246);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.station-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    animation: rotate-glow 10s linear infinite;
+}
+
+@keyframes rotate-glow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.station-card:hover {
+    border-color: rgb(96 165 250);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+}
+
+.station-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.station-icon {
+    font-size: 2rem;
+    color: rgb(59 130 246);
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}
+
+.station-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: rgb(147 197 253);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.station-coords {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: rgb(148 163 184);
+    margin-bottom: 10px;
+}
+
+.station-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 3px solid rgb(59 130 246);
+    padding: 10px 15px;
+    margin-top: 8px;
+    border-radius: 4px;
+}
+
+.station-item-title {
+    font-weight: bold;
+    color: rgb(96 165 250);
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.station-item-description {
+    font-size: 0.85rem;
+    color: rgb(203 213 225);
+    line-height: 1.4;
+}
+.card-selector {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-selector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.card-selector:hover::before {
+    left: 100%;
+}
+
+.card-selector.selected {
+    animation: card-pulse 1s ease-in-out infinite;
+}
+
+@keyframes card-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Ventanas progresivas */
+.window-level {
+    transition: all 0.3s;
+    background: rgba(15, 23, 42, 0.7);
+    border: 2px solid rgb(51 65 85);
+    border-radius: 10px;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.window-level.unlocked {
+    border-color: rgb(16 185 129);
+    background: rgba(6, 78, 59, 0.3);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.window-level.locked {
+    opacity: 0.8;
+}
+
+.window-status .locked {
+    color: rgb(148 163 184);
+}
+
+.window-status .unlocked {
+    color: rgb(16 185 129);
+}
+
+.progress-indicator {
+    margin-top: 15px;
+}
+
+.progress-indicator .progress-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.solar-system-container {
+    background: radial-gradient(circle at center, 
+        rgba(59, 130, 246, 0.05) 0%, 
+        rgba(15, 23, 42, 0.8) 70%,
+        rgba(2, 6, 23, 0.95) 100%);
+    border: 2px solid var(--space-border);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: visible;
+    min-height: 700px;
+}
+
+.solar-system-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--space-cyan),
+        var(--space-purple),
+        var(--space-primary),
+        var(--space-cyan));
+    border-radius: 20px;
+    opacity: 0.3;
+    z-index: -1;
+    animation: border-glow 3s ease-in-out infinite;
+}
+
+@keyframes border-glow {
+    0%, 100% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.solar-system-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    aspect-ratio: 1;
+    min-height: 600px;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    overflow: visible;
+}
+
+.orbits-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.planets-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.planet-orbit {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+    pointer-events: all;
+    z-index: 3;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.planet-orbit.locked {
+    opacity: 0.6;
+    filter: grayscale(0.6);
+    transform: translate(-50%, -50%);
+}
+
+.planet-orbit.active {
+    opacity: 1;
+    filter: none;
+    animation: planet-active 2s ease-in-out infinite;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+@keyframes planet-active {
+    0%, 100% {
+        box-shadow: 0 0 15px currentColor, inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 30px currentColor, inset 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+}
+
+.planet-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(15, 23, 42, 0.9));
+    border: 3px solid;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 15px currentColor;
+}
+
+.planet-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: planet-rotate 10s linear infinite;
+}
+
+@keyframes planet-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.planet-number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.95);
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    font-family: 'Orbitron', monospace;
+    z-index: 4;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.planet-label {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    font-family: 'Orbitron', monospace;
+    text-shadow: 0 0 8px currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.planet-orbit:hover .planet-label,
+.planet-orbit.active .planet-label {
+    opacity: 1;
+}
+
+/* Colores específicos por planeta */
+.planet-orbit[data-planet="visual"] {
+    color: var(--planet-1);
+    --planet-color: var(--planet-1);
+}
+
+.planet-orbit[data-planet="auditiva"] {
+    color: var(--planet-2);
+    --planet-color: var(--planet-2);
+}
+
+.planet-orbit[data-planet="lenguaje"] {
+    color: var(--planet-3);
+    --planet-color: var(--planet-3);
+}
+
+.planet-orbit[data-planet="tea"] {
+    color: var(--planet-4);
+    --planet-color: var(--planet-4);
+}
+
+.planet-orbit[data-planet="tdah"] {
+    color: var(--planet-5);
+    --planet-color: var(--planet-5);
+}
+
+.planet-orbit[data-planet="motora"] {
+    color: var(--planet-6);
+    --planet-color: var(--planet-6);
+}
+
+.planet-orbit[data-planet="intelectual"] {
+    color: var(--planet-7);
+    --planet-color: var(--planet-7);
+}
+
+.orbit-legend {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+}
+
+.legend-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: bold;
+    color: rgb(203 213 225);
+    margin-bottom: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border-left: 3px solid;
+    transition: all 0.3s ease;
+}
+
+.legend-item:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateX(5px);
+}
+
+.legend-item.active {
+    border-left-width: 5px;
+    box-shadow: 0 0 15px currentColor;
+}
+
+.legend-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid;
+    flex-shrink: 0;
+}
+
+.legend-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.legend-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgb(203 213 225);
+    margin-bottom: 0.25rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.legend-status {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-status.active {
+    color: rgb(16 185 129);
+    opacity: 1;
+}
+
+.legend-status.locked {
+    color: rgb(148 163 184);
+}
+
+/* Estilos para pistas interactivas */
+.hint-category-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.hint-category-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgb(203 213 225);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.interactive-hint-btn {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: rgb(203 213 225);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin-bottom: 0.75rem;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.interactive-hint-btn * {
+    pointer-events: none;
+}
+
+.interactive-hint-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.interactive-hint-btn:active {
+    transform: translateX(2px);
+    background: rgba(51, 65, 85, 0.9);
+}
+
+.interactive-hint-btn:focus {
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 2px;
+}
+
+.hint-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 8px;
+}
+
+.hints-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+/* Responsive para sistema solar */
+@media (max-width: 768px) {
+    .solar-system-wrapper {
+        min-height: 400px;
+    }
+    
+    .planet-orbit {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .legend-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.stat-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgb(148 163 184);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(203 213 225);
+    font-family: 'Orbitron', monospace;
+    margin-bottom: 0.5rem;
+}
+
+.stat-description {
+    font-size: 0.85rem;
+    color: rgb(148 163 184);
+    line-height: 1.4;
+}
+
+/* Estilos para logros */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.achievement-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.achievement-card:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.achievement-card.opacity-50 {
+    opacity: 0.5;
+}
+
+.achievement-card.opacity-100 {
+    opacity: 1;
+}
+
+.achievement-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.achievement-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(203 213 225);
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.achievement-description {
+    font-size: 0.85rem;
+    color: rgb(148 163 184);
+}
+
+/* Estilos para actividades detalladas */
+.activities-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.activity-orbit-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.activity-orbit-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px currentColor;
+}
+
+.activity-orbit-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.activity-orbit-description {
+    font-size: 0.9rem;
+    color: rgb(148 163 184);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.activity-list-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fragment-obtained {
+    opacity: 1 !important;
+    border-opacity: 1 !important;
+    box-shadow: 0 0 15px var(--space-success-glow),
+                inset 0 0 10px rgba(34, 197, 94, 0.2);
+    animation: fragment-obtained-pulse 0.5s ease;
+    background: linear-gradient(145deg, 
+        rgba(34, 197, 94, 0.1), 
+        rgba(15, 23, 42, 0.8));
+}
+
+.fragment-pending {
+    opacity: 0.5;
+    filter: grayscale(40%);
+    background: rgba(15, 23, 42, 0.6);
+}
+
+@keyframes fragment-obtained-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+}
+
+/* Estilos para indicadores de fragmentos */
+.fragment-indicator {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: rgb(148 163 184);
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.fragment-indicator.complete {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: rgb(16 185 129);
+}
+
+/* Ajustes de contraste y legibilidad */
+.text-slate-300 {
+    color: var(--space-text-primary) !important;
+}
+
+.text-slate-400 {
+    color: var(--space-text-secondary) !important;
+}
+
+.text-slate-500 {
+    color: var(--space-text-muted) !important;
+}
+
+/* Scrollbar estilo espacial */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--space-bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+        var(--space-primary), 
+        var(--space-purple));
+    border-radius: 5px;
+    border: 2px solid var(--space-bg-darker);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+        var(--space-primary-light), 
+        var(--space-purple-light));
+}
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.orbit-visual-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+    transform: scale(0.95);
+    position: relative;
+}
+
+.orbit-visual-item.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.orbit-visual-item:hover {
+    transform: scale(1.05);
+}
+
+.orbit-icon-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgb(15 23 42), rgb(30 41 59));
+    border: 3px solid rgba(100, 100, 100, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.orbit-visual-item.active .orbit-icon-container {
+    border-width: 3px;
+    box-shadow: 0 0 25px var(--planet-glow, rgba(59, 130, 246, 0.6)), inset 0 0 15px var(--planet-glow-inner, rgba(59, 130, 246, 0.3));
+    animation: orbit-pulse 2s ease-in-out infinite;
+}
+
+.orbit-visual-item[data-planet="visual"] { --planet-color: rgb(59 130 246); --planet-glow: rgba(59, 130, 246, 0.8); --planet-glow-inner: rgba(59, 130, 246, 0.4); }
+.orbit-visual-item[data-planet="visual"].active .orbit-icon-container { border-color: rgb(59 130 246); }
+
+.orbit-visual-item[data-planet="auditiva"] { --planet-color: rgb(244 63 94); --planet-glow: rgba(244, 63, 94, 0.8); --planet-glow-inner: rgba(244, 63, 94, 0.4); }
+.orbit-visual-item[data-planet="auditiva"].active .orbit-icon-container { border-color: rgb(244 63 94); }
+
+.orbit-visual-item[data-planet="lenguaje"] { --planet-color: rgb(16 185 129); --planet-glow: rgba(16, 185, 129, 0.8); --planet-glow-inner: rgba(16, 185, 129, 0.4); }
+.orbit-visual-item[data-planet="lenguaje"].active .orbit-icon-container { border-color: rgb(16 185 129); }
+
+.orbit-visual-item[data-planet="tea"] { --planet-color: rgb(139 92 246); --planet-glow: rgba(139, 92, 246, 0.8); --planet-glow-inner: rgba(139, 92, 246, 0.4); }
+.orbit-visual-item[data-planet="tea"].active .orbit-icon-container { border-color: rgb(139 92 246); }
+
+.orbit-visual-item[data-planet="tdah"] { --planet-color: rgb(251 191 36); --planet-glow: rgba(251, 191, 36, 0.8); --planet-glow-inner: rgba(251, 191, 36, 0.4); }
+.orbit-visual-item[data-planet="tdah"].active .orbit-icon-container { border-color: rgb(251 191 36); }
+
+.orbit-visual-item[data-planet="motora"] { --planet-color: rgb(251 146 60); --planet-glow: rgba(251, 146, 60, 0.8); --planet-glow-inner: rgba(251, 146, 60, 0.4); }
+.orbit-visual-item[data-planet="motora"].active .orbit-icon-container { border-color: rgb(251 146 60); }
+
+.orbit-visual-item[data-planet="intelectual"] { --planet-color: rgb(148 163 184); --planet-glow: rgba(148, 163, 184, 0.8); --planet-glow-inner: rgba(148, 163, 184, 0.4); }
+.orbit-visual-item[data-planet="intelectual"].active .orbit-icon-container { border-color: rgb(148 163 184); }
+
+@keyframes orbit-pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px var(--planet-glow, rgba(59, 130, 246, 0.6)), inset 0 0 10px var(--planet-glow-inner, rgba(59, 130, 246, 0.3));
+    }
+    50% {
+        box-shadow: 0 0 35px var(--planet-glow, rgba(59, 130, 246, 1)), inset 0 0 20px var(--planet-glow-inner, rgba(59, 130, 246, 0.5));
+    }
+}
+
+.orbit-icon-visual {
+    width: 48px;
+    height: 48px;
+    color: rgba(148, 163, 184, 0.4);
+    transition: color 0.4s ease;
+}
+
+.orbit-visual-item.active .orbit-icon-visual {
+    color: var(--planet-color, rgb(59 130 246));
+    filter: drop-shadow(0 0 8px var(--planet-color, rgb(59 130 246)));
+}
+
+.orbit-label-visual {
+    font-size: 0.75rem;
+    color: rgba(203, 213, 225, 0.5);
+    text-align: center;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.orbit-visual-item.active .orbit-label-visual {
+    color: rgb(203, 213, 225);
+    font-weight: 600;
+    text-shadow: 0 0 8px var(--planet-color, rgba(59, 130, 246, 0.5));
+}
+
+.orbit-number-visual {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid rgba(148, 163, 184, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: rgba(148, 163, 184, 0.5);
+    transition: all 0.3s ease;
+}
+
+.orbit-visual-item.active .orbit-number-visual {
+    border-color: var(--planet-color, rgb(59 130 246));
+    background: var(--planet-color, rgb(59 130 246));
+    color: rgb(15 23 42);
+    box-shadow: 0 0 10px var(--planet-glow, rgba(59, 130, 246, 0.6));
+}
+
+/* Responsive para órbitas visuales */
+@media (max-width: 768px) {
+    .orbits-visual-grid {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .orbit-icon-container {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .orbit-icon-visual {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .orbit-label-visual {
+        font-size: 0.65rem;
+    }
+}
+
+

@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACIÓN INCLUSIÓN — Sala Orbital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #05070f;
+            --bg-card: rgba(12, 16, 34, 0.86);
+            --bg-card-soft: rgba(12, 16, 34, 0.7);
+            --bg-highlight: rgba(59, 130, 246, 0.12);
+            --border-color: rgba(148, 163, 184, 0.28);
+            --border-strong: rgba(148, 163, 184, 0.45);
+            --text-main: #e2e8f0;
+            --text-soft: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #60a5fa;
+            --accent-strong: #38bdf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+            --ring-visual: #60a5fa;
+            --ring-auditiva: #a855f7;
+            --ring-lenguaje: #22d3ee;
+            --ring-tea: #c084fc;
+            --ring-tdah: #facc15;
+            --ring-motora: #f97316;
+            --panel-width: min(1100px, 94vw);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top, rgba(37, 99, 235, 0.25), transparent 55%),
+                        radial-gradient(circle at bottom, rgba(109, 40, 217, 0.18), transparent 60%),
+                        var(--bg-dark);
+            color: var(--text-main);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        canvas#stars {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.25;
+        }
+
+        .page-shell {
+            position: relative;
+            z-index: 1;
+            width: var(--panel-width);
+            margin: 0 auto;
+            padding: 2.5rem 0 4rem;
+        }
+
+        header.hero {
+            background: linear-gradient(135deg, rgba(12, 18, 36, 0.9), rgba(10, 20, 48, 0.92));
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.55);
+            margin-bottom: 1.5rem;
+        }
+
+        header.hero h1 {
+            margin: 0 0 0.6rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.9rem, 4vw, 2.65rem);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-align: center;
+            color: #bae6fd;
+            text-shadow: 0 0 18px rgba(59, 130, 246, 0.55);
+        }
+
+        header.hero .subtitle {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            color: var(--text-soft);
+            letter-spacing: 0.08em;
+        }
+
+        header.hero .mission-brief {
+            margin-top: 1.4rem;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(94, 234, 212, 0.16);
+            border-radius: 14px;
+            padding: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        header.hero .mission-grid {
+            margin-top: 1.75rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        header.hero .mission-card {
+            background: rgba(14, 24, 44, 0.8);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+        }
+
+        header.hero .mission-card .label {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+        }
+
+        header.hero .mission-card .value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-top: 0.35rem;
+            color: #f8fafc;
+        }
+
+        nav.tab-nav {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav.tab-nav button {
+            padding: 0.7rem 1.4rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(15, 23, 42, 0.7);
+            color: var(--text-soft);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        nav.tab-nav button.active {
+            border-color: rgba(96, 165, 250, 0.9);
+            color: #e0f2fe;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.45));
+            box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.4);
+        }
+
+        nav.tab-nav button:focus-visible {
+            outline: 2px solid rgba(96, 165, 250, 0.75);
+            outline-offset: 3px;
+        }
+
+        section.tab-panel {
+            display: none;
+        }
+
+        section.tab-panel.active {
+            display: block;
+        }
+
+        .panel-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.8rem;
+            margin-bottom: 1.6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-section h2 {
+            margin: 0 0 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.12em;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            color: #cbd5f5;
+        }
+
+        .panel-section p.lead {
+            margin: 0 0 1.4rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        .solar-system-container {
+            background: radial-gradient(circle at center,
+                rgba(59, 130, 246, 0.05) 0%,
+                rgba(15, 23, 42, 0.82) 70%,
+                rgba(2, 6, 23, 0.95) 100%);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: visible;
+            min-height: 620px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+        }
+
+        .solar-system-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg,
+                rgba(59, 130, 246, 0.28),
+                rgba(147, 51, 234, 0.28),
+                rgba(6, 182, 212, 0.28));
+            border-radius: 20px;
+            z-index: -1;
+            animation: border-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes border-glow {
+            0%, 100% { opacity: 0.18; }
+            50% { opacity: 0.4; }
+        }
+
+        .solar-system-wrapper {
+            position: relative;
+            width: min(100%, 560px);
+            aspect-ratio: 1;
+            min-width: 320px;
+        }
+
+        .orbits-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .planets-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .orbit-path {
+            stroke-dasharray: 6 10;
+        }
+
+        .planet-orbit {
+            position: absolute;
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: all;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .planet-orbit.locked {
+            opacity: 0.6;
+            filter: grayscale(0.55);
+        }
+
+        .planet-orbit.active {
+            opacity: 1;
+            filter: none;
+            animation: planet-active 2.6s ease-in-out infinite;
+        }
+
+        @keyframes planet-active {
+            0%, 100% { box-shadow: 0 0 15px currentColor, inset 0 0 18px rgba(255,255,255,0.18); }
+            50% { box-shadow: 0 0 28px currentColor, inset 0 0 28px rgba(255,255,255,0.25); }
+        }
+
+        .planet-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(15,23,42,0.9));
+            border: 3px solid;
+            position: relative;
+            box-shadow: inset 0 0 22px rgba(0,0,0,0.55), 0 0 16px currentColor;
+        }
+
+        .planet-icon::before {
+            content: '';
+            position: absolute;
+            inset: -45%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            animation: planet-rotate 10s linear infinite;
+        }
+
+        @keyframes planet-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .planet-number {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid currentColor;
+            display: grid;
+            place-items: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .planet-label {
+            position: absolute;
+            bottom: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px currentColor;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .planet-orbit:hover .planet-label,
+        .planet-orbit.active .planet-label {
+            opacity: 1;
+        }
+
+        .planet-orbit[data-planet="visual"] { color: rgb(59, 130, 246); }
+        .planet-orbit[data-planet="auditiva"] { color: rgb(139, 92, 246); }
+        .planet-orbit[data-planet="lenguaje"] { color: rgb(6, 182, 212); }
+        .planet-orbit[data-planet="tea"] { color: rgb(147, 51, 234); }
+        .planet-orbit[data-planet="tdah"] { color: rgb(34, 211, 238); }
+        .planet-orbit[data-planet="motora"] { color: rgb(96, 165, 250); }
+
+        .orbit-legend {
+            min-width: min(320px, 100%);
+            max-width: 360px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 16px;
+            padding: 1.6rem;
+            height: fit-content;
+        }
+
+        .legend-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            color: rgb(203, 213, 225);
+            margin-bottom: 1.2rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.85rem;
+            background: rgba(2, 6, 23, 0.6);
+            border-radius: 10px;
+            border-left: 3px solid rgba(59, 130, 246, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.6);
+        }
+
+        .legend-item.active {
+            border-left-width: 5px;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .legend-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            border: 2px solid currentColor;
+            font-size: 1.2rem;
+        }
+
+        .legend-info {
+            flex: 1;
+        }
+
+        .legend-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: rgb(226, 232, 240);
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 0.25rem;
+        }
+
+        .legend-status {
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            opacity: 0.75;
+        }
+
+        .legend-status.active { color: rgb(16, 185, 129); opacity: 1; }
+        .legend-status.locked { color: rgb(148, 163, 184); }
+
+        /* Grids responsivos mejorados */
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-four {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-four {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-three {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 820px) {
+            .solar-system-container {
+                padding: 2.5rem 1.6rem;
+            }
+
+            .solar-system-wrapper {
+                width: min(100%, 420px);
+            }
+
+            .orbit-legend {
+                width: 100%;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .solar-system-container {
+                padding: 2rem 1.2rem;
+                gap: 2rem;
+            }
+
+            .solar-system-wrapper {
+                min-width: 260px;
+            }
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .progress-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .progress-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .progress-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .progress-card {
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.1rem 1.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .progress-card .title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-soft);
+        }
+
+        .progress-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.23);
+            overflow: hidden;
+        }
+
+        .progress-bar span {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(96, 165, 250, 0.85), rgba(34, 197, 94, 0.85));
+            border-radius: 999px;
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .locks-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .locks-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .locks-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .lock-card {
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .lock-card header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lock-code-display {
+            display: flex;
+            gap: 0.45rem;
+        }
+
+        .lock-digit {
+            width: 44px;
+            height: 56px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            background: rgba(12, 20, 38, 0.9);
+            display: grid;
+            place-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 0.14em;
+        }
+
+        .lock-card .clue {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .final-lock {
+            margin-top: 1.5rem;
+            background: rgba(202, 138, 4, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.45);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+        }
+
+        .final-lock h3 {
+            margin: 0 0 0.6rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            color: #fde68a;
+            text-transform: uppercase;
+        }
+
+        .final-lock .code {
+            display: inline-flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.3em;
+        }
+
+        .final-lock .message {
+            margin-top: 0.65rem;
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        .deck {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .planet-card {
+            background: rgba(12, 19, 36, 0.92);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .planet-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), transparent 55%);
+            pointer-events: none;
+        }
+
+        .planet-header {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .planet-header .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            font-size: 1.9rem;
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.35);
+        }
+
+        .planet-header .meta h3 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 1.05rem;
+        }
+
+        .planet-header .meta .focus {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            margin-top: 0.15rem;
+        }
+
+        .planet-summary {
+            margin: 1rem 0 1.3rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        .planet-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.3rem;
+        }
+
+        .planet-chip {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            letter-spacing: 0.06em;
+        }
+
+        .lock-panel {
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .lock-panel header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        .lock-panel .code-preview {
+            display: inline-flex;
+            gap: 0.45rem;
+            margin-top: 0.9rem;
+        }
+
+        .lock-panel .code-preview .digit {
+            width: 42px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.35);
+            display: grid;
+            place-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.18em;
+        }
+
+        .lock-panel .clue {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .satellite-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .satellite-card {
+            background: rgba(11, 18, 34, 0.92);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.3rem;
+            position: relative;
+        }
+
+        .satellite-card.completed {
+            border-color: rgba(34, 197, 94, 0.55);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25);
+        }
+
+        .satellite-card header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        .satellite-card header h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #f1f5f9;
+        }
+
+        .satellite-card .fragment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(59, 130, 246, 0.16);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 999px;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+        }
+
+        .satellite-card p.goal {
+            margin: 0.9rem 0 0.8rem;
+            line-height: 1.6;
+            color: var(--text-soft);
+        }
+
+        .satellite-details {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-block {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            padding: 0.75rem 0.95rem;
+        }
+
+        .detail-block .label {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .detail-block ul {
+            margin: 0.4rem 0 0;
+            padding-left: 1.2rem;
+            color: var(--text-soft);
+            line-height: 1.4;
+        }
+
+        .question-block {
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            padding-top: 1rem;
+        }
+
+        .question-block .prompt {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #f8fafc;
+        }
+
+        .option-list {
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .option {
+            display: flex;
+            gap: 0.6rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 10px;
+            padding: 0.65rem 0.75rem;
+            align-items: flex-start;
+        }
+
+        .option input {
+            margin-top: 0.3rem;
+        }
+
+        .option label {
+            cursor: pointer;
+            color: var(--text-soft);
+            line-height: 1.45;
+        }
+
+        .satellite-actions {
+            margin-top: 0.9rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            background: rgba(59, 130, 246, 0.14);
+            color: #e0f2fe;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.55rem 1.1rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.35);
+        }
+
+        .btn.secondary {
+            border-color: rgba(148, 163, 184, 0.45);
+            background: rgba(15, 23, 42, 0.65);
+            color: var(--text-soft);
+        }
+
+        .btn.danger {
+            border-color: rgba(248, 113, 113, 0.55);
+            background: rgba(248, 113, 113, 0.16);
+            color: #fecaca;
+        }
+
+        .feedback {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .feedback.success {
+            color: var(--success);
+        }
+
+        .feedback.error {
+            color: var(--error);
+        }
+
+        .planet-footer {
+            margin-top: 1.4rem;
+            padding: 1rem 1.1rem;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.35);
+            color: var(--text-soft);
+            line-height: 1.55;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.1rem 1.3rem;
+        }
+
+        .stat-card h3 {
+            margin: 0 0 0.65rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.9rem;
+            font-weight: 700;
+        }
+
+        .stat-card .stat-note {
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--text-soft);
+        }
+
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-card {
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 16px;
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+        }
+
+        .achievement-card.active {
+            opacity: 1;
+            border-color: rgba(34, 197, 94, 0.45);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        .achievement-card .title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .achievement-card .description {
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .hint-board {
+            margin-top: 2rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.4rem;
+        }
+
+        .hint-board h3 {
+            margin: 0 0 1rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            color: #cbd5f5;
+        }
+
+        .hint-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .hint-item {
+            padding: 0.9rem 1rem;
+            border-radius: 12px;
+            background: rgba(12, 19, 36, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .hint-item header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+        }
+
+        .hint-item .hint-text {
+            margin-top: 0.65rem;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            line-height: 1.55;
+            display: none;
+        }
+
+        .hint-item.revealed .hint-text {
+            display: block;
+        }
+
+        footer.page-foot {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .toast-stack {
+            position: fixed;
+            top: 1.4rem;
+            right: 1.4rem;
+            display: grid;
+            gap: 0.6rem;
+            z-index: 40;
+        }
+
+        .toast {
+            min-width: 240px;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(12, 19, 36, 0.92);
+            color: var(--text-main);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.55);
+            font-size: 0.85rem;
+        }
+
+        .toast.success { border-color: rgba(34, 197, 94, 0.55); }
+        .toast.error { border-color: rgba(248, 113, 113, 0.55); }
+        .toast.info { border-color: rgba(96, 165, 250, 0.45); }
+
+        @media (max-width: 820px) {
+            header.hero {
+                padding: 2rem 1.6rem;
+            }
+
+            .planet-card {
+                padding: 1.4rem;
+            }
+
+            .solar-system-wrapper {
+                max-width: 360px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            nav.tab-nav button {
+                flex: 1 1 100%;
+            }
+
+            .solar-system-wrapper {
+                min-width: 240px;
+            }
+
+            .grid-two {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 520px) {
+            header.hero .mission-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .lock-card .lock-code-display {
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+    <div class="page-shell">
+        <header class="hero" role="banner">
+            <h1>OPERACIÓN INCLUSIÓN</h1>
+            <div class="subtitle">
+                <span>Sistema Orbitas NEAE</span>
+                <span>Sesión 35-40 min</span>
+                <span>Equipo de 4-5 personas</span>
+      </div>
+            <div class="mission-brief">
+                <strong>Briefing rápido:</strong> estabilizad las seis órbitas temáticas (visual, auditiva, lenguaje, TEA, TDAH y motora) completando sus satélites. Cada satélite os entrega un fragmento del candado de la órbita. Cuando la combinación sea correcta, el planeta quedará estabilizado y liberaréis una cifra para el Candado Motor final.
+                    </div>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <div class="label">Ritmo sugerido</div>
+                    <div class="value">~ 6 min / órbita</div>
+                    <div class="label" style="margin-top:0.6rem; color: var(--text-soft);">Ajustad roles y rotaciones cada 10 minutos.</div>
+                </div>
+                <div class="mission-card">
+                    <div class="label">Roles clave</div>
+                    <div class="value" style="font-size:1rem; letter-spacing:0.04em;">
+                        Piloto • Analista • Cronista • Observador/a
+                        </div>
+                        </div>
+                <div class="mission-card">
+                    <div class="label">Desbloqueables</div>
+                    <div class="value" id="summaryUnlocked">0 / 6 planetas</div>
+                    <div class="label" style="margin-top:0.6rem; color: var(--text-soft);">La cifra generada alimenta el Candado Motor.</div>
+                </div>
+          </div>
+        </header>
+
+        <nav class="tab-nav" aria-label="Navegación principal">
+            <button type="button" class="active" data-tab-target="panelPrincipal">Panel principal</button>
+            <button type="button" data-tab-target="planetasSatellites">Órbitas con planetas y satélites</button>
+            <button type="button" data-tab-target="statsLogros">Estadísticas, logros y pistas</button>
+        </nav>
+
+        <main>
+            <section id="panelPrincipal" class="tab-panel active" role="region" aria-label="Panel principal">
+                <article class="panel-section">
+                    <h2>Sistema solar de órbitas planetarias</h2>
+                    <p class="lead">Visualizad qué órbitas ya se han estabilizado. Cada planeta activo emite un halo verde y añade su cifra al motor final.</p>
+                    <div class="solar-system-container">
+                        <div class="solar-system-wrapper">
+                            <svg id="orbitsCanvas" class="orbits-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                                <defs>
+                                    <radialGradient id="planetGradient" cx="50%" cy="50%">
+                                        <stop offset="0%" style="stop-color:rgba(59,130,246,0.85);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:rgba(59,130,246,0.15);stop-opacity:0.3" />
+                                    </radialGradient>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <circle cx="400" cy="310" r="32" fill="url(#planetGradient)" filter="url(#glow)"></circle>
+                                <text x="400" y="348" text-anchor="middle" fill="rgba(148, 197, 253, 0.75)" font-size="12" font-family="Orbitron" letter-spacing="0.2em">CENTRO</text>
+                            </svg>
+                            <div id="planetsOverlay" class="planets-overlay"></div>
+                        </div>
+                        <div class="orbit-legend">
+                            <div class="legend-title">Estado de los planetas</div>
+                            <div class="legend-grid" id="orbitLegend" role="list"></div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel-section">
+                    <h2>Progreso de misión</h2>
+                    <p class="lead">Usad este panel como checklist rápido. Cuando completéis los satélites, el candado se rellenará automáticamente.</p>
+                    <div class="progress-grid" id="missionProgress" role="list"></div>
+                </article>
+
+                <article class="panel-section">
+                    <h2>Sistema de desbloqueo orbital</h2>
+                    <p class="lead">Los candados están integrados en la web. Cada fragmento revelado encaja automáticamente en la combinación objetivo.</p>
+                    <div class="locks-board" id="locksBoard" role="list"></div>
+                    <div class="final-lock" id="finalLockCard" role="region" aria-label="Candado final del motor"></div>
+                </article>
+
+                <article class="panel-section">
+                    <h2>Estado final de la misión</h2>
+                    <div class="progress-grid" id="finalStatus" role="list"></div>
+                </article>
+                </section>
+
+            <section id="planetasSatellites" class="tab-panel" role="region" aria-label="Órbitas con satélites">
+                <div class="deck" id="planetsDeck"></div>
+            </section>
+
+            <section id="statsLogros" class="tab-panel" role="region" aria-label="Estadísticas, logros y pistas">
+                <div class="panel-section">
+                    <h2>Panel de control</h2>
+                    <div class="stats-grid" id="statsGrid"></div>
+                    <button type="button" class="btn danger" id="resetSessionBtn">Reiniciar misión</button>
+                    </div>
+
+                <div class="panel-section">
+                    <h2>Logros desbloqueables</h2>
+                    <div class="achievements" id="achievementsGrid"></div>
+                    </div>
+
+                <div class="panel-section">
+                    <h2>Pistas estratégicas</h2>
+                    <div class="hint-board">
+                        <h3>Si os bloqueáis, abrid una sola pista.</h3>
+                        <div class="hint-list" id="hintList"></div>
+                            </div>
+                            </div>
+            </section>
+        </main>
+
+        <footer class="page-foot">
+            Operación Inclusión · Progreso guardado localmente · Candados integrados en la misión
+        </footer>
+                    </div>
+
+    <script>
+        const PLANETS = [
+            {
+                key: "visual",
+                name: "Órbita Visual",
+                icon: "🔵",
+                ringColor: "var(--ring-visual)",
+                focus: "Acceso sensorial",
+                estimated: "6-7 min",
+                summary: "Garantizad contraste alto, redundancia icono+texto y tipografías legibles para que cualquier persona pueda interpretar la señalética de aula.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "1287",
+                    clue: "Concatena el contraste óptimo (12), la altura accesible (8) y la tipografía legible (7).",
+                },
+                finalContribution: "6",
+                generalHint: "Piensa en redundancia: icono + palabra + contraste = acceso visual universal.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Filtro de contraste",
+                        goal: "Comprobad qué panel mantiene contraste AA al activar el filtro rojo virtual.",
+                        materials: ["Simulación 'Filtro Lumen'", "Acetato rojo físico (opcional)"],
+                        instructions: "En la web, mueve el deslizador hasta que el porcentaje de contraste supere el 70 %. El valor que se mantiene estable es tu fragmento.",
+                        fragment: "12",
+                        order: 1,
+                        quickHint: "La opción válida conserva contraste AA incluso tras aplicar el filtro rojo.",
+                        successMessage: "Perfecto: contraste estable por encima del 70 %. Anota 12.",
+                        question: {
+                            prompt: "¿Qué panel conserva contraste AA tras activar el filtro?",
+                            options: [
+                                {
+                                    value: "panelA",
+                                    label: "Cartel azul claro con tipografía blanca fina (contraste 58 %)",
+                                    correct: false,
+                                    feedback: "58 % no asegura lectura. Busca un contraste superior al 70 %."
+                                },
+                                {
+                                    value: "panelB",
+                                    label: "Cartel negro con tipografía blanca gruesa y pictograma (contraste 72 %)",
+                                    correct: true,
+                                    feedback: "Exacto: 72 % se mantiene tras el filtro. Fragmento = 12."
+                                },
+                                {
+                                    value: "panelC",
+                                    label: "Cartel naranja con texto crema (contraste 61 %)",
+                                    correct: false,
+                                    feedback: "61 % sigue siendo bajo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Señal redundante",
+                        goal: "Elegid la señal que combina icono y texto a altura accesible.",
+                        materials: ["Mockup señalización", "Regla o cinta métrica (opcional)"],
+                        instructions: "La señal válida debe quedar a 0,80 m del suelo para usuarios en silla y contener icono + palabra.",
+                        fragment: "8",
+                        order: 2,
+                        quickHint: "Busca la señal accesible a 80 cm con doble canal.",
+                        successMessage: "Señal acertada: altura 0,80 m y doble canal. Añade el dígito 8.",
+                        question: {
+                            prompt: "¿Cuál de las opciones garantiza redundancia y altura accesible?",
+                            options: [
+                                {
+                                    value: "signalA",
+                                    label: "Cartel solo texto a 1,60 m del suelo",
+                                    correct: false,
+                                    feedback: "Demasiado alto y sin icono."
+                                },
+                                {
+                                    value: "signalB",
+                                    label: "Icono + palabra en relieve a 0,80 m del suelo",
+                                    correct: true,
+                                    feedback: "Correcto: redundancia + altura accesible. Fragmento = 8."
+                                },
+                                {
+                                    value: "signalC",
+                                    label: "Panel LED con animaciones a 1,90 m",
+                                    correct: false,
+                                    feedback: "La animación puede distraer y queda fuera de alcance."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Tipografía legible",
+                        goal: "Seleccionad la maqueta que optimiza interlineado y espaciado.",
+                        materials: ["Maquetas impresas A y B"],
+                        instructions: "El texto legible usa interlineado 1.5, letras minúsculas y espacio en blanco.",
+                        fragment: "7",
+                        order: 3,
+                        quickHint: "Recuerda: bloques cortos + interlineado amplio = lectura ágil.",
+                        successMessage: "Lectura fácil asegurada. Cierra el código con el dígito 7.",
+                        question: {
+                            prompt: "¿Qué maqueta facilita la lectura a primera vista?",
+                            options: [
+                                {
+                                    value: "typoA",
+                                    label: "Texto justificado, todo en mayúsculas, interlineado 1",
+                                    correct: false,
+                                    feedback: "Produce efecto 'muro de texto'."
+                                },
+                                {
+                                    value: "typoB",
+                                    label: "Párrafos cortos, interlineado 1.5 y mayúsculas/minúsculas",
+                                    correct: true,
+                                    feedback: "Exacto: la maqueta B añade el dígito 7."
+                                },
+                                {
+                                    value: "typoC",
+                                    label: "Texto centrado con letras condensadas",
+                                    correct: false,
+                                    feedback: "Centrado y condensado dificulta la lectura continua."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "auditiva",
+                name: "Órbita Auditiva",
+                icon: "🔊",
+                ringColor: "var(--ring-auditiva)",
+                focus: "Acceso auditivo",
+                estimated: "6 min",
+                summary: "Transformad la información sonora en apoyos alternativos y controlad los focos de ruido ambiental.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "5409",
+                    clue: "La tira morse (54) + reducción de ruido a cero + señal visual (9).",
+                },
+                finalContribution: "1",
+                generalHint: "Pensad siempre en multicanal: audio + visual + control del ruido.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Morse inclusivo",
+                        goal: "Decodificad la tira ·--. .. -.-. --- ... eliminando elementos no numéricos en la posición 4 si son letras.",
+                        materials: ["Tira morse impresa", "Tabla de equivalencias"],
+                        instructions: "Aplicad la regla 1,2,3,5,6. El resultado os dará los dos primeros dígitos.",
+                        fragment: "54",
+                        order: 1,
+                        quickHint: "Convertid a texto PICOS y eliminad la letra en cuarta posición.",
+                        successMessage: "Decodificación completa. Fragmento inicial: 54.",
+                        question: {
+                            prompt: "¿Qué resultado obtenéis al aplicar la regla 1,2,3,5,6 sobre PICTOS?",
+                            options: [
+                                {
+                                    value: "picts",
+                                    label: "PICTS",
+                                    correct: false,
+                                    feedback: "Revisa: la cuarta posición se descarta si no es número."
+                                },
+                                {
+                                    value: "picos",
+                                    label: "PICOS",
+                                    correct: true,
+                                    feedback: "Correcto: PICOS -> 54 como fragmento inicial."
+                                },
+                                {
+                                    value: "ptcos",
+                                    label: "PTCOS",
+                                    correct: false,
+                                    feedback: "Has eliminado la vocal equivocada."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Ruido base",
+                        goal: "Priorizad la acción que reduce el ruido ambiental en la clase.",
+                        materials: ["Plano de aula", "Medidor de ruido (opcional)"],
+                        instructions: "Identificad el foco que aporta más dB y buscad cómo reducirlo.",
+                        fragment: "0",
+                        order: 2,
+                        quickHint: "Antes de subir volumen, eliminad ruido de fondo.",
+                        successMessage: "Ambiente controlado: la base vuelve a cero.",
+                        question: {
+                            prompt: "¿Qué acción es más eficaz para reducir el ruido de fondo?",
+                            options: [
+                                {
+                                    value: "increaseVolume",
+                                    label: "Subir el volumen del altavoz principal",
+                                    correct: false,
+                                    feedback: "Solo añade más sonido sobre el ruido."
+                                },
+                                {
+                                    value: "closeDoors",
+                                    label: "Cerrar la puerta, apagar ventilador y añadir panel absorbente",
+                                    correct: true,
+                                    feedback: "Exacto: ruido base cercano a 0."
+                                },
+                                {
+                                    value: "clapPattern",
+                                    label: "Usar palmadas como clave de atención",
+                                    correct: false,
+                                    feedback: "Es un apoyo, pero no reduce el ruido."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Apoyo visual",
+                        goal: "Seleccionad el recurso que acompaña la información auditiva con apoyo visual.",
+                        materials: ["Plantilla de subtítulos", "Pictogramas"],
+                        instructions: "El recurso válido integra icono labial y palabras clave resaltadas.",
+                        fragment: "9",
+                        order: 3,
+                        quickHint: "Busca sincronía boca-palabra en la misma señal.",
+                        successMessage: "Perfecto: apoyo visual añadido. Suma el dígito 9.",
+                        question: {
+                            prompt: "¿Qué recurso multiplica canales para quien necesita lectura labial?",
+                            options: [
+                                {
+                                    value: "textoCompleto",
+                                    label: "Transcripción completa en la pizarra",
+                                    correct: false,
+                                    feedback: "Útil, pero no sincroniza con lectura labial."
+                                },
+                                {
+                                    value: "pictos",
+                                    label: "Pictograma de labios + palabras clave resaltadas",
+                                    correct: true,
+                                    feedback: "¡Ese es! Añade 9 al candado."
+                                },
+                                {
+                                    value: "audioRec",
+                                    label: "Grabación de audio para repasar después",
+                                    correct: false,
+                                    feedback: "No ayuda en el momento ni aporta canal visual."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "lenguaje",
+                name: "Órbita Lenguaje-Comprensión",
+                icon: "💬",
+                ringColor: "var(--ring-lenguaje)",
+                focus: "Comunicación y lectoescritura",
+                estimated: "6 min",
+                summary: "Reformulad consignas en lectura fácil, modelad ejemplos y destacad vocabulario clave.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "3471",
+                    clue: "Tres pasos claros (3) + demostración guiada (4) + vocabulario esencial (71).",
+                },
+                finalContribution: "5",
+                generalHint: "Dividid los mensajes en pasos concretos y mostrad cómo se hace antes de pedirlo.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Consigna en 3 pasos",
+                        goal: "Detectad la instrucción que respeta lectura fácil en tres pasos.",
+                        materials: ["Plantillas de consignas A y B"],
+                        instructions: "Una instrucción clara usa estructura numerada y verbo de acción al iniciar cada paso.",
+                        fragment: "3",
+                        order: 1,
+                        quickHint: "Busca la que empieza por '1. Observa ...', '2. ...', '3. ...'.",
+                        successMessage: "Consigna lista. Primer dígito: 3.",
+                        question: {
+                            prompt: "¿Cuál de estas consignas sigue lectura fácil?",
+                            options: [
+                                {
+                                    value: "consignaA",
+                                    label: "Describe libremente lo que ves en el cartel",
+                                    correct: false,
+                                    feedback: "Carece de pasos claros."
+                                },
+                                {
+                                    value: "consignaB",
+                                    label: "1) Observa la maqueta. 2) Copia el ejemplo. 3) Cuenta qué cambiarías.",
+                                    correct: true,
+                                    feedback: "Exacto. Primer dígito = 3."
+                                },
+                                {
+                                    value: "consignaC",
+                                    label: "Explica tu idea en un párrafo de 10 líneas",
+                                    correct: false,
+                                    feedback: "Demasiado abierto, sin guía paso a paso."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Demostración",
+                        goal: "Escoged el recurso que modela la tarea antes de pedirla.",
+                        materials: ["Vídeo corto de demostración", "Ficha de autoevaluación"],
+                        instructions: "El recurso correcto muestra visualmente el proceso con audios y subtítulos.",
+                        fragment: "4",
+                        order: 2,
+                        quickHint: "Si se ve cómo se hace, baja la carga de memoria.",
+                        successMessage: "Demostración incorporada. Segundo dígito: 4.",
+                        question: {
+                            prompt: "¿Qué apoyo asegura modelado explícito?",
+                            options: [
+                                {
+                                    value: "checklist",
+                                    label: "Checklist escrita sin ejemplo",
+                                    correct: false,
+                                    feedback: "Útil, pero no muestra cómo se hace."
+                                },
+                                {
+                                    value: "video",
+                                    label: "Vídeo de 40 segundos con audio y subtítulos",
+                                    correct: true,
+                                    feedback: "Correcto. Añade el dígito 4."
+                                },
+                                {
+                                    value: "poster",
+                                    label: "Póster motivacional con frase inspiradora",
+                                    correct: false,
+                                    feedback: "No modela el proceso."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Vocabulario ancla",
+                        goal: "Destacad las palabras esenciales para asegurar comprensión.",
+                        materials: ["Texto original", "Marcadores"] ,
+                        instructions: "El fragmento surge de las palabras clave necesarias para ejecutar la tarea.",
+                        fragment: "71",
+                        order: 3,
+                        quickHint: "Resaltad verbos y elementos materiales esenciales.",
+                        successMessage: "Vocabulario clave listo. Cierra el código con 71.",
+                        question: {
+                            prompt: "¿Qué conjunto de palabras clave facilita la comprensión inmediata?",
+                            options: [
+                                {
+                                    value: "decorativo",
+                                    label: "Creativo, bonito, libre",
+                                    correct: false,
+                                    feedback: "No guía la acción concreta."
+                                },
+                                {
+                                    value: "accion",
+                                    label: "Recorta, conecta, comparte",
+                                    correct: true,
+                                    feedback: "Exacto. Con esto obtienes 71."
+                                },
+                                {
+                                    value: "emocion",
+                                    label: "Confianza, imaginación, energía",
+                                    correct: false,
+                                    feedback: "Conceptos motivadores, pero no operativos."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "tea",
+                name: "Órbita TEA",
+                icon: "🧩",
+                ringColor: "var(--ring-tea)",
+                focus: "Estructura y anticipación",
+                estimated: "6 min",
+                summary: "Reducid incertidumbre anticipando rutinas, diseñando agendas visuales y ofreciendo espacios de autorregulación.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "1974",
+                    clue: "Secuencia ahora-después (19) + agenda secuenciada (7) + zona de calma (4).",
+                },
+                finalContribution: "4",
+                generalHint: "Anticipar qué viene después reduce ansiedad y fomenta autonomía.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Ahora / Después",
+                        goal: "Ordenad la secuencia correcta que explica qué pasa tras el reto.",
+                        materials: ["Tarjetas 'Ahora' y 'Después'", "Fotos de actividades"],
+                        instructions: "La secuencia válida muestra paso actual y el inmediato posterior.",
+                        fragment: "19",
+                        order: 1,
+                        quickHint: "Incluid la actividad actual y la que sigue justo después.",
+                        successMessage: "Secuencia anticipada lista. Apunta 19.",
+                        question: {
+                            prompt: "¿Qué pareja de tarjetas anticipa correctamente el final de la actividad?",
+                            options: [
+                                {
+                                    value: "improvisa",
+                                    label: "Ahora: improvisar · Después: ya veremos",
+                                    correct: false,
+                                    feedback: "No aporta seguridad."
+                                },
+                                {
+                                    value: "parejas",
+                                    label: "Ahora: montar experimento · Después: compartir en parejas",
+                                    correct: true,
+                                    feedback: "Exacto. Fragmento = 19."
+                                },
+                                {
+                                    value: "descanso",
+                                    label: "Ahora: descanso libre · Después: aún sin definir",
+                                    correct: false,
+                                    feedback: "Sigue sin prever lo que ocurrirá."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Agenda visual",
+                        goal: "Seleccionad la agenda que permite tachar pasos y anticipar tiempos.",
+                        materials: ["Agenda visual con pictos", "Reloj visual"],
+                        instructions: "La agenda correcta muestra pictogramas, duración y casillas para marcar.",
+                        fragment: "7",
+                        order: 2,
+                        quickHint: "Busca pictogramas + tiempo estimado + checkboxes.",
+                        successMessage: "Agenda visual preparada. Añade 7.",
+                        question: {
+                            prompt: "¿Cuál de las agendas ofrece mayor claridad?",
+                            options: [
+                                {
+                                    value: "texto",
+                                    label: "Listado textual continuo",
+                                    correct: false,
+                                    feedback: "Sin pictogramas ni tiempo."
+                                },
+                                {
+                                    value: "pictos",
+                                    label: "Tarjetas con pictograma, reloj y casilla de completado",
+                                    correct: true,
+                                    feedback: "Perfecto. Fragmento = 7."
+                                },
+                                {
+                                    value: "bullet",
+                                    label: "Bullet journal con frases largas",
+                                    correct: false,
+                                    feedback: "Puede abrumar con demasiada escritura."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Zona de calma",
+                        goal: "Elegid el plano que incluye un espacio de regulación sensorial.",
+                        materials: ["Planos A y B del aula"],
+                        instructions: "Un buen plano ofrece rincón tranquilo, luz regulable y apoyos blandos.",
+                        fragment: "4",
+                        order: 3,
+                        quickHint: "Busca un rincón delimitado con estímulos controlados.",
+                        successMessage: "Zona de calma localizada. Último dígito: 4.",
+                        question: {
+                            prompt: "¿Qué plano incorpora un espacio de calma real?",
+                            options: [
+                                {
+                                    value: "filas",
+                                    label: "Filas alineadas sin zona libre",
+                                    correct: false,
+                                    feedback: "No ofrece alternativa cuando aparece saturación."
+                                },
+                                {
+                                    value: "rincón",
+                                    label: "Rincón con luz regulable, panel acústico y cojines",
+                                    correct: true,
+                                    feedback: "Genial. Añade el 4."
+                                },
+                                {
+                                    value: "armario",
+                                    label: "Espacio detrás del armario sin iluminación",
+                                    correct: false,
+                                    feedback: "Es un escondite improvisado, no un espacio de calma."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "tdah",
+                name: "Órbita TDAH",
+                icon: "⚡",
+                ringColor: "var(--ring-tdah)",
+                focus: "Atención y ritmo",
+                estimated: "6 min",
+                summary: "Diseñad rutinas de arranque, reducid distractores y convertid tareas largas en micro-metas celebrables.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "3620",
+                    clue: "Rutina 3-6-2 (3) + control de distractores (6) + micro-metas finales (20).",
+                },
+                finalContribution: "2",
+                generalHint: "Divide el trabajo en bloques breves con descansos planificados.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Rutina de arranque",
+                        goal: "Elige la rutina que prepara el cerebro para empezar sin bloqueo.",
+                        materials: ["Checklist cronometrada", "Temporizador visual"],
+                        instructions: "Elige la secuencia que reparte tiempo para preparar, revisar y crear.",
+                        fragment: "3",
+                        order: 1,
+                        quickHint: "Piensa en 1 minuto preparar + 3 repasar + 6 producir.",
+                        successMessage: "Rutina estructurada. Primer dígito: 3.",
+                        question: {
+                            prompt: "¿Qué rutina facilita el arranque?",
+                            options: [
+                                {
+                                    value: "sinPlan",
+                                    label: "Empezar directamente a crear",
+                                    correct: false,
+                                    feedback: "Puede generar bloqueo inmediato."
+                                },
+                                {
+                                    value: "check",
+                                    label: "1' materiales · 3' objetivo · 6' acción",
+                                    correct: true,
+                                    feedback: "Exacto. Primer dígito = 3."
+                                },
+                                {
+                                    value: "charla",
+                                    label: "Charla libre de 10 minutos",
+                                    correct: false,
+                                    feedback: "Dilata el inicio y dispersa la atención."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Distractores",
+                        goal: "Determinad la acción que reduce estímulos irrelevantes.",
+                        materials: ["Lista de distractores", "Biombo o separadores"],
+                        instructions: "El recurso válido ordena el espacio y oculta estímulos visuales innecesarios.",
+                        fragment: "6",
+                        order: 2,
+                        quickHint: "Menos objetos visibles = menos tentaciones.",
+                        successMessage: "Distractores controlados. Segundo dígito: 6.",
+                        question: {
+                            prompt: "¿Qué estrategia mantiene el foco?",
+                            options: [
+                                {
+                                    value: "masEstimulos",
+                                    label: "Añadir música y luces LED motivadoras",
+                                    correct: false,
+                                    feedback: "En la mayoría de casos aumenta la sobrecarga."
+                                },
+                                {
+                                    value: "zonas",
+                                    label: "Guardar materiales no usados y usar separadores visuales",
+                                    correct: true,
+                                    feedback: "Perfecto. Añade el dígito 6."
+                                },
+                                {
+                                    value: "multitarear",
+                                    label: "Permitir cambiar de tarea cada 2 minutos",
+                                    correct: false,
+                                    feedback: "El cambio constante impide entrar en flujo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Micro-metas",
+                        goal: "Diseñad tres micro-metas medibles para una tarea larga.",
+                        materials: ["Plantilla de micro-metas", "Post-its"],
+                        instructions: "Convirtiendo una tarea en tres entregables, facilitáis celebrar avances.",
+                        fragment: "20",
+                        order: 3,
+                        quickHint: "Divide en 3 acciones concretas con comprobación rápida.",
+                        successMessage: "Micro-metas creadas. Completa el código con 20.",
+                        question: {
+                            prompt: "¿Qué versión divide mejor la tarea?",
+                            options: [
+                                {
+                                    value: "metaUnica",
+                                    label: "Terminar todo el proyecto en 60 minutos",
+                                    correct: false,
+                                    feedback: "Demasiado ambigua y extensa."
+                                },
+                                {
+                                    value: "tresBloques",
+                                    label: "1) Bosquejo 2) Ejemplos 3) Revisión con compañero",
+                                    correct: true,
+                                    feedback: "Exacto. Últimos dígitos = 20."
+                                },
+                                {
+                                    value: "lista",
+                                    label: "Lista de verificación con 12 ítems distintos",
+                                    correct: false,
+                                    feedback: "Demasiados ítems generan saturación."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                key: "motora",
+                name: "Órbita Motora",
+                icon: "🏃",
+                ringColor: "var(--ring-motora)",
+                focus: "Accesibilidad física",
+                estimated: "5-6 min",
+                summary: "Analizad rutas accesibles, alturas y anchos de paso para garantizar participación física autónoma.",
+                lock: {
+                    type: "numeric",
+                    digits: 4,
+                    target: "8426",
+                    clue: "Ruta con pendiente 8% y barandilla (84) + material al alcance (2) + paso libre 90 cm (6).",
+                },
+                finalContribution: "8",
+                generalHint: "Piensa en un recorrido sin barreras desde la puerta hasta la actividad.",
+                satellites: [
+                    {
+                        id: "S1",
+                        title: "Ruta accesible",
+                        goal: "Identificad el recorrido que cumple pendiente máxima 8 % y doble barandilla.",
+                        materials: ["Plano de accesibilidad", "Nivel o goniómetro"],
+                        instructions: "El trayecto adecuado combina rampa suave, señalización y superficie antideslizante.",
+                        fragment: "84",
+                        order: 1,
+                        quickHint: "La pendiente suave y la barandilla a ambos lados son clave.",
+                        successMessage: "Ruta accesible elegida. Fragmento: 84.",
+                        question: {
+                            prompt: "¿Qué itinerario garantiza accesibilidad universal?",
+                            options: [
+                                {
+                                    value: "escalera",
+                                    label: "Escalinata frontal con tres peldaños",
+                                    correct: false,
+                                    feedback: "Las escaleras son una barrera directa."
+                                },
+                                {
+                                    value: "rampa",
+                                    label: "Rampa lateral 8 %, superficie antideslizante y barandilla",
+                                    correct: true,
+                                    feedback: "Perfecto. Fragmento = 84."
+                                },
+                                {
+                                    value: "ascensor",
+                                    label: "Ascensor al fondo del edificio sin señalizar",
+                                    correct: false,
+                                    feedback: "Falta señalización y acceso directo."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S2",
+                        title: "Altura alcanzable",
+                        goal: "Escoged la opción que permite manipular materiales sin elevar los hombros.",
+                        materials: ["Catálogo de mobiliario", "Cinta métrica"],
+                        instructions: "La superficie ajustable 65-75 cm facilita trabajo en silla o de pie.",
+                        fragment: "2",
+                        order: 2,
+                        quickHint: "El punto óptimo suele estar alrededor de 70 cm.",
+                        successMessage: "Altura ajustada. Añade el dígito 2.",
+                        question: {
+                            prompt: "¿Qué propuesta asegura alcance cómodo?",
+                            options: [
+                                {
+                                    value: "estante",
+                                    label: "Estante fijo a 1,60 m",
+                                    correct: false,
+                                    feedback: "Queda fuera de alcance para muchas personas."
+                                },
+                                {
+                                    value: "mesa",
+                                    label: "Mesa regulable entre 65 y 75 cm",
+                                    correct: true,
+                                    feedback: "Exacto. Fragmento = 2."
+                                },
+                                {
+                                    value: "colgar",
+                                    label: "Material colgado del techo",
+                                    correct: false,
+                                    feedback: "Es vistoso, pero nada accesible."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "S3",
+                        title: "Ancho de paso",
+                        goal: "Determinad qué puerta garantiza 90 cm libres y manilla horizontal.",
+                        materials: ["Medidor", "Fotos de entradas"],
+                        instructions: "El paso mínimo recomendado es 80 cm, aquí buscamos una holgura de 90.",
+                        fragment: "6",
+                        order: 3,
+                        quickHint: "Comprueba el ancho libre real, no la medida de la hoja.",
+                        successMessage: "Paso libre confirmado. Último dígito: 6.",
+                        question: {
+                            prompt: "¿Qué acceso cumple el ancho libre recomendado?",
+                            options: [
+                                {
+                                    value: "setenta",
+                                    label: "Puerta abatible de 70 cm con macetero",
+                                    correct: false,
+                                    feedback: "El macetero reduce aún más el paso."
+                                },
+                                {
+                                    value: "noventa",
+                                    label: "Puerta corredera de 90 cm con tirador horizontal",
+                                    correct: true,
+                                    feedback: "Perfecto. Añade el 6."
+                                },
+                                {
+                                    value: "torno",
+                                    label: "Torno metálico de control",
+                                    correct: false,
+                                    feedback: "Los tornos son incompatibles con ayudas técnicas."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ];
+
+const FINAL_LOCK = {
+    digits: PLANETS.length,
+    target: PLANETS.map(p => p.finalContribution).join(""),
+    clue: "Ordenad las cifras en la misma secuencia en la que aparecen las órbitas alrededor del sol.",
+};
+
+const ORBIT_COLORS = {
+    visual: "rgb(59, 130, 246)",
+    auditiva: "rgb(139, 92, 246)",
+    lenguaje: "rgb(6, 182, 212)",
+    tea: "rgb(147, 51, 234)",
+    tdah: "rgb(34, 211, 238)",
+    motora: "rgb(96, 165, 250)"
+};
+
+const ORBIT_LAYOUT = [
+    { key: "visual", radius: 145, angle: 110 },
+    { key: "auditiva", radius: 190, angle: 160 },
+    { key: "lenguaje", radius: 225, angle: 220 },
+    { key: "tea", radius: 260, angle: 280 },
+    { key: "tdah", radius: 300, angle: 330 },
+    { key: "motora", radius: 330, angle: 40 }
+];
+
+const STORAGE_KEY = "operacion-inclusion-v2-state";
+
+        const defaultState = () => {
+            const fragments = {};
+            const hints = {};
+            const attempts = {};
+            const openPlanets = {};
+            PLANETS.forEach(planet => {
+                fragments[planet.key] = {};
+                hints[planet.key] = {};
+                attempts[planet.key] = {};
+                planet.satellites.forEach(sat => {
+                    fragments[planet.key][sat.id] = null;
+                    hints[planet.key][sat.id] = false;
+                    attempts[planet.key][sat.id] = 0;
+                });
+                openPlanets[planet.key] = false;
+            });
+            return {
+                startedAt: Date.now(),
+                fragments,
+                hints,
+                attempts,
+                openPlanets,
+                finalUnlocked: false,
+                totalAttempts: 0,
+                hintCount: 0,
+            };
+        };
+
+        let state = defaultState();
+
+        const loadState = () => {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.fragments) {
+                    state = {
+                        ...defaultState(),
+                        ...parsed,
+                    };
+                }
+            } catch (error) {
+                console.error("No se pudo cargar el estado", error);
+            }
+        };
+
+        const saveState = () => {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (error) {
+                console.error("No se pudo guardar el estado", error);
+            }
+        };
+
+        const resetState = () => {
+            state = defaultState();
+            saveState();
+            announce("Sesión reiniciada", "info");
+            renderAll();
+        };
+
+        const announce = (message, type = "info") => {
+            const container = document.getElementById("toastStack");
+            if (!container) return;
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(-8px)";
+            }, 10);
+            setTimeout(() => {
+                toast.remove();
+            }, 3200);
+        };
+
+        const formatDuration = (ms) => {
+            const totalSeconds = Math.floor(ms / 1000);
+            const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+            const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+            const s = String(totalSeconds % 60).padStart(2, "0");
+            return `${h}:${m}:${s}`;
+        };
+
+        const getPlanetByKey = (key) => PLANETS.find(planet => planet.key === key);
+
+        const getSolvedFragments = () => {
+            let count = 0;
+            PLANETS.forEach(planet => {
+                planet.satellites.forEach(sat => {
+                    if (state.fragments[planet.key][sat.id]) count += 1;
+                });
+            });
+            return count;
+        };
+
+        const getUnlockedPlanets = () => PLANETS.filter(planet => state.openPlanets[planet.key]).length;
+
+        const computePlanetCode = (planetKey) => {
+            const planet = getPlanetByKey(planetKey);
+            const fragments = planet.satellites
+                .map(sat => ({ order: sat.order, fragment: state.fragments[planetKey][sat.id] }))
+                .filter(entry => entry.fragment)
+                .sort((a, b) => a.order - b.order)
+                .map(entry => entry.fragment);
+            return fragments.join("");
+        };
+
+        const evaluatePlanet = (planetKey, silent = false) => {
+            const planet = getPlanetByKey(planetKey);
+            const allFragments = planet.satellites.every(sat => Boolean(state.fragments[planetKey][sat.id]));
+            if (allFragments) {
+                const code = computePlanetCode(planetKey);
+                if (code === planet.lock.target) {
+                    if (!state.openPlanets[planetKey] && !silent) {
+                        announce(`${planet.name} estabilizado. Código ${code}`, "success");
+                    }
+                    state.openPlanets[planetKey] = true;
+                } else {
+                    state.openPlanets[planetKey] = false;
+                }
+            } else {
+                state.openPlanets[planetKey] = false;
+            }
+        };
+
+        const markFragment = (planetKey, satelliteId, fragmentValue) => {
+            if (!state.fragments[planetKey][satelliteId]) {
+                state.fragments[planetKey][satelliteId] = String(fragmentValue);
+                evaluatePlanet(planetKey);
+                saveState();
+                renderAll();
+            }
+        };
+
+        const registerHintUse = (planetKey, satelliteId) => {
+            if (!state.hints[planetKey][satelliteId]) {
+                state.hints[planetKey][satelliteId] = true;
+                state.hintCount += 1;
+                saveState();
+                renderStats();
+            }
+        };
+
+        const incrementAttempt = (planetKey, satelliteId) => {
+            state.attempts[planetKey][satelliteId] += 1;
+            state.totalAttempts += 1;
+            saveState();
+        };
+
+const renderSolarSystem = () => {
+            const svg = document.getElementById("orbitsCanvas");
+            const overlay = document.getElementById("planetsOverlay");
+            const legend = document.getElementById("orbitLegend");
+            if (!svg || !overlay || !legend) return;
+
+            svg.querySelectorAll(".orbit-path").forEach(path => path.remove());
+            overlay.innerHTML = "";
+            legend.innerHTML = "";
+
+            const centerX = 400;
+            const centerY = 310;
+
+            ORBIT_LAYOUT.forEach((config, index) => {
+                const planetData = PLANETS.find(p => p.key === config.key) || {};
+                const color = ORBIT_COLORS[config.key] || "rgb(96, 165, 250)";
+                const isActive = !!state.openPlanets[config.key];
+
+                const orbitPath = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+                orbitPath.setAttribute("cx", centerX.toString());
+                orbitPath.setAttribute("cy", centerY.toString());
+                orbitPath.setAttribute("rx", config.radius.toString());
+                orbitPath.setAttribute("ry", (config.radius * 0.68).toString());
+                orbitPath.setAttribute("fill", "none");
+                orbitPath.setAttribute("stroke", color);
+                orbitPath.setAttribute("stroke-width", isActive ? "3" : "2");
+                orbitPath.setAttribute("opacity", isActive ? "0.9" : "0.6");
+                orbitPath.classList.add("orbit-path");
+                svg.appendChild(orbitPath);
+
+                const angleRad = (config.angle * Math.PI) / 180;
+                const planetX = centerX + config.radius * Math.cos(angleRad);
+                const planetY = centerY + (config.radius * 0.68) * Math.sin(angleRad);
+                const relativeX = (planetX / 800) * 100;
+                const relativeY = (planetY / 800) * 100;
+
+                const shortName = (planetData.name || config.key).replace(/^Órbita\s*/i, "");
+                const icon = planetData.icon || "🪐";
+
+                const planetEl = document.createElement("div");
+                planetEl.className = `planet-orbit ${isActive ? "active" : "locked"}`;
+                planetEl.dataset.planet = config.key;
+                planetEl.setAttribute("role", "button");
+                planetEl.setAttribute("tabindex", "0");
+                planetEl.setAttribute("aria-label", `${planetData.name || shortName} - ${isActive ? "Estabilizado" : "Pendiente"}`);
+                planetEl.style.left = `${relativeX}%`;
+                planetEl.style.top = `${relativeY}%`;
+                planetEl.style.color = color;
+
+                planetEl.innerHTML = `
+      <div class="planet-icon" style="border-color:${color};">
+        <span style="font-size:1.6rem;">${icon}</span>
+      </div>
+      <div class="planet-number" style="border-color:${color};color:${color};">${index + 1}</div>
+      <div class="planet-label" style="color:${color};">${shortName}</div>
+    `;
+
+                const scrollToCard = () => {
+                    const card = document.getElementById(`planet-${config.key}`);
+                    if (card) {
+                        switchTab("planetasSatellites");
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: "smooth", block: "start" });
+                            card.style.transition = 'box-shadow 0.3s ease';
+                            card.style.boxShadow = `0 0 22px rgba(${color.replace('rgb(', '').replace(')', '')}, 0.35)`;
+                            setTimeout(() => { card.style.boxShadow = ''; }, 900);
+                        }, 120);
+                    }
+                };
+
+                planetEl.addEventListener("click", scrollToCard);
+                planetEl.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        scrollToCard();
+                    }
+                });
+
+                overlay.appendChild(planetEl);
+
+                const legendItem = document.createElement("div");
+                legendItem.className = `legend-item ${isActive ? "active" : ""}`;
+                legendItem.style.borderLeftColor = color;
+                legendItem.style.color = color;
+                legendItem.dataset.planet = config.key;
+                legendItem.setAttribute("role", "listitem");
+                legendItem.innerHTML = `
+      <div class="legend-icon" style="border-color:${color};">${icon}</div>
+      <div class="legend-info">
+        <div class="legend-name">${shortName}</div>
+        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "✅ Estabilizado" : "🔒 Pendiente"}</div>
+      </div>
+    `;
+                legendItem.addEventListener("click", scrollToCard);
+                legend.appendChild(legendItem);
+            });
+        };
+
+        const renderMissionProgress = () => {
+            const container = document.getElementById("missionProgress");
+            if (!container) return;
+            container.innerHTML = PLANETS.map(planet => {
+                const fragmentsSolved = planet.satellites.filter(sat => state.fragments[planet.key][sat.id]).length;
+                const percent = Math.round((fragmentsSolved / planet.satellites.length) * 100);
+                const code = computePlanetCode(planet.key);
+                const open = state.openPlanets[planet.key];
+                const statusColor = open ? "var(--success)" : "var(--text-soft)";
+                const statusText = open ? `Candado ${code}` : `${fragmentsSolved}/${planet.satellites.length} fragmentos`;
+                return `
+                    <div class="progress-card" role="listitem">
+                        <div class="title">${planet.icon} ${planet.name}</div>
+                        <div class="value" style="color:${statusColor};" aria-label="${statusText}">${statusText}</div>
+                        <div class="progress-bar" role="progressbar" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso: ${percent}%"><span style="transform: scaleX(${percent / 100});"></span></div>
+                        <div style="font-size:0.8rem; color:var(--text-soft);">Tiempo objetivo: ${planet.estimated}</div>
+                    </div>
+                `;
+            }).join("");
+        };
+
+        const renderLocksBoard = () => {
+            const container = document.getElementById("locksBoard");
+            if (!container) return;
+            container.innerHTML = PLANETS.map(planet => {
+                const code = computePlanetCode(planet.key);
+                const digits = planet.lock.digits;
+                const open = state.openPlanets[planet.key];
+                const displayed = open ? code : code.padEnd(digits, "·");
+                return `
+                    <div class="lock-card" role="listitem">
+                        <header>
+                            <span>${planet.icon} ${planet.name}</span>
+                            <span style="color:${open ? 'var(--success)' : 'var(--text-soft)'}; font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase;" aria-label="${open ? 'Abierto' : 'Cerrado'}">${open ? 'Abierto' : 'Cerrado'}</span>
+                        </header>
+                        <div class="lock-code-display" role="group" aria-label="Código del candado">
+                            ${displayed.split("").map((ch, i) => `<span class="lock-digit" aria-label="Dígito ${i + 1}: ${ch === '·' ? 'sin definir' : ch}">${ch}</span>`).join("")}
+                        </div>
+                        <div class="clue">${planet.lock.clue}</div>
+                    </div>
+                `;
+            }).join("");
+        };
+
+        const renderFinalLockCard = () => {
+            const card = document.getElementById("finalLockCard");
+            if (!card) return;
+            const unlocked = PLANETS.every(planet => state.openPlanets[planet.key]);
+            const code = unlocked ? FINAL_LOCK.target : "·".repeat(FINAL_LOCK.digits);
+            const message = unlocked
+                ? "Con todas las órbitas estabilizadas, colocad estas cifras en el candado físico del Motor de la Inclusión."
+                : "Cada órbita desbloqueada aporta una cifra. Cuando tengáis las seis, el Motor quedará habilitado.";
+            card.innerHTML = `
+                <h3>Candado Motor</h3>
+                <div class="code">
+                    ${code.split("").map(ch => `<span>${ch}</span>`).join("")}
+                </div>
+                <div class="message">${message}<br><strong>Pista:</strong> ${FINAL_LOCK.clue}</div>
+            `;
+        };
+
+        const renderFinalStatus = () => {
+            const container = document.getElementById("finalStatus");
+            if (!container) return;
+            const totalFragments = getSolvedFragments();
+            const openPlanets = getUnlockedPlanets();
+            container.innerHTML = `
+                <div class="progress-card">
+                    <div class="title">Tiempo de sesión</div>
+                    <div class="value" id="liveTimer">${formatDuration(Date.now() - state.startedAt)}</div>
+                    <div style="font-size:0.82rem; color:var(--text-soft);">Contad el tiempo desde el briefing inicial.</div>
+                </div>
+                <div class="progress-card">
+                    <div class="title">Fragmentos resueltos</div>
+                    <div class="value">${totalFragments} / ${PLANETS.length * 3}</div>
+                    <div style="font-size:0.82rem; color:var(--text-soft);">Cada planeta necesita 3 para abrir el candado.</div>
+                </div>
+                <div class="progress-card">
+                    <div class="title">Planetas estabilizados</div>
+                    <div class="value">${openPlanets} / ${PLANETS.length}</div>
+                    <div style="font-size:0.82rem; color:var(--text-soft);">Cuando lleguéis a 6/6, usad el código motor.</div>
+                </div>
+            `;
+        };
+
+        const renderPanel = () => {
+            document.getElementById("summaryUnlocked").textContent = `${getUnlockedPlanets()} / ${PLANETS.length} planetas`;
+            renderSolarSystem();
+            renderMissionProgress();
+            renderLocksBoard();
+            renderFinalLockCard();
+            renderFinalStatus();
+        };
+
+        const buildSatelliteCard = (planet, satellite) => {
+            const solved = Boolean(state.fragments[planet.key][satellite.id]);
+            const attempts = state.attempts[planet.key][satellite.id];
+            const hintUsed = state.hints[planet.key][satellite.id];
+            return `
+                <div class="satellite-card ${solved ? 'completed' : ''}" data-satellite-card="${planet.key}-${satellite.id}">
+                    <header>
+                        <h4>${satellite.id} · ${satellite.title}</h4>
+                        <span class="fragment-badge">Fragmento: ${solved ? state.fragments[planet.key][satellite.id] : '??'}</span>
+                    </header>
+                    <p class="goal">${satellite.goal}</p>
+                    <div class="satellite-details">
+                        <div class="detail-block">
+                            <div class="label">Materiales</div>
+                            <ul>${satellite.materials.map(item => `<li>${item}</li>`).join("")}</ul>
+                        </div>
+                        <div class="detail-block">
+                            <div class="label">Cómo se resuelve</div>
+                            <div style="margin-top:0.4rem; line-height:1.5; color:var(--text-soft);">${satellite.instructions}</div>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div class="prompt">${satellite.question.prompt}</div>
+                        <div class="option-list">
+                            ${satellite.question.options.map((option, idx) => `
+                                <div class="option">
+                                    <input type="radio" id="${planet.key}-${satellite.id}-${idx}" name="${planet.key}-${satellite.id}" value="${option.value}" ${solved ? 'disabled' : ''}>
+                                    <label for="${planet.key}-${satellite.id}-${idx}">${option.label}</label>
+                                </div>
+                            `).join("")}
+                        </div>
+                        <div class="satellite-actions">
+                            <button type="button" class="btn" data-validate="${planet.key}-${satellite.id}" ${solved ? 'disabled' : ''}>Validar respuesta</button>
+                            <button type="button" class="btn secondary" data-hint="${planet.key}-${satellite.id}" ${hintUsed ? 'disabled' : ''}>Mostrar pista</button>
+                            ${attempts > 0 ? `<span style="font-size:0.78rem; color:var(--text-muted);">Intentos: ${attempts}</span>` : ''}
+                        </div>
+                        <div class="feedback ${solved ? 'success' : ''}" id="feedback-${planet.key}-${satellite.id}">
+                            ${solved ? satellite.successMessage : ''}
+                        </div>
+                        <div class="feedback" id="hint-${planet.key}-${satellite.id}" style="display:${hintUsed ? 'block' : 'none'}; color:var(--warning);">${hintUsed ? satellite.quickHint : ''}</div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderPlanetsDeck = () => {
+            const deck = document.getElementById("planetsDeck");
+            if (!deck) return;
+            deck.innerHTML = PLANETS.map(planet => {
+                const code = computePlanetCode(planet.key);
+                const open = state.openPlanets[planet.key];
+                const statusColor = open ? "var(--success)" : "var(--text-soft)";
+                return `
+                    <section class="planet-card" id="planet-${planet.key}">
+                        <div class="planet-header">
+                            <div class="icon" style="border-color:${planet.ringColor}; background: rgba(15,23,42,0.8);">${planet.icon}</div>
+                            <div class="meta">
+                                <h3>${planet.name}</h3>
+                                <div class="focus">${planet.focus} • ${planet.estimated}</div>
+                            </div>
+                        </div>
+                        <div class="planet-summary">${planet.summary}</div>
+                        <div class="planet-meta">
+                            <span class="planet-chip">${planet.satellites.length} satélites</span>
+                            <span class="planet-chip">Candado ${planet.lock.type === 'numeric' ? 'numérico' : 'alfanumérico'}: ${planet.lock.target.length} cifras</span>
+                            <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `Abierto (${code})` : 'Pendiente'}</span>
+                        </div>
+                        <div class="lock-panel">
+                            <header>
+                                <span>Combinación objetivo</span>
+                                <span>${open ? 'Candado listo' : 'Necesita fragmentos'}</span>
+                            </header>
+                            <div class="code-preview">
+                                ${planet.lock.target.split("").map((digit, idx) => `
+                                    <span class="digit" style="border-color:${planet.ringColor}; color:${open ? '#f8fafc' : 'var(--text-muted)'}; background:${open ? 'rgba(34,197,94,0.18)' : 'rgba(15,23,42,0.75)'};">
+                                        ${open ? digit : (idx < code.length ? code[idx] : '·')}
+                                    </span>
+                                `).join("")}
+                            </div>
+                            <div class="clue">${planet.lock.clue}</div>
+                        </div>
+                        <div class="satellite-grid">
+                            ${planet.satellites.map(sat => buildSatelliteCard(planet, sat)).join("")}
+                        </div>
+                        <div class="planet-footer">
+                            <strong>Pro-tip:</strong> ${planet.generalHint}<br>
+                            Anotad en la libreta la cifra que aporta esta órbita al Motor final: <strong>${planet.finalContribution}</strong>.
+                        </div>
+                    </section>
+                `;
+            }).join("");
+
+            deck.querySelectorAll('[data-validate]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const [planetKey, satelliteId] = button.dataset.validate.split('-');
+                    validateSatelliteAnswer(planetKey, satelliteId);
+                });
+            });
+
+            deck.querySelectorAll('[data-hint]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const [planetKey, satelliteId] = button.dataset.hint.split('-');
+                    showSatelliteHint(planetKey, satelliteId);
+                });
+            });
+        };
+
+        const renderStats = () => {
+            const statsGrid = document.getElementById("statsGrid");
+            if (!statsGrid) return;
+            const fragmentsSolved = getSolvedFragments();
+            const openPlanets = getUnlockedPlanets();
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <h3>Tiempo transcurrido</h3>
+                    <div class="stat-value">${formatDuration(Date.now() - state.startedAt)}</div>
+                    <div class="stat-note">El cronómetro corre desde que arrancasteis el briefing.</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Fragmentos resueltos</h3>
+                    <div class="stat-value">${fragmentsSolved}</div>
+                    <div class="stat-note">Lleváis ${fragmentsSolved} fragmentos de ${PLANETS.length * 3} posibles.</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Planetas estabilizados</h3>
+                    <div class="stat-value">${openPlanets}</div>
+                    <div class="stat-note">Cada planeta abierto añade una cifra al Motor.</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pistas usadas</h3>
+                    <div class="stat-value">${state.hintCount}</div>
+                    <div class="stat-note">Planificad cuándo merece la pena revelar una pista.</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Intentos totales</h3>
+                    <div class="stat-value">${state.totalAttempts}</div>
+                    <div class="stat-note">Cada intento fallido informa sobre la estrategia actual.</div>
+                </div>
+            `;
+            renderAchievements();
+            renderHints();
+        };
+
+        const renderAchievements = () => {
+            const container = document.getElementById("achievementsGrid");
+            if (!container) return;
+            const fragments = getSolvedFragments();
+            const planets = getUnlockedPlanets();
+            const hintsUsed = state.hintCount;
+            const achievements = [
+                {
+                    key: "launch",
+                    title: "Despegue",
+                    description: "Obtened vuestro primer fragmento.",
+                    unlocked: fragments >= 1
+                },
+                {
+                    key: "orbital",
+                    title: "Órbita estable",
+                    description: "Completad al menos 3 planetas.",
+                    unlocked: planets >= 3
+                },
+                {
+                    key: "maestria",
+                    title: "Maestría NEAE",
+                    description: "Abrir los 6 planetas en la sesión.",
+                    unlocked: planets === PLANETS.length
+                },
+                {
+                    key: "tactica",
+                    title: "Táctica impecable",
+                    description: "Terminad la misión usando 0 pistas.",
+                    unlocked: planets === PLANETS.length && hintsUsed === 0
+                }
+            ];
+            container.innerHTML = achievements.map(ach => `
+                <div class="achievement-card ${ach.unlocked ? 'active' : ''}">
+                    <div class="title">${ach.title}</div>
+                    <div class="description">${ach.description}</div>
+                </div>
+            `).join("");
+        };
+
+        const renderHints = () => {
+            const container = document.getElementById("hintList");
+            if (!container) return;
+            container.innerHTML = PLANETS.map(planet => {
+                const open = state.openPlanets[planet.key];
+                return `
+                    <div class="hint-item ${open ? 'revealed' : ''}" data-hint-general="${planet.key}">
+                        <header>
+                            <span>${planet.icon} ${planet.name}</span>
+                            <button type="button" class="btn secondary" ${open ? 'disabled' : ''}>${open ? 'Órbita resuelta' : 'Mostrar pista'}</button>
+                        </header>
+                        <div class="hint-text">${planet.generalHint}</div>
+                    </div>
+                `;
+            }).join("");
+
+            container.querySelectorAll('[data-hint-general]').forEach(item => {
+                const planetKey = item.dataset.hintGeneral;
+                if (!state.openPlanets[planetKey]) {
+                    const button = item.querySelector('button');
+                    button.addEventListener('click', () => {
+                        item.classList.add('revealed');
+                        button.disabled = true;
+                        state.hintCount += 1;
+                        saveState();
+                        renderStats();
+                    });
+                }
+            });
+        };
+
+        const validateSatelliteAnswer = (planetKey, satelliteId) => {
+            const planet = getPlanetByKey(planetKey);
+            const satellite = planet.satellites.find(sat => sat.id === satelliteId);
+            const card = document.querySelector(`[data-satellite-card="${planetKey}-${satelliteId}"]`);
+            const feedbackEl = card?.querySelector(`#feedback-${planetKey}-${satelliteId}`);
+            if (!card || !feedbackEl) return;
+            const selected = card.querySelector(`input[name="${planetKey}-${satelliteId}"]:checked`);
+            if (!selected) {
+                feedbackEl.textContent = "Selecciona una opción antes de validar.";
+                feedbackEl.className = "feedback error";
+                return;
+            }
+
+            const option = satellite.question.options.find(opt => opt.value === selected.value);
+            if (!option) return;
+
+            if (option.correct) {
+                markFragment(planetKey, satelliteId, satellite.fragment);
+                announce(`${satellite.title}: fragmento ${satellite.fragment} asegurado`, "success");
+            } else {
+                incrementAttempt(planetKey, satelliteId);
+                feedbackEl.textContent = option.feedback;
+                feedbackEl.className = "feedback error";
+            }
+        };
+
+        const showSatelliteHint = (planetKey, satelliteId) => {
+            registerHintUse(planetKey, satelliteId);
+            const hintEl = document.getElementById(`hint-${planetKey}-${satelliteId}`);
+            if (hintEl) {
+                const planet = getPlanetByKey(planetKey);
+                const satellite = planet.satellites.find(sat => sat.id === satelliteId);
+                hintEl.textContent = satellite.quickHint;
+                hintEl.style.display = "block";
+            }
+            const button = document.querySelector(`[data-hint="${planetKey}-${satelliteId}"]`);
+            if (button) button.disabled = true;
+        };
+
+        const switchTab = (targetId) => {
+            document.querySelectorAll('section.tab-panel').forEach(section => {
+                section.classList.toggle('active', section.id === targetId);
+            });
+            document.querySelectorAll('nav.tab-nav button').forEach(button => {
+                button.classList.toggle('active', button.dataset.tabTarget === targetId);
+            });
+        };
+
+        const renderAll = () => {
+            renderPanel();
+            renderPlanetsDeck();
+            renderStats();
+        };
+
+        const initNav = () => {
+            document.querySelectorAll('nav.tab-nav button').forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.tabTarget);
+                });
+            });
+        };
+
+        const initReset = () => {
+            const resetBtn = document.getElementById('resetSessionBtn');
+            if (resetBtn) resetBtn.addEventListener('click', () => {
+                if (confirm('¿Seguro que queréis reiniciar la misión?')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    resetState();
+                }
+            });
+        };
+
+        const initStars = () => {
+            const canvas = document.getElementById('stars');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawStars();
+            };
+            const drawStars = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const count = Math.min(220, Math.floor(canvas.width / 8));
+                for (let i = 0; i < count; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 1.5;
+                    const alpha = 0.3 + Math.random() * 0.7;
+                    ctx.fillStyle = `rgba(148, 197, 255, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            };
+            window.addEventListener('resize', resize);
+            resize();
+        };
+
+        const startTimer = () => {
+            setInterval(() => {
+                const timerEl = document.getElementById('liveTimer');
+                if (timerEl) {
+                    timerEl.textContent = formatDuration(Date.now() - state.startedAt);
+                }
+            }, 1000);
+        };
+
+        const bootstrap = () => {
+            loadState();
+            initNav();
+            initReset();
+            initStars();
+            renderAll();
+            startTimer();
+        };
+
+        document.addEventListener('DOMContentLoaded', bootstrap);
+    </script>
+</body>
+</html>

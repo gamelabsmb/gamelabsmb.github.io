@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACIÓN INCLUSIÓN — Selección de Grupo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .card-selector {
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="relative min-h-screen text-slate-100">
+        <!-- Fondo espacial -->
+        <div class="absolute inset-0 bg-[#05070d]">
+            <canvas id="stars" class="w-full h-full"></canvas>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,30,60,0.35),transparent_60%)]"></div>
+            <div class="pointer-events-none absolute inset-0 [background:repeating-linear-gradient(0deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_3px)]"></div>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto p-4 md:p-8">
+            <header class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-semibold tracking-wider mb-2">OPERACIÓN INCLUSIÓN</h1>
+                <h2 class="text-xl md:text-2xl text-slate-400 mb-4">SISTEMA ÓRBITAS</h2>
+                <p class="text-slate-300 text-sm">Selecciona 5 tarjetas del mismo grupo para formar tu equipo</p>
+            </header>
+
+            <!-- Sistema de Tarjetas de Grupos -->
+            <div class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg">
+                        <span class="text-slate-300">Tarjetas seleccionadas: </span>
+                        <span id="selectedCount" class="font-mono font-bold text-sky-400">0/5</span>
+                    </div>
+                </div>
+                
+                <div id="cardGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
+                    <!-- Las tarjetas se generarán dinámicamente -->
+                </div>
+                
+                <div id="groupStatus" class="text-center p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
+                    <span class="text-slate-300">Selecciona 5 tarjetas del mismo grupo</span>
+                </div>
+            </div>
+
+            <!-- Información de grupos -->
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="border border-sky-600/40 bg-slate-950/70 rounded p-4">
+                    <h3 class="text-sm font-semibold text-sky-300 mb-2">Grupos 1-2</h3>
+                    <p class="text-xs text-slate-400">Estación Visual-A • Social-A</p>
+                </div>
+                <div class="border border-emerald-600/40 bg-slate-950/70 rounded p-4">
+                    <h3 class="text-sm font-semibold text-emerald-300 mb-2">Grupos 3-4</h3>
+                    <p class="text-xs text-slate-400">Estación Visual-B • Social-B</p>
+                </div>
+                <div class="border border-amber-600/40 bg-slate-950/70 rounded p-4">
+                    <h3 class="text-sm font-semibold text-amber-300 mb-2">Grupos 5-6</h3>
+                    <p class="text-xs text-slate-400">Estación Visual-C • Social-C</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="selector.js"></script>
+    <script>
+        // Inicializar canvas de estrellas
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        function drawStars() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            for (let i = 0; i < 100; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 1.5;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        drawStars();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drawStars();
+        });
+    </script>
+</body>
+</html>
+
