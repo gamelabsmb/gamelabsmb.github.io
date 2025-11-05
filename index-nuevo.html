@@ -11,6 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Fondo espacial para toda la página */
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100%;
+            background: #05070d;
+            background-image: 
+                radial-gradient(ellipse at center, rgba(10,30,60,0.35) 0%, transparent 60%),
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px 1px, transparent 1px 3px);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
         /* Estilos personalizados */
         .icon { width: 1.5rem; height: 1.5rem; display: inline-block; }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
@@ -20,7 +35,7 @@
         
         /* Estilos para satélites con preguntas */
         .satellite-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
-        .satellite-card.completed { border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
+        .satellite-card.completed { border-color: rgba(168, 85, 247, 0.6); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
         .satellite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .satellite-title { font-size: 1.1rem; font-weight: 700; color: rgb(226, 232, 240); }
         .fragment-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); border-radius: 999px; padding: 0.4rem 0.8rem; font-size: 0.85rem; }
@@ -37,7 +52,7 @@
         .btn-satellite:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-satellite.secondary { border-color: rgba(148, 163, 184, 0.4); background: rgba(15, 23, 42, 0.7); }
         .feedback { margin-top: 1rem; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; }
-        .feedback.success { background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.5); color: rgb(134, 239, 172); }
+        .feedback.success { background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.5); color: rgb(221, 214, 254); }
         .feedback.error { background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.5); color: rgb(254, 202, 202); }
         .feedback.info { background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); color: rgb(253, 230, 138); }
         
@@ -74,7 +89,7 @@
         .achievement-card.locked { opacity: 0.5; }
         .achievement-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
         .hint-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
-        .hint-card.used { border-color: rgba(34, 197, 94, 0.6); }
+        .hint-card.used { border-color: rgba(168, 85, 247, 0.6); }
         .hint-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
         
         /* Grids responsive para diferentes secciones */
@@ -369,14 +384,15 @@
         Saltar al contenido principal
     </a>
     
-    <!-- Fondo espacial -->
-    <div class="absolute inset-0 bg-[#05070d]">
+    <!-- Fondo espacial fijo que cubre toda la página -->
+    <div class="fixed inset-0 bg-[#05070d] z-0" style="min-height: 100vh; width: 100vw;">
         <canvas id="stars" class="w-full h-full"></canvas>
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,30,60,0.35),transparent_60%)]"></div>
         <div class="pointer-events-none absolute inset-0 [background:repeating-linear-gradient(0deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_3px)]"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto p-4 md:p-8">
+    <!-- Contenido principal con z-index para estar sobre el fondo -->
+    <div class="relative max-w-7xl mx-auto p-4 md:p-8 z-10" style="position: relative;">
         <!-- Header Principal -->
         <header class="main-header mb-8">
             <div class="text-center mb-6">
@@ -518,30 +534,30 @@
                 </h2>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 class="stat-title">⏱️ Tiempo Transcurrido</h3>
+                        <h3 class="stat-title"><i class="fas fa-clock"></i> Tiempo Transcurrido</h3>
                         <div class="stat-value" id="timerDisplay">00:00:00</div>
                         <div class="stat-description">Tiempo desde el inicio de la sesión</div>
                     </div>
                     <div class="stat-card">
-                        <h3 class="stat-title">📈 Progreso General</h3>
+                        <h3 class="stat-title"><i class="fas fa-chart-line"></i> Progreso General</h3>
                         <div class="mb-2">
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="text-slate-300">Planetas estabilizados</span>
                                 <span class="text-slate-300" id="progressText" aria-live="polite">0/7</span>
                             </div>
                             <div class="w-full bg-slate-800 rounded-full h-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7" aria-label="Progreso de planetas">
-                                <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                         </div>
                         <div class="stat-description mt-2">Completa los 7 planetas para desbloquear el Motor de la Inclusión</div>
                     </div>
                     <div class="stat-card">
-                        <h3 class="stat-title">🛰️ Fragmentos Resueltos</h3>
+                        <h3 class="stat-title"><i class="fas fa-puzzle-piece"></i> Fragmentos Resueltos</h3>
                         <div class="stat-value" id="fragmentsSolved">0</div>
                         <div class="stat-description">Fragmentos obtenidos de los satélites</div>
                     </div>
                     <div class="stat-card">
-                        <h3 class="stat-title">💡 Pistas Usadas</h3>
+                        <h3 class="stat-title"><i class="fas fa-lightbulb"></i> Pistas Usadas</h3>
                         <div class="stat-value" id="hintsUsed">0</div>
                         <div class="stat-description">Pistas solicitadas durante la misión</div>
                     </div>
@@ -587,7 +603,7 @@
             {
                 key: "visual",
                 name: "Órbita Visual",
-                icon: "🔵",
+                icon: '<i class="fas fa-eye"></i>',
                 ringColor: "rgb(59, 130, 246)",
                 focus: "Acceso sensorial",
                 estimated: "6-7 min",
@@ -606,11 +622,11 @@
                         title: "Filtro de contraste",
                         goal: "Comprobad qué panel mantiene contraste AA al activar el filtro rojo virtual.",
                         materials: ["Simulación 'Filtro Lumen'", "Acetato rojo físico (opcional)"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Observa los tres paneles que se muestran.\n2. Imagina que aplicas un filtro rojo sobre cada uno.\n3. El panel que mantiene mejor contraste (>70%) es el correcto.\n4. Anota el fragmento que aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Observa los tres paneles que se muestran.\n2. Imagina que aplicas un filtro rojo sobre cada uno.\n3. El panel que mantiene mejor contraste (>70%) es el correcto.\n4. Anota el fragmento que aparece cuando aciertas.",
                         fragment: "12",
                         order: 1,
-                        quickHint: "💡 PISTA: La opción válida conserva contraste AA incluso tras aplicar el filtro rojo.",
-                        successMessage: "✅ Perfecto: contraste estable por encima del 70 %. Fragmento obtenido: 12",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: La opción válida conserva contraste AA incluso tras aplicar el filtro rojo.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Perfecto: contraste estable por encima del 70 %. Fragmento obtenido: 12",
                         question: {
                             prompt: "¿Qué panel conserva contraste AA tras activar el filtro rojo?",
                             options: [
@@ -618,19 +634,19 @@
                                     value: "panelA",
                                     label: "Cartel azul claro con tipografía blanca fina (contraste 58 %)",
                                     correct: false,
-                                    feedback: "❌ 58 % no asegura lectura. Busca un contraste superior al 70 %."
+                                    feedback: "<i class='fas fa-times-circle'></i> 58 % no asegura lectura. Busca un contraste superior al 70 %."
                                 },
                                 {
                                     value: "panelB",
                                     label: "Cartel negro con tipografía blanca gruesa y pictograma (contraste 72 %)",
                                     correct: true,
-                                    feedback: "✅ Exacto: 72 % se mantiene tras el filtro. Fragmento = 12."
+                                    feedback: "<i class='fas fa-check-circle'></i> Exacto: 72 % se mantiene tras el filtro. Fragmento = 12."
                                 },
                                 {
                                     value: "panelC",
                                     label: "Cartel naranja con texto crema (contraste 61 %)",
                                     correct: false,
-                                    feedback: "❌ 61 % sigue siendo bajo. Necesitas al menos 70%."
+                                    feedback: "<i class='fas fa-times-circle'></i> 61 % sigue siendo bajo. Necesitas al menos 70%."
                                 }
                             ]
                         }
@@ -640,11 +656,11 @@
                         title: "Señal redundante",
                         goal: "Elegid la señal que combina icono y texto a altura accesible.",
                         materials: ["Mockup señalización", "Regla o cinta métrica (opcional)"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Lee las tres opciones de señalización.\n2. Busca la que está a 0,80 m del suelo (altura accesible).\n3. Debe tener icono + texto (redundancia).\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Lee las tres opciones de señalización.\n2. Busca la que está a 0,80 m del suelo (altura accesible).\n3. Debe tener icono + texto (redundancia).\n4. El fragmento aparece cuando aciertas.",
                         fragment: "8",
                         order: 2,
-                        quickHint: "💡 PISTA: Busca la señal accesible a 80 cm con doble canal (icono + palabra).",
-                        successMessage: "✅ Señal acertada: altura 0,80 m y doble canal. Fragmento obtenido: 8",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca la señal accesible a 80 cm con doble canal (icono + palabra).',
+                        successMessage: "<i class='fas fa-check-circle'></i> Señal acertada: altura 0,80 m y doble canal. Fragmento obtenido: 8",
                         question: {
                             prompt: "¿Cuál de las opciones garantiza redundancia y altura accesible?",
                             options: [
@@ -652,19 +668,19 @@
                                     value: "signalA",
                                     label: "Cartel solo texto a 1,60 m del suelo",
                                     correct: false,
-                                    feedback: "❌ Demasiado alto (1,60 m) y sin icono. No es accesible."
+                                    feedback: "<i class='fas fa-times-circle'></i> Demasiado alto (1,60 m) y sin icono. No es accesible."
                                 },
                                 {
                                     value: "signalB",
                                     label: "Icono + palabra en relieve a 0,80 m del suelo",
                                     correct: true,
-                                    feedback: "✅ Correcto: redundancia + altura accesible. Fragmento = 8."
+                                    feedback: "<i class='fas fa-check-circle'></i> Correcto: redundancia + altura accesible. Fragmento = 8."
                                 },
                                 {
                                     value: "signalC",
                                     label: "Panel LED con animaciones a 1,90 m",
                                     correct: false,
-                                    feedback: "❌ La animación puede distraer y queda fuera de alcance (1,90 m)."
+                                    feedback: "<i class='fas fa-times-circle'></i> La animación puede distraer y queda fuera de alcance (1,90 m)."
                                 }
                             ]
                         }
@@ -674,11 +690,11 @@
                         title: "Tipografía legible",
                         goal: "Seleccionad la maqueta que optimiza interlineado y espaciado.",
                         materials: ["Maquetas impresas A y B"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Compara las tres opciones de texto.\n2. Busca la que tiene: interlineado 1.5, mayúsculas/minúsculas, párrafos cortos.\n3. Evita texto justificado o todo en mayúsculas.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Compara las tres opciones de texto.\n2. Busca la que tiene: interlineado 1.5, mayúsculas/minúsculas, párrafos cortos.\n3. Evita texto justificado o todo en mayúsculas.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "7",
                         order: 3,
-                        quickHint: "💡 PISTA: Recuerda: bloques cortos + interlineado amplio = lectura ágil.",
-                        successMessage: "✅ Lectura fácil asegurada. Fragmento obtenido: 7",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Recuerda: bloques cortos + interlineado amplio = lectura ágil.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Lectura fácil asegurada. Fragmento obtenido: 7",
                         question: {
                             prompt: "¿Qué maqueta facilita la lectura a primera vista?",
                             options: [
@@ -686,19 +702,19 @@
                                     value: "typoA",
                                     label: "Texto justificado, todo en mayúsculas, interlineado 1",
                                     correct: false,
-                                    feedback: "❌ Produce efecto 'muro de texto'. Difícil de leer."
+                                    feedback: "<i class='fas fa-times-circle'></i> Produce efecto 'muro de texto'. Difícil de leer."
                                 },
                                 {
                                     value: "typoB",
                                     label: "Párrafos cortos, interlineado 1.5 y mayúsculas/minúsculas",
                                     correct: true,
-                                    feedback: "✅ Exacto: la maqueta B añade el dígito 7."
+                                    feedback: "<i class='fas fa-check-circle'></i> Exacto: la maqueta B añade el dígito 7."
                                 },
                                 {
                                     value: "typoC",
                                     label: "Texto centrado con letras condensadas",
                                     correct: false,
-                                    feedback: "❌ Centrado y condensado dificulta la lectura continua."
+                                    feedback: "<i class='fas fa-times-circle'></i> Centrado y condensado dificulta la lectura continua."
                                 }
                             ]
                         }
@@ -708,7 +724,7 @@
             {
                 key: "auditiva",
                 name: "Órbita Auditiva",
-                icon: "🔊",
+                icon: '<i class="fas fa-volume-up"></i>',
                 ringColor: "rgb(139, 92, 246)",
                 focus: "Acceso auditivo",
                 estimated: "6 min",
@@ -727,11 +743,11 @@
                         title: "Morse inclusivo",
                         goal: "Decodificad la tira morse eliminando elementos no numéricos en la posición 4.",
                         materials: ["Tira morse impresa", "Tabla de equivalencias"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. La palabra es PICTOS.\n2. Aplica la regla: toma posiciones 1, 2, 3, 5, 6 (elimina la posición 4).\n3. El resultado es PICOS.\n4. Convierte PICOS a números: P=16, I=9, C=3, O=15, S=19.\n5. Simplifica: 16+9+3+15+19 = 62 → 6+2 = 8... pero espera, revisa la pregunta.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. La palabra es PICTOS.\n2. Aplica la regla: toma posiciones 1, 2, 3, 5, 6 (elimina la posición 4).\n3. El resultado es PICOS.\n4. Convierte PICOS a números: P=16, I=9, C=3, O=15, S=19.\n5. Simplifica: 16+9+3+15+19 = 62 → 6+2 = 8... pero espera, revisa la pregunta.",
                         fragment: "54",
                         order: 1,
-                        quickHint: "💡 PISTA: Convertid a texto PICOS y eliminad la letra en cuarta posición.",
-                        successMessage: "✅ Decodificación completa. Fragmento obtenido: 54",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Convertid a texto PICOS y eliminad la letra en cuarta posición.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Decodificación completa. Fragmento obtenido: 54",
                         question: {
                             prompt: "¿Qué resultado obtenéis al aplicar la regla 1,2,3,5,6 sobre PICTOS?",
                             options: [
@@ -739,19 +755,19 @@
                                     value: "picts",
                                     label: "PICTS",
                                     correct: false,
-                                    feedback: "❌ Revisa: la cuarta posición se descarta si no es número."
+                                    feedback: "<i class='fas fa-times-circle'></i> Revisa: la cuarta posición se descarta si no es número."
                                 },
                                 {
                                     value: "picos",
                                     label: "PICOS",
                                     correct: true,
-                                    feedback: "✅ Correcto: PICOS -> 54 como fragmento inicial."
+                                    feedback: "<i class='fas fa-check-circle'></i> Correcto: PICOS -> 54 como fragmento inicial."
                                 },
                                 {
                                     value: "ptcos",
                                     label: "PTCOS",
                                     correct: false,
-                                    feedback: "❌ Has eliminado la vocal equivocada. La posición 4 es la T."
+                                    feedback: "<i class='fas fa-times-circle'></i> Has eliminado la vocal equivocada. La posición 4 es la T."
                                 }
                             ]
                         }
@@ -761,11 +777,11 @@
                         title: "Ruido base",
                         goal: "Priorizad la acción que reduce el ruido ambiental en la clase.",
                         materials: ["Plano de aula", "Medidor de ruido (opcional)"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Piensa en qué reduce el ruido REALMENTE.\n2. No es aumentar el volumen, eso añade más sonido.\n3. Busca cerrar fuentes de ruido: puertas, ventiladores, etc.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Piensa en qué reduce el ruido REALMENTE.\n2. No es aumentar el volumen, eso añade más sonido.\n3. Busca cerrar fuentes de ruido: puertas, ventiladores, etc.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "0",
                         order: 2,
-                        quickHint: "💡 PISTA: Antes de subir volumen, eliminad ruido de fondo.",
-                        successMessage: "✅ Ambiente controlado: la base vuelve a cero. Fragmento obtenido: 0",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Antes de subir volumen, eliminad ruido de fondo.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Ambiente controlado: la base vuelve a cero. Fragmento obtenido: 0",
                         question: {
                             prompt: "¿Qué acción es más eficaz para reducir el ruido de fondo?",
                             options: [
@@ -773,19 +789,19 @@
                                     value: "increaseVolume",
                                     label: "Subir el volumen del altavoz principal",
                                     correct: false,
-                                    feedback: "❌ Solo añade más sonido sobre el ruido. No lo reduce."
+                                    feedback: "<i class='fas fa-times-circle'></i> Solo añade más sonido sobre el ruido. No lo reduce."
                                 },
                                 {
                                     value: "closeDoors",
                                     label: "Cerrar la puerta, apagar ventilador y añadir panel absorbente",
                                     correct: true,
-                                    feedback: "✅ Exacto: ruido base cercano a 0."
+                                    feedback: "<i class='fas fa-check-circle'></i> Exacto: ruido base cercano a 0."
                                 },
                                 {
                                     value: "clapPattern",
                                     label: "Usar palmadas como clave de atención",
                                     correct: false,
-                                    feedback: "❌ Es un apoyo, pero no reduce el ruido ambiental."
+                                    feedback: "<i class='fas fa-times-circle'></i> Es un apoyo, pero no reduce el ruido ambiental."
                                 }
                             ]
                         }
@@ -795,11 +811,11 @@
                         title: "Apoyo visual",
                         goal: "Seleccionad el recurso que acompaña la información auditiva con apoyo visual.",
                         materials: ["Plantilla de subtítulos", "Pictogramas"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Busca algo que combine audio + visual.\n2. Debe ayudar a quien necesita leer los labios.\n3. Pictograma de labios + palabras clave funciona bien.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Busca algo que combine audio + visual.\n2. Debe ayudar a quien necesita leer los labios.\n3. Pictograma de labios + palabras clave funciona bien.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "9",
                         order: 3,
-                        quickHint: "💡 PISTA: Busca sincronía boca-palabra en la misma señal.",
-                        successMessage: "✅ Perfecto: apoyo visual añadido. Fragmento obtenido: 9",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca sincronía boca-palabra en la misma señal.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Perfecto: apoyo visual añadido. Fragmento obtenido: 9",
                         question: {
                             prompt: "¿Qué recurso multiplica canales para quien necesita lectura labial?",
                             options: [
@@ -807,19 +823,19 @@
                                     value: "textoCompleto",
                                     label: "Transcripción completa en la pizarra",
                                     correct: false,
-                                    feedback: "❌ Útil, pero no sincroniza con lectura labial."
+                                    feedback: "<i class='fas fa-times-circle'></i> Útil, pero no sincroniza con lectura labial."
                                 },
                                 {
                                     value: "pictos",
                                     label: "Pictograma de labios + palabras clave resaltadas",
                                     correct: true,
-                                    feedback: "✅ ¡Ese es! Añade 9 al candado."
+                                    feedback: "<i class='fas fa-check-circle'></i> ¡Ese es! Añade 9 al candado."
                                 },
                                 {
                                     value: "audioRec",
                                     label: "Grabación de audio para repasar después",
                                     correct: false,
-                                    feedback: "❌ No ayuda en el momento ni aporta canal visual."
+                                    feedback: "<i class='fas fa-times-circle'></i> No ayuda en el momento ni aporta canal visual."
                                 }
                             ]
                         }
@@ -829,7 +845,7 @@
             {
                 key: "lenguaje",
                 name: "Órbita Lenguaje-Comprensión",
-                icon: "💬",
+                icon: '<i class="fas fa-comments"></i>',
                 ringColor: "rgb(6, 182, 212)",
                 focus: "Comunicación y lectoescritura",
                 estimated: "6 min",
@@ -848,11 +864,11 @@
                         title: "Consigna en 3 pasos",
                         goal: "Detectad la instrucción que respeta lectura fácil en tres pasos.",
                         materials: ["Plantillas de consignas A y B"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una consigna clara tiene pasos numerados.\n2. Cada paso empieza con un verbo de acción.\n3. Busca la que dice: '1) Observa... 2) Copia... 3) Cuenta...'\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una consigna clara tiene pasos numerados.\n2. Cada paso empieza con un verbo de acción.\n3. Busca la que dice: '1) Observa... 2) Copia... 3) Cuenta...'\n4. El fragmento aparece cuando aciertas.",
                         fragment: "3",
                         order: 1,
-                        quickHint: "💡 PISTA: Busca la que empieza por '1. Observa ...', '2. ...', '3. ...'.",
-                        successMessage: "✅ Consigna lista. Fragmento obtenido: 3",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca la que empieza por \'1. Observa ...\', \'2. ...\', \'3. ...\'.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Consigna lista. Fragmento obtenido: 3",
                         question: {
                             prompt: "¿Cuál de estas consignas sigue lectura fácil?",
                             options: [
@@ -860,19 +876,19 @@
                                     value: "consignaA",
                                     label: "Describe libremente lo que ves en el cartel",
                                     correct: false,
-                                    feedback: "❌ Carece de pasos claros. Demasiado abierto."
+                                    feedback: "<i class='fas fa-times-circle'></i> Carece de pasos claros. Demasiado abierto."
                                 },
                                 {
                                     value: "consignaB",
                                     label: "1) Observa la maqueta. 2) Copia el ejemplo. 3) Cuenta qué cambiarías.",
                                     correct: true,
-                                    feedback: "✅ Exacto. Fragmento = 3."
+                                    feedback: "<i class='fas fa-check-circle'></i> Exacto. Fragmento = 3."
                                 },
                                 {
                                     value: "consignaC",
                                     label: "Explica tu idea en un párrafo de 10 líneas",
                                     correct: false,
-                                    feedback: "❌ Demasiado abierto, sin guía paso a paso."
+                                    feedback: "<i class='fas fa-times-circle'></i> Demasiado abierto, sin guía paso a paso."
                                 }
                             ]
                         }
@@ -882,11 +898,11 @@
                         title: "Demostración",
                         goal: "Escoged el recurso que modela la tarea antes de pedirla.",
                         materials: ["Vídeo corto de demostración", "Ficha de autoevaluación"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El modelado muestra CÓMO hacer algo.\n2. Un vídeo con audio y subtítulos es perfecto.\n3. No es suficiente una lista escrita sin ejemplo.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. El modelado muestra CÓMO hacer algo.\n2. Un vídeo con audio y subtítulos es perfecto.\n3. No es suficiente una lista escrita sin ejemplo.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "4",
                         order: 2,
-                        quickHint: "💡 PISTA: Si se ve cómo se hace, baja la carga de memoria.",
-                        successMessage: "✅ Demostración incorporada. Fragmento obtenido: 4",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Si se ve cómo se hace, baja la carga de memoria.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Demostración incorporada. Fragmento obtenido: 4",
                         question: {
                             prompt: "¿Qué apoyo asegura modelado explícito?",
                             options: [
@@ -894,19 +910,19 @@
                                     value: "checklist",
                                     label: "Checklist escrita sin ejemplo",
                                     correct: false,
-                                    feedback: "❌ Útil, pero no muestra cómo se hace."
+                                    feedback: "<i class='fas fa-times-circle'></i> Útil, pero no muestra cómo se hace."
                                 },
                                 {
                                     value: "video",
                                     label: "Vídeo de 40 segundos con audio y subtítulos",
                                     correct: true,
-                                    feedback: "✅ Correcto. Añade el dígito 4."
+                                    feedback: "<i class='fas fa-check-circle'></i> Correcto. Añade el dígito 4."
                                 },
                                 {
                                     value: "poster",
                                     label: "Póster motivacional con frase inspiradora",
                                     correct: false,
-                                    feedback: "❌ No modela el proceso."
+                                    feedback: "<i class='fas fa-times-circle'></i> No modela el proceso."
                                 }
                             ]
                         }
@@ -916,11 +932,11 @@
                         title: "Vocabulario ancla",
                         goal: "Destacad las palabras esenciales para asegurar comprensión.",
                         materials: ["Texto original", "Marcadores"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Las palabras clave son verbos de acción.\n2. Ejemplos: 'Recorta', 'Conecta', 'Comparte'.\n3. No son palabras decorativas como 'bonito' o 'creativo'.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Las palabras clave son verbos de acción.\n2. Ejemplos: 'Recorta', 'Conecta', 'Comparte'.\n3. No son palabras decorativas como 'bonito' o 'creativo'.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "71",
                         order: 3,
-                        quickHint: "💡 PISTA: Resaltad verbos y elementos materiales esenciales.",
-                        successMessage: "✅ Vocabulario clave listo. Fragmento obtenido: 71",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Resaltad verbos y elementos materiales esenciales.',
+                        successMessage: "<i class='fas fa-check-circle'></i> Vocabulario clave listo. Fragmento obtenido: 71",
                         question: {
                             prompt: "¿Qué conjunto de palabras clave facilita la comprensión inmediata?",
                             options: [
@@ -950,7 +966,7 @@
             {
                 key: "tea",
                 name: "Órbita TEA",
-                icon: "🧩",
+                icon: '<i class="fas fa-puzzle-piece"></i>',
                 ringColor: "rgb(147, 51, 234)",
                 focus: "Estructura y anticipación",
                 estimated: "6 min",
@@ -969,10 +985,10 @@
                         title: "Ahora / Después",
                         goal: "Ordenad la secuencia correcta que explica qué pasa tras el reto.",
                         materials: ["Tarjetas 'Ahora' y 'Después'", "Fotos de actividades"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Busca una secuencia que muestre 'Ahora' (actividad actual) y 'Después' (siguiente actividad).\n2. Debe ser específica, no 'ya veremos'.\n3. Ejemplo: 'Ahora: montar experimento · Después: compartir en parejas'.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Busca una secuencia que muestre 'Ahora' (actividad actual) y 'Después' (siguiente actividad).\n2. Debe ser específica, no 'ya veremos'.\n3. Ejemplo: 'Ahora: montar experimento · Después: compartir en parejas'.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "19",
                         order: 1,
-                        quickHint: "💡 PISTA: Incluid la actividad actual y la que sigue justo después.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Incluid la actividad actual y la que sigue justo después.',
                         successMessage: "✅ Secuencia anticipada lista. Fragmento obtenido: 19",
                         question: {
                             prompt: "¿Qué pareja de tarjetas anticipa correctamente el final de la actividad?",
@@ -1003,10 +1019,10 @@
                         title: "Agenda visual",
                         goal: "Seleccionad la agenda que permite tachar pasos y anticipar tiempos.",
                         materials: ["Agenda visual con pictos", "Reloj visual"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una buena agenda tiene pictogramas (dibujos).\n2. Muestra tiempo estimado para cada actividad.\n3. Tiene casillas para marcar cuando terminas.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una buena agenda tiene pictogramas (dibujos).\n2. Muestra tiempo estimado para cada actividad.\n3. Tiene casillas para marcar cuando terminas.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "7",
                         order: 2,
-                        quickHint: "💡 PISTA: Busca pictogramas + tiempo estimado + checkboxes.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca pictogramas + tiempo estimado + checkboxes.',
                         successMessage: "✅ Agenda visual preparada. Fragmento obtenido: 7",
                         question: {
                             prompt: "¿Cuál de las agendas ofrece mayor claridad?",
@@ -1037,10 +1053,10 @@
                         title: "Zona de calma",
                         goal: "Elegid el plano que incluye un espacio de regulación sensorial.",
                         materials: ["Planos A y B del aula"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una zona de calma es un rincón tranquilo.\n2. Tiene luz regulable (se puede cambiar).\n3. Tiene apoyos blandos (cojines).\n4. No es un escondite sin luz.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una zona de calma es un rincón tranquilo.\n2. Tiene luz regulable (se puede cambiar).\n3. Tiene apoyos blandos (cojines).\n4. No es un escondite sin luz.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "4",
                         order: 3,
-                        quickHint: "💡 PISTA: Busca un rincón delimitado con estímulos controlados.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca un rincón delimitado con estímulos controlados.',
                         successMessage: "✅ Zona de calma localizada. Fragmento obtenido: 4",
                         question: {
                             prompt: "¿Qué plano incorpora un espacio de calma real?",
@@ -1071,7 +1087,7 @@
             {
                 key: "tdah",
                 name: "Órbita TDAH",
-                icon: "⚡",
+                icon: '<i class="fas fa-bolt"></i>',
                 ringColor: "rgb(34, 211, 238)",
                 focus: "Atención y ritmo",
                 estimated: "6 min",
@@ -1090,10 +1106,10 @@
                         title: "Rutina de arranque",
                         goal: "Elige la rutina que prepara el cerebro para empezar sin bloqueo.",
                         materials: ["Checklist cronometrada", "Temporizador visual"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una buena rutina tiene tiempo para preparar materiales.\n2. Luego tiempo para revisar el objetivo.\n3. Finalmente tiempo para empezar a trabajar.\n4. Ejemplo: 1' materiales · 3' objetivo · 6' acción.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una buena rutina tiene tiempo para preparar materiales.\n2. Luego tiempo para revisar el objetivo.\n3. Finalmente tiempo para empezar a trabajar.\n4. Ejemplo: 1' materiales · 3' objetivo · 6' acción.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "3",
                         order: 1,
-                        quickHint: "💡 PISTA: Piensa en 1 minuto preparar + 3 repasar + 6 producir.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Piensa en 1 minuto preparar + 3 repasar + 6 producir.',
                         successMessage: "✅ Rutina estructurada. Fragmento obtenido: 3",
                         question: {
                             prompt: "¿Qué rutina facilita el arranque?",
@@ -1108,7 +1124,7 @@
                                     value: "check",
                                     label: "1' materiales · 3' objetivo · 6' acción",
                                     correct: true,
-                                    feedback: "✅ Exacto. Fragmento = 3."
+                                    feedback: "<i class='fas fa-check-circle'></i> Exacto. Fragmento = 3."
                                 },
                                 {
                                     value: "charla",
@@ -1124,10 +1140,10 @@
                         title: "Distractores",
                         goal: "Determinad la acción que reduce estímulos irrelevantes.",
                         materials: ["Lista de distractores", "Biombo o separadores"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Para mantener el foco, hay que reducir distractores.\n2. Guardar materiales no usados ayuda.\n3. Separadores visuales ayudan.\n4. Añadir música o luces LED puede distraer más.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Para mantener el foco, hay que reducir distractores.\n2. Guardar materiales no usados ayuda.\n3. Separadores visuales ayudan.\n4. Añadir música o luces LED puede distraer más.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "6",
                         order: 2,
-                        quickHint: "💡 PISTA: Menos objetos visibles = menos tentaciones.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Menos objetos visibles = menos tentaciones.',
                         successMessage: "✅ Distractores controlados. Fragmento obtenido: 6",
                         question: {
                             prompt: "¿Qué estrategia mantiene el foco?",
@@ -1158,10 +1174,10 @@
                         title: "Micro-metas",
                         goal: "Diseñad tres micro-metas medibles para una tarea larga.",
                         materials: ["Plantilla de micro-metas", "Post-its"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una tarea larga se divide en 3 pasos claros.\n2. Cada paso debe ser concreto y medible.\n3. Ejemplo: '1) Bosquejo 2) Ejemplos 3) Revisión'.\n4. No es 'terminar todo en 60 minutos'.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una tarea larga se divide en 3 pasos claros.\n2. Cada paso debe ser concreto y medible.\n3. Ejemplo: '1) Bosquejo 2) Ejemplos 3) Revisión'.\n4. No es 'terminar todo en 60 minutos'.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "20",
                         order: 3,
-                        quickHint: "💡 PISTA: Divide en 3 acciones concretas con comprobación rápida.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Divide en 3 acciones concretas con comprobación rápida.',
                         successMessage: "✅ Micro-metas creadas. Fragmento obtenido: 20",
                         question: {
                             prompt: "¿Qué versión divide mejor la tarea?",
@@ -1192,7 +1208,7 @@
             {
                 key: "motora",
                 name: "Órbita Motora",
-                icon: "🏃",
+                icon: '<i class="fas fa-wheelchair"></i>',
                 ringColor: "rgb(96, 165, 250)",
                 focus: "Accesibilidad física",
                 estimated: "5-6 min",
@@ -1211,10 +1227,10 @@
                         title: "Ruta accesible",
                         goal: "Identificad el recorrido que cumple pendiente máxima 8 % y doble barandilla.",
                         materials: ["Plano de accesibilidad", "Nivel o goniómetro"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una ruta accesible NO tiene escaleras.\n2. Tiene rampa con pendiente suave (8% máximo).\n3. Tiene barandilla a ambos lados.\n4. Superficie antideslizante.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una ruta accesible NO tiene escaleras.\n2. Tiene rampa con pendiente suave (8% máximo).\n3. Tiene barandilla a ambos lados.\n4. Superficie antideslizante.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "84",
                         order: 1,
-                        quickHint: "💡 PISTA: La pendiente suave y la barandilla a ambos lados son clave.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: La pendiente suave y la barandilla a ambos lados son clave.',
                         successMessage: "✅ Ruta accesible elegida. Fragmento obtenido: 84",
                         question: {
                             prompt: "¿Qué itinerario garantiza accesibilidad universal?",
@@ -1245,10 +1261,10 @@
                         title: "Altura alcanzable",
                         goal: "Escoged la opción que permite manipular materiales sin elevar los hombros.",
                         materials: ["Catálogo de mobiliario", "Cinta métrica"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Una altura accesible está entre 65 y 75 cm.\n2. Permite trabajar sentado o de pie.\n3. No está a 1,60 m (demasiado alto).\n4. No está colgado del techo.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Una altura accesible está entre 65 y 75 cm.\n2. Permite trabajar sentado o de pie.\n3. No está a 1,60 m (demasiado alto).\n4. No está colgado del techo.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "2",
                         order: 2,
-                        quickHint: "💡 PISTA: El punto óptimo suele estar alrededor de 70 cm.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: El punto óptimo suele estar alrededor de 70 cm.',
                         successMessage: "✅ Altura ajustada. Fragmento obtenido: 2",
                         question: {
                             prompt: "¿Qué propuesta asegura alcance cómodo?",
@@ -1279,10 +1295,10 @@
                         title: "Ancho de paso",
                         goal: "Determinad qué puerta garantiza 90 cm libres y manilla horizontal.",
                         materials: ["Medidor", "Fotos de entradas"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El ancho mínimo recomendado es 80 cm.\n2. Aquí buscamos 90 cm (más holgura).\n3. La puerta debe ser corredera o abatible con espacio libre.\n4. Manilla horizontal (no vertical).\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. El ancho mínimo recomendado es 80 cm.\n2. Aquí buscamos 90 cm (más holgura).\n3. La puerta debe ser corredera o abatible con espacio libre.\n4. Manilla horizontal (no vertical).\n5. El fragmento aparece cuando aciertas.",
                         fragment: "6",
                         order: 3,
-                        quickHint: "💡 PISTA: Comprueba el ancho libre real, no la medida de la hoja.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Comprueba el ancho libre real, no la medida de la hoja.',
                         successMessage: "✅ Paso libre confirmado. Fragmento obtenido: 6",
                         question: {
                             prompt: "¿Qué acceso cumple el ancho libre recomendado?",
@@ -1313,7 +1329,7 @@
             {
                 key: "intelectual",
                 name: "Órbita Intelectual/Desarrollo",
-                icon: "🧠",
+                icon: '<i class="fas fa-brain"></i>',
                 ringColor: "rgb(168, 85, 247)",
                 focus: "Ajustes y apoyos",
                 estimated: "6 min",
@@ -1332,10 +1348,10 @@
                         title: "Perfil ↔ Apoyo",
                         goal: "Emparejad perfil con apoyo correcto (modelado/tiempo/ejemplo).",
                         materials: ["3 perfiles + 3 tipos de apoyo"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Cada perfil necesita un tipo de apoyo específico.\n2. No es etiquetar, es ajustar apoyos.\n3. Busca qué apoyo ayuda más a cada perfil.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Cada perfil necesita un tipo de apoyo específico.\n2. No es etiquetar, es ajustar apoyos.\n3. Busca qué apoyo ayuda más a cada perfil.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "5",
                         order: 1,
-                        quickHint: "💡 PISTA: No es etiqueta. Es ajustar apoyos.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: No es etiqueta. Es ajustar apoyos.',
                         successMessage: "✅ Perfil y apoyo emparejados. Fragmento obtenido: 5",
                         question: {
                             prompt: "¿Qué apoyo es más adecuado para un perfil que necesita más tiempo?",
@@ -1366,10 +1382,10 @@
                         title: "Evidencias",
                         goal: "Elegid 2 evidencias alternativas a la prueba escrita.",
                         materials: ["Lista de evidencias posibles"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. Las evidencias alternativas muestran lo mismo que una prueba escrita.\n2. Ejemplos: producto, demo, audio, vídeo.\n3. No es 'hacer menos', es 'evaluar de otra forma'.\n4. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. Las evidencias alternativas muestran lo mismo que una prueba escrita.\n2. Ejemplos: producto, demo, audio, vídeo.\n3. No es 'hacer menos', es 'evaluar de otra forma'.\n4. El fragmento aparece cuando aciertas.",
                         fragment: "0",
                         order: 2,
-                        quickHint: "💡 PISTA: Producto, demo, audio… Evalúa lo mismo de otra forma.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Producto, demo, audio… Evalúa lo mismo de otra forma.',
                         successMessage: "✅ Evidencias alternativas seleccionadas. Fragmento obtenido: 0",
                         question: {
                             prompt: "¿Qué evidencias alternativas evalúan lo mismo que una prueba escrita?",
@@ -1400,10 +1416,10 @@
                         title: "Apoyo entre iguales",
                         goal: "Diseñad apoyo entre iguales para un escenario de aula.",
                         materials: ["Escenario de aula"],
-                        instructions: "📋 INSTRUCCIONES CLARAS:\n\n1. El apoyo entre iguales es cuando compañeros ayudan.\n2. Debe ser estructurado y claro.\n3. Ejemplo: 'Pareja de apoyo que lee en voz alta'.\n4. No es 'copia de mi compañero'.\n5. El fragmento aparece cuando aciertas.",
+                        instructions: "<i class='fas fa-clipboard-list'></i> INSTRUCCIONES CLARAS:\n\n1. El apoyo entre iguales es cuando compañeros ayudan.\n2. Debe ser estructurado y claro.\n3. Ejemplo: 'Pareja de apoyo que lee en voz alta'.\n4. No es 'copia de mi compañero'.\n5. El fragmento aparece cuando aciertas.",
                         fragment: "92",
                         order: 3,
-                        quickHint: "💡 PISTA: Busca estructuras donde compañeros ayudan de forma clara.",
+                        quickHint: '<i class="fas fa-lightbulb"></i> PISTA: Busca estructuras donde compañeros ayudan de forma clara.',
                         successMessage: "✅ Apoyo entre iguales diseñado. Fragmento obtenido: 92",
                         question: {
                             prompt: "¿Qué diseño de apoyo entre iguales es más efectivo?",
@@ -1507,7 +1523,7 @@
             if (!container) return;
             const toast = document.createElement("div");
             toast.className = `px-4 py-3 rounded-lg shadow-2xl font-medium transition-all duration-300 ${
-                type === "success" ? "bg-green-600 text-white border-2 border-green-400" :
+                type === "success" ? "bg-purple-600 text-white border-2 border-purple-400" :
                 type === "error" ? "bg-red-600 text-white border-2 border-red-400" :
                 type === "warning" ? "bg-amber-600 text-white border-2 border-amber-400" :
                 "bg-blue-600 text-white border-2 border-blue-400"
@@ -1518,7 +1534,7 @@
             toast.style.cursor = "pointer";
             toast.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <span style="font-size: 1.25rem; flex-shrink: 0;">${type === "success" ? "✅" : type === "error" ? "❌" : type === "warning" ? "⚠️" : "ℹ️"}</span>
+                    <span style="font-size: 1.25rem; flex-shrink: 0;">${type === "success" ? "<i class='fas fa-star'></i>" : type === "error" ? "<i class='fas fa-times-circle'></i>" : type === "warning" ? "<i class='fas fa-exclamation-triangle'></i>" : "<i class='fas fa-info-circle'></i>"}</span>
                     <span style="flex: 1;">${message}</span>
                 </div>
             `;
@@ -1592,17 +1608,17 @@
                 if (code === planet.lock.target) {
                     // Planeta completamente estabilizado
                     if (!state.openPlanets[planetKey]) {
-                        showToast(`🎉 ¡${planet.name} estabilizado! Código: ${code}`, "success", 5000);
+                        showToast(`<i class='fas fa-star'></i> ¡${planet.name} estabilizado! Código: ${code}`, "success", 5000);
                         // Notificación adicional más destacada
                         setTimeout(() => {
-                            showToast(`✨ ${planet.name} completamente desbloqueado. ¡Continúa con los demás planetas!`, "success", 4000);
+                            showToast(`<i class='fas fa-star'></i> ${planet.name} completamente desbloqueado. ¡Continúa con los demás planetas!`, "success", 4000);
                         }, 500);
                     }
                     state.openPlanets[planetKey] = true;
                 } else {
                     // Todos los fragmentos obtenidos pero código incorrecto
                     if (!state.openPlanets[planetKey]) {
-                        showToast(`⚠️ Todos los fragmentos de ${planet.name} obtenidos. Código actual: ${code}. Revisa la combinación.`, "warning", 5000);
+                        showToast(`<i class='fas fa-exclamation-triangle'></i> Todos los fragmentos de ${planet.name} obtenidos. Código actual: ${code}. Revisa la combinación.`, "warning", 5000);
                     }
                     state.openPlanets[planetKey] = false;
                 }
@@ -1610,9 +1626,9 @@
                 // Feedback cuando se obtiene un fragmento
                 const progressPercent = Math.round((fragmentsSolved / totalFragments) * 100);
                 if (fragmentsSolved === totalFragments - 1) {
-                    showToast(`📊 ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos. ¡Solo falta uno!`, "info", 3000);
+                    showToast(`<i class='fas fa-chart-bar'></i> ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos. ¡Solo falta uno!`, "info", 3000);
                 } else {
-                    showToast(`📊 ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos obtenidos (${progressPercent}%)`, "info", 2500);
+                    showToast(`<i class='fas fa-chart-bar'></i> ${planet.name}: ${fragmentsSolved}/${totalFragments} fragmentos obtenidos (${progressPercent}%)`, "info", 2500);
                 }
             }
             
@@ -1636,7 +1652,7 @@
                 const satellite = planet.satellites.find(sat => sat.id === satelliteId);
                 
                 // Feedback inmediato del fragmento obtenido
-                showToast(`✅ Fragmento obtenido: ${fragmentValue} (${satellite.title})`, "success", 3000);
+                showToast(`<i class='fas fa-star'></i> Fragmento obtenido: ${fragmentValue} (${satellite.title})`, "success", 3000);
                 
                 // Evaluar el planeta (esto mostrará alertas adicionales si es necesario)
                 evaluatePlanet(planetKey);
@@ -1799,7 +1815,7 @@
                     <div class="legend-icon" style="border-color:${color};">${icon}</div>
                     <div class="legend-info">
                         <div class="legend-name">${shortName}</div>
-                        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "✅ Estabilizado" : "🔒 Pendiente"}</div>
+                        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "<i class='fas fa-star'></i> Estabilizado" : "<i class='fas fa-lock'></i> Pendiente"}</div>
                     </div>
                 `;
                 legendItem.addEventListener("click", scrollToCard);
@@ -1839,9 +1855,9 @@
                                     <div style="display: flex; gap: 0.5rem; justify-content: center; width: 100%; flex-wrap: wrap;">
                                         ${row.map((ch, i) => {
                                             const globalIndex = rowIndex * digitsPerRow + i;
-                                            const colorValue = ch !== '·' ? (open ? 'rgba(34, 197, 94, 0.6)' : planet.ringColor) : 'rgba(148, 163, 184, 0.4)';
-                                            const textColor = ch !== '·' ? (open ? 'rgb(34, 197, 94)' : planet.ringColor) : 'rgb(148, 163, 184)';
-                                            const glowColor = ch !== '·' ? (open ? 'rgba(34, 197, 94, 0.5)' : planet.ringColor + '60') : 'none';
+                                            const colorValue = ch !== '·' ? (open ? 'rgba(168, 85, 247, 0.6)' : planet.ringColor) : 'rgba(148, 163, 184, 0.4)';
+                                            const textColor = ch !== '·' ? (open ? 'rgb(168, 85, 247)' : planet.ringColor) : 'rgb(148, 163, 184)';
+                                            const glowColor = ch !== '·' ? (open ? 'rgba(168, 85, 247, 0.5)' : planet.ringColor + '60') : 'none';
                                             return `
                                                 <div class="lock-wheel text-center" 
                                                      aria-label="Dígito ${globalIndex + 1}: ${ch === '·' ? 'sin definir' : ch}"
@@ -1857,12 +1873,12 @@
                                 `).join("")}
                             </div>
                             <div class="lock-status" role="status" aria-live="polite">
-                                ${open ? '<span style="color: rgb(34, 197, 94); font-weight: 600;">✅ Abierto</span>' : 
+                                ${open ? '<span style="color: rgb(168, 85, 247); font-weight: 600;"><i class="fas fa-star"></i> Abierto</span>' : 
                                  `<span style="color: rgb(148, 163, 184);">Fragmentos: ${fragmentsSolved}/${totalFragments}</span>`}
                             </div>
                             <div style="margin-top: 0.75rem;">
                                 <div style="width: 100%; height: 4px; background: rgba(148, 163, 184, 0.2); border-radius: 999px; overflow: hidden;">
-                                    <div style="width: ${progressPercent}%; height: 100%; background: ${open ? 'rgb(34, 197, 94)' : planet.ringColor}; transition: width 0.3s ease;" 
+                                    <div style="width: ${progressPercent}%; height: 100%; background: ${open ? 'rgb(168, 85, 247)' : planet.ringColor}; transition: width 0.3s ease;" 
                                          role="progressbar" 
                                          aria-valuenow="${fragmentsSolved}" 
                                          aria-valuemin="0" 
@@ -1892,7 +1908,7 @@
                     <div class="satellite-header">
                         <div class="satellite-title">${satellite.id} · ${satellite.title}</div>
                         <div class="fragment-badge">
-                            ${solved ? `✅ Fragmento: ${state.fragments[planet.key][satellite.id]}` : '❓ Fragmento: ??'}
+                            ${solved ? `<i class='fas fa-star'></i> Fragmento: ${state.fragments[planet.key][satellite.id]}` : '<i class="fas fa-question-circle"></i> Fragmento: ??'}
                         </div>
                     </div>
                     <div class="text-sm text-slate-300 mb-3">
@@ -1916,7 +1932,7 @@
                                 ✓ Validar respuesta
                             </button>
                             <button type="button" class="btn-satellite secondary" data-hint="${planet.key}-${satellite.id}" ${hintUsed ? 'disabled' : ''}>
-                                💡 Mostrar pista
+                                <i class="fas fa-lightbulb"></i> Mostrar pista
                             </button>
                             ${attempts > 0 ? `<span class="text-xs text-slate-400">Intentos: ${attempts}</span>` : ''}
                         </div>
@@ -1946,7 +1962,7 @@
             deck.innerHTML = PLANETS.map(planet => {
                 const code = computePlanetCode(planet.key);
                 const open = state.openPlanets[planet.key];
-                const statusColor = open ? "rgb(34, 197, 94)" : "rgb(148, 163, 184)";
+                const statusColor = open ? "rgb(168, 85, 247)" : "rgb(148, 163, 184)";
                 const isExpanded = window.accordionState[planet.key];
                 const fragmentsSolved = planet.satellites.filter(sat => state.fragments[planet.key][sat.id]).length;
                 const totalFragments = planet.satellites.length;
@@ -1962,7 +1978,7 @@
                             </div>
                         </div>
                             <div class="planet-meta" style="margin-bottom: 0;">
-                                <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `✅ Abierto` : '🔒 Pendiente'}</span>
+                                <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `<i class='fas fa-star'></i> Abierto` : '<i class="fas fa-lock"></i> Pendiente'}</span>
                             </div>
                             <div class="planet-card-toggle" style="margin-left: 1rem; font-size: 1.2rem; color: rgb(148, 163, 184);">
                                 <i class="fas fa-chevron-down"></i>
@@ -1979,11 +1995,11 @@
                         <div class="lock-panel">
                             <header>
                                 <span>Combinación objetivo</span>
-                                <span>${open ? '✅ Candado listo' : '⏳ Necesita fragmentos'}</span>
+                                <span>${open ? '<i class="fas fa-star"></i> Candado listo' : '<i class="fas fa-clock"></i> Necesita fragmentos'}</span>
                             </header>
                             <div class="code-preview">
                                 ${planet.lock.target.split("").map((digit, idx) => `
-                                    <span class="digit" style="border-color:${planet.ringColor}; color:${open ? '#f8fafc' : 'rgb(148, 163, 184)'}; background:${open ? 'rgba(34,197,94,0.18)' : 'rgba(15,23,42,0.75)'};">
+                                    <span class="digit" style="border-color:${planet.ringColor}; color:${open ? '#f8fafc' : 'rgb(148, 163, 184)'}; background:${open ? 'rgba(168,85,247,0.18)' : 'rgba(15,23,42,0.75)'};">
                                         ${open ? digit : (idx < code.length ? code[idx] : '·')}
                                     </span>
                                 `).join("")}
@@ -1994,7 +2010,7 @@
                             ${planet.satellites.map(sat => buildSatelliteCard(planet, sat)).join("")}
                         </div>
                         <div class="planet-footer">
-                            <strong>💡 Pro-tip:</strong> ${planet.generalHint}<br>
+                            <strong><i class="fas fa-lightbulb"></i> Pro-tip:</strong> ${planet.generalHint}<br>
                             Anotad la cifra que aporta esta órbita al Motor final: <strong>${planet.finalContribution}</strong>.
                                 </div>
                             </div>
@@ -2045,7 +2061,7 @@
             
             const selected = card.querySelector(`input[name="${planetKey}-${satelliteId}"]:checked`);
             if (!selected) {
-                feedbackEl.textContent = "❌ Selecciona una opción antes de validar.";
+                feedbackEl.innerHTML = "<i class='fas fa-times-circle'></i> Selecciona una opción antes de validar.";
                 feedbackEl.className = "feedback error";
                 return;
             }
@@ -2102,7 +2118,7 @@
         const ACHIEVEMENTS = [
             {
                 id: "multicanal",
-                title: "🛰️ Multicanal",
+                title: "<i class='fas fa-satellite'></i> Multicanal",
                 description: "Abre VISUAL y AUDITIVA sin usar pistas",
                 condition: (state) => {
                     const visual = state.openPlanets.visual && !state.hints.visual?.S1 && !state.hints.visual?.S2 && !state.hints.visual?.S3;
@@ -2112,7 +2128,7 @@
             },
             {
                 id: "ruta-clara",
-                title: "🧭 Ruta Clara",
+                title: "<i class='fas fa-compass'></i> Ruta Clara",
                 description: "Abre TDAH en menos de 5 minutos",
                 condition: (state) => {
                     return state.openPlanets.tdah; // Se verificaría el tiempo si lo guardáramos
@@ -2120,7 +2136,7 @@
             },
             {
                 id: "acuerdo",
-                title: "🤝 Acuerdo Perfecto",
+                title: "<i class='fas fa-handshake'></i> Acuerdo Perfecto",
                 description: "Abre TEA e INTELECTUAL sin fallos",
                 condition: (state) => {
                     const tea = state.openPlanets.tea && Object.values(state.attempts.tea || {}).every(a => a === 0);
@@ -2130,7 +2146,7 @@
             },
             {
                 id: "velocidad",
-                title: "⚡ Velocidad Espacial",
+                title: "<i class='fas fa-rocket'></i> Velocidad Espacial",
                 description: "Completa todos los planetas en menos de 40 minutos",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2140,7 +2156,7 @@
             },
             {
                 id: "sin-pistas",
-                title: "🧠 Sin Ayuda",
+                title: "<i class='fas fa-brain'></i> Sin Ayuda",
                 description: "Completa la misión sin usar ninguna pista",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2149,7 +2165,7 @@
             },
             {
                 id: "perfecto",
-                title: "⭐ Perfecto",
+                title: "<i class='fas fa-star'></i> Perfecto",
                 description: "Completa todos los fragmentos sin ningún error",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2176,7 +2192,7 @@
                          aria-label="${achievement.title} - ${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
                          tabindex="0">
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="font-size: 2rem; min-width: 3rem; text-align: center;" aria-hidden="true">${achievement.title.split(' ')[0]}</div>
+                            <div style="font-size: 2rem; min-width: 3rem; text-align: center;" aria-hidden="true">${achievement.title.split(' ')[0]} ${achievement.title.split(' ')[1] || ''}</div>
                             <div style="flex: 1;">
                                 <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">${achievement.title}</h3>
                                 <p style="margin: 0.5rem 0 0; color: rgb(148, 163, 184); font-size: 0.9rem; line-height: 1.5;">${achievement.description}</p>
@@ -2185,7 +2201,7 @@
                                  role="status" 
                                  aria-label="${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
                                  aria-live="polite">
-                                ${unlocked ? '✅' : '🔒'}
+                                ${unlocked ? '<i class="fas fa-star"></i>' : '<i class="fas fa-lock"></i>'}
                             </div>
                         </div>
                     </div>
@@ -2197,12 +2213,12 @@
                 <div style="grid-column: 1 / -1; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                         <div>
-                            <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">🏆 Resumen de Logros</h3>
+                            <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;"><i class="fas fa-trophy"></i> Resumen de Logros</h3>
                             <p style="margin: 0.5rem 0 0; color: rgb(148, 163, 184); font-size: 0.9rem;">
                                 Has desbloqueado <strong style="color: rgb(251, 191, 36);">${ACHIEVEMENTS.filter(a => a.condition(state)).length}</strong> de <strong>${ACHIEVEMENTS.length}</strong> logros
                             </p>
                         </div>
-                        <div style="font-size: 2rem;" aria-hidden="true">🏆</div>
+                        <div style="font-size: 2rem;" aria-hidden="true"><i class="fas fa-trophy"></i></div>
                     </div>
                 </div>
             `;
@@ -2223,7 +2239,7 @@
                 <div style="grid-column: 1 / -1; margin-bottom: 1.5rem; padding: 1.5rem; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
                     <div style="display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                         <div style="flex: 1;">
-                            <h3 style="margin: 0 0 0.5rem; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">📚 Pistas Generales por Planeta</h3>
+                            <h3 style="margin: 0 0 0.5rem; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;"><i class="fas fa-book"></i> Pistas Generales por Planeta</h3>
                             <p style="margin: 0; color: rgb(148, 163, 184); font-size: 0.9rem; line-height: 1.5;">
                                 Cada planeta tiene una pista general que puede ayudarte a resolver todos sus satélites.
                             </p>
@@ -2233,7 +2249,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div style="font-size: 2rem;" aria-hidden="true">💡</div>
+                        <div style="font-size: 2rem;" aria-hidden="true"><i class="fas fa-lightbulb"></i></div>
                     </div>
                 </div>
             `;
@@ -2254,7 +2270,7 @@
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
                                     <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">${planet.name}</h3>
-                                    <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: ${hasUsedHints ? 'rgba(34, 197, 94, 0.2)' : 'rgba(148, 163, 184, 0.2)'}; color: ${hasUsedHints ? 'rgb(34, 197, 94)' : 'rgb(148, 163, 184)'};">
+                                    <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: ${hasUsedHints ? 'rgba(168, 85, 247, 0.2)' : 'rgba(148, 163, 184, 0.2)'}; color: ${hasUsedHints ? 'rgb(168, 85, 247)' : 'rgb(148, 163, 184)'};">
                                         ${hintsUsedInPlanet}/${totalSatellites} pistas
                                     </span>
                                 </div>
@@ -2273,9 +2289,9 @@
                                                             <span style="color: rgb(148, 163, 184);"> ${sat.title}</span>
                                                         </div>
                                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                                            ${fragmentObtained ? `<span style="color: rgb(34, 197, 94); font-size: 0.75rem;" aria-label="Fragmento obtenido">✅</span>` : ''}
-                                                            <span style="color: ${hintUsed ? 'rgb(34, 197, 94)' : 'rgb(148, 163, 184)'}; font-size: 0.85rem;" aria-label="${hintUsed ? 'Pista usada' : 'Pista disponible'}">
-                                                                ${hintUsed ? '✅ Usada' : '💡 Disponible'}
+                                                            ${fragmentObtained ? `<span style="color: rgb(168, 85, 247); font-size: 0.75rem;" aria-label="Fragmento obtenido"><i class="fas fa-star"></i></span>` : ''}
+                                                            <span style="color: ${hintUsed ? 'rgb(168, 85, 247)' : 'rgb(148, 163, 184)'}; font-size: 0.85rem;" aria-label="${hintUsed ? 'Pista usada' : 'Pista disponible'}">
+                                                                ${hintUsed ? '<i class="fas fa-star"></i> Usada' : '<i class="fas fa-lightbulb"></i> Disponible'}
                                                             </span>
                                                         </div>
                                                     </div>
