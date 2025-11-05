@@ -33,6 +33,88 @@
         .tab-content { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* Asegurar que todos los iconos tengan color gris o blanco, nunca negro */
+        i.fas, i.far, i.fab {
+            color: inherit;
+        }
+        
+        /* Iconos de candado siempre en gris cuando están bloqueados */
+        .fas.fa-lock {
+            color: rgb(107, 114, 128) !important; /* Gris */
+        }
+        
+        /* Iconos de candado en logros bloqueados */
+        .achievement-card.locked .fas.fa-lock,
+        .achievement-card:not(.unlocked) .fas.fa-lock {
+            color: rgb(107, 114, 128) !important; /* Gris */
+        }
+        
+        /* Iconos en estado bloqueado/pendiente */
+        .legend-status.locked .fas,
+        .planet-chip:has(.fa-lock) .fas.fa-lock {
+            color: rgb(107, 114, 128) !important; /* Gris */
+        }
+        
+        /* Textos siempre en gris o blanco */
+        body, html {
+            color: rgb(226, 232, 240); /* Blanco/gris claro por defecto */
+        }
+        
+        /* Asegurar que textos sin estilo específico sean visibles */
+        p, span, div, h1, h2, h3, h4, h5, h6 {
+            color: inherit;
+        }
+        
+        /* Iconos sin color específico heredan del padre o son grises */
+        .fas:not([style*="color"]),
+        .far:not([style*="color"]),
+        .fab:not([style*="color"]) {
+            color: rgb(148, 163, 184); /* Gris por defecto */
+        }
+        
+        /* Iconos específicos con colores apropiados */
+        .fas.fa-question-circle {
+            color: rgb(148, 163, 184) !important; /* Gris */
+        }
+        
+        .fas.fa-clock {
+            color: rgb(148, 163, 184) !important; /* Gris */
+        }
+        
+        .fas.fa-lightbulb {
+            color: rgb(251, 191, 36) !important; /* Amarillo/dorado para pistas */
+        }
+        
+        .fas.fa-exclamation-triangle {
+            color: rgb(251, 191, 36) !important; /* Amarillo para advertencias */
+        }
+        
+        .fas.fa-info-circle {
+            color: rgb(59, 130, 246) !important; /* Azul para información */
+        }
+        
+        /* Iconos en mensajes de error */
+        .feedback.error .fas.fa-times-circle {
+            color: rgb(248, 113, 113) !important; /* Rojo claro para errores */
+        }
+        
+        /* Iconos en headers y títulos */
+        .section-title .fas,
+        h2 .fas,
+        h3 .fas {
+            color: rgb(148, 163, 184) !important; /* Gris para iconos en títulos */
+        }
+        
+        /* Iconos en botones de tabs */
+        .tab-btn .fas {
+            color: inherit;
+        }
+        
+        /* Asegurar que los iconos en elementos generados dinámicamente tengan color */
+        [class*="fa-"]:not([style*="color"]) {
+            color: rgb(148, 163, 184);
+        }
+        
         /* Estilos para satélites con preguntas */
         .satellite-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
         .satellite-card.completed { border-color: rgba(168, 85, 247, 0.6); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
@@ -88,6 +170,21 @@
         .achievement-card.unlocked { border-color: rgba(251, 191, 36, 0.6); box-shadow: 0 0 15px rgba(251, 191, 36, 0.3); }
         .achievement-card.locked { opacity: 0.5; }
         .achievement-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+        
+        /* Iconos de logros desbloqueados con efecto brillante */
+        .achievement-card.unlocked [class*="fa-"] {
+            animation: achievement-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes achievement-glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.8));
+            }
+        }
+        
         .hint-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
         .hint-card.used { border-color: rgba(168, 85, 247, 0.6); }
         .hint-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
@@ -1818,7 +1915,7 @@
                     <div class="legend-icon" style="border-color:${color};">${icon}</div>
                     <div class="legend-info">
                         <div class="legend-name">${shortName}</div>
-                        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "<i class='fas fa-star'></i> Estabilizado" : "<i class='fas fa-lock'></i> Pendiente"}</div>
+                        <div class="legend-status ${isActive ? "active" : "locked"}">${isActive ? "<i class='fas fa-star' style='color: rgb(251, 191, 36);'></i> Estabilizado" : "<i class='fas fa-lock' style='color: rgb(107, 114, 128);'></i> Pendiente"}</div>
                     </div>
                 `;
                 legendItem.addEventListener("click", scrollToCard);
@@ -2042,7 +2139,7 @@
                             </div>
                         </div>
                             <div class="planet-meta" style="margin-bottom: 0;">
-                                <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `<i class='fas fa-star'></i> Abierto` : '<i class="fas fa-lock"></i> Pendiente'}</span>
+                                <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `<i class='fas fa-star' style='color: rgb(251, 191, 36);'></i> Abierto` : '<i class="fas fa-lock" style="color: rgb(107, 114, 128);"></i> Pendiente'}</span>
                             </div>
                             <div class="planet-card-toggle" style="margin-left: 1rem; font-size: 1.2rem; color: rgb(148, 163, 184);">
                                 <i class="fas fa-chevron-down"></i>
@@ -2182,7 +2279,8 @@
         const ACHIEVEMENTS = [
             {
                 id: "multicanal",
-                title: "<i class='fas fa-satellite'></i> Multicanal",
+                icon: "fa-satellite",
+                title: "Multicanal",
                 description: "Abre VISUAL y AUDITIVA sin usar pistas",
                 condition: (state) => {
                     const visual = state.openPlanets.visual && !state.hints.visual?.S1 && !state.hints.visual?.S2 && !state.hints.visual?.S3;
@@ -2192,7 +2290,8 @@
             },
             {
                 id: "ruta-clara",
-                title: "<i class='fas fa-compass'></i> Ruta Clara",
+                icon: "fa-compass",
+                title: "Ruta Clara",
                 description: "Abre TDAH en menos de 5 minutos",
                 condition: (state) => {
                     return state.openPlanets.tdah; // Se verificaría el tiempo si lo guardáramos
@@ -2200,7 +2299,8 @@
             },
             {
                 id: "acuerdo",
-                title: "<i class='fas fa-handshake'></i> Acuerdo Perfecto",
+                icon: "fa-handshake",
+                title: "Acuerdo Perfecto",
                 description: "Abre TEA e INTELECTUAL sin fallos",
                 condition: (state) => {
                     const tea = state.openPlanets.tea && Object.values(state.attempts.tea || {}).every(a => a === 0);
@@ -2210,7 +2310,8 @@
             },
             {
                 id: "velocidad",
-                title: "<i class='fas fa-rocket'></i> Velocidad Espacial",
+                icon: "fa-rocket",
+                title: "Velocidad Espacial",
                 description: "Completa todos los planetas en menos de 40 minutos",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2220,7 +2321,8 @@
             },
             {
                 id: "sin-pistas",
-                title: "<i class='fas fa-brain'></i> Sin Ayuda",
+                icon: "fa-brain",
+                title: "Sin Ayuda",
                 description: "Completa la misión sin usar ninguna pista",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2229,7 +2331,8 @@
             },
             {
                 id: "perfecto",
-                title: "<i class='fas fa-star'></i> Perfecto",
+                icon: "fa-star",
+                title: "Perfecto",
                 description: "Completa todos los fragmentos sin ningún error",
                 condition: (state) => {
                     const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
@@ -2250,22 +2353,31 @@
                 const unlockedCount = ACHIEVEMENTS.filter(a => a.condition(state)).length;
                 const totalCount = ACHIEVEMENTS.length;
                 
+                // Color del icono según el estado
+                const iconColor = unlocked ? 'rgb(251, 191, 36)' : 'rgb(148, 163, 184)';
+                
                 return `
                     <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}" 
                          role="article" 
                          aria-label="${achievement.title} - ${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
                          tabindex="0">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="font-size: 2rem; min-width: 3rem; text-align: center;" aria-hidden="true">${achievement.title.split(' ')[0]} ${achievement.title.split(' ')[1] || ''}</div>
+                        <div style="display: flex; align-items: center; gap: 1.25rem;">
+                            <div style="font-size: 2.5rem; min-width: 4rem; text-align: center; display: flex; align-items: center; justify-content: center; color: ${iconColor}; opacity: ${unlocked ? '1' : '0.6'}; transition: all 0.3s ease;" 
+                                 aria-hidden="true">
+                                <i class="fas ${achievement.icon}" style="filter: ${unlocked ? 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.5))' : 'none'};"></i>
+                            </div>
                             <div style="flex: 1;">
-                                <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">${achievement.title}</h3>
+                                <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas ${achievement.icon}" style="font-size: 1rem; color: ${iconColor};"></i>
+                                    ${achievement.title}
+                                </h3>
                                 <p style="margin: 0.5rem 0 0; color: rgb(148, 163, 184); font-size: 0.9rem; line-height: 1.5;">${achievement.description}</p>
                             </div>
                             <div style="font-size: 1.5rem; min-width: 2rem; text-align: center;" 
                                  role="status" 
                                  aria-label="${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
                                  aria-live="polite">
-                                ${unlocked ? '<i class="fas fa-star"></i>' : '<i class="fas fa-lock"></i>'}
+                                ${unlocked ? '<i class="fas fa-star" style="color: rgb(251, 191, 36);"></i>' : '<i class="fas fa-lock" style="color: rgb(107, 114, 128);"></i>'}
                             </div>
                         </div>
                     </div>
