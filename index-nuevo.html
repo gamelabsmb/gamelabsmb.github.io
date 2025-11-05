@@ -1689,6 +1689,9 @@
             { key: "motora", radius: 370, angle: 20 },
             { key: "intelectual", radius: 350, angle: 65 }
         ];
+        
+        // Variable global para almacenar referencias de animaciones activas de planetas
+        const planetAnimations = {};
 
         const renderSolarSystem = () => {
             const svg = document.getElementById("orbitsCanvas");
@@ -1821,7 +1824,68 @@
                 legendItem.addEventListener("click", scrollToCard);
                 legend.appendChild(legendItem);
             });
+            
+            // Animar planetas estabilizados en sus órbitas
+            // Primero, cancelar todas las animaciones anteriores para evitar duplicados
+            Object.keys(planetAnimations).forEach(key => {
+                if (planetAnimations[key]) {
+                    cancelAnimationFrame(planetAnimations[key]);
+                    delete planetAnimations[key];
+                }
+            });
+            
+            ORBIT_LAYOUT.forEach((config) => {
+                const isActive = !!state.openPlanets[config.key];
+                if (isActive) {
+                    animatePlanetOrbit(config.key, config.radius, config.angle, centerX, centerY);
+                }
+            });
         };
+        
+        // Función para animar la órbita de un planeta estabilizado
+        function animatePlanetOrbit(planetKey, radius, startAngle, centerX, centerY) {
+            // Evitar múltiples animaciones del mismo planeta
+            if (planetAnimations[planetKey]) {
+                return; // Ya hay una animación activa
+            }
+            
+            const planetEl = document.querySelector(`.planet-orbit[data-planet="${planetKey}"]`);
+            if (!planetEl) return;
+            
+            let angle = startAngle;
+            const speed = 0.3; // grados por frame (más lento para efecto suave)
+            let animationId = null;
+            
+            function animate() {
+                // Verificar que el planeta sigue activo
+                if (!state.openPlanets[planetKey]) {
+                    cancelAnimationFrame(animationId);
+                    delete planetAnimations[planetKey];
+                    return;
+                }
+                
+                angle += speed;
+                if (angle >= 360) angle -= 360;
+                
+                const angleRad = (angle * Math.PI) / 180;
+                const planetX = centerX + radius * Math.cos(angleRad);
+                const planetY = centerY + radius * Math.sin(angleRad);
+                
+                // Convertir a porcentajes relativos al contenedor (900x900 según el viewBox)
+                const relativeX = (planetX / 900) * 100;
+                const relativeY = (planetY / 900) * 100;
+                
+                planetEl.style.left = `${relativeX}%`;
+                planetEl.style.top = `${relativeY}%`;
+                planetEl.style.transform = 'translate(-50%, -50%)';
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // Guardar referencia de la animación
+            planetAnimations[planetKey] = animationId;
+            animate();
+        }
 
         // ============================================================
         // RENDERIZADO DE CANDADOS

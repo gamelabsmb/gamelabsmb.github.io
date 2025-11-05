@@ -1705,6 +1705,14 @@ function renderOrbitsVisual() {
   }
   
   // Animar planetas que orbitan (solo si están activos)
+  // Primero, cancelar todas las animaciones anteriores para evitar duplicados
+  Object.keys(planetAnimations).forEach(key => {
+    if (planetAnimations[key]) {
+      cancelAnimationFrame(planetAnimations[key]);
+      delete planetAnimations[key];
+    }
+  });
+  
   planets.forEach(planet => {
     if (state.open[planet.key]) {
       animatePlanetOrbit(planet.key, planet.radius, planet.angle);
@@ -1713,17 +1721,30 @@ function renderOrbitsVisual() {
 }
 
 // Función para animar la órbita de un planeta
+const planetAnimations = {}; // Almacenar referencias de animaciones activas para evitar múltiples animaciones
+
 function animatePlanetOrbit(planetKey, radius, startAngle) {
+  // Evitar múltiples animaciones del mismo planeta
+  if (planetAnimations[planetKey]) {
+    return; // Ya hay una animación activa
+  }
+  
   const planetEl = document.querySelector(`.planet-orbit[data-planet="${planetKey}"]`);
   if (!planetEl) return;
   
   const centerX = 400;
   const centerY = 400;
   let angle = startAngle;
-  const speed = 0.5; // grados por frame
+  const speed = 0.3; // grados por frame (más lento para efecto suave)
+  let animationId = null;
   
   function animate() {
-    if (!state.open[planetKey]) return; // Dejar de animar si se bloquea
+    // Verificar que el planeta sigue activo
+    if (!state.open[planetKey]) {
+      if (animationId) cancelAnimationFrame(animationId);
+      delete planetAnimations[planetKey];
+      return;
+    }
     
     angle += speed;
     if (angle >= 360) angle -= 360;
@@ -1740,7 +1761,8 @@ function animatePlanetOrbit(planetKey, radius, startAngle) {
     planetEl.style.top = `${relativeY}%`;
     planetEl.style.transform = 'translate(-50%, -50%)';
     
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
+    planetAnimations[planetKey] = animationId;
   }
   
   animate();
