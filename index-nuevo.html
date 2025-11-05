@@ -41,9 +41,18 @@
         .feedback.error { background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.5); color: rgb(254, 202, 202); }
         .feedback.info { background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); color: rgb(253, 230, 138); }
         
-        /* Estilos para planetas y deck */
-        .deck { display: grid; gap: 2rem; }
-        .planet-card { background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; }
+        /* Estilos para planetas y deck - Sistema de acordeones */
+        .deck { display: flex; flex-direction: column; gap: 1rem; }
+        .planet-card { background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 16px; margin-bottom: 1rem; overflow: hidden; transition: all 0.3s ease; }
+        .planet-card.expanded { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+        .planet-card-header { padding: 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .planet-card-header:hover { background: rgba(59, 130, 246, 0.1); }
+        .planet-card-header h3 { margin: 0; }
+        .planet-card-toggle { transition: transform 0.3s ease; }
+        .planet-card.expanded .planet-card-toggle { transform: rotate(180deg); }
+        .planet-card-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .planet-card.expanded .planet-card-content { max-height: 10000px; transition: max-height 0.5s ease-in; }
+        .planet-card-body { padding: 0 1.5rem 1.5rem 1.5rem; }
         .planet-header { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
         .planet-header .icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
         .planet-header .meta h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(226, 232, 240); }
@@ -58,6 +67,53 @@
         .lock-panel .clue { margin-top: 1rem; font-size: 0.9rem; color: rgb(148, 163, 184); line-height: 1.5; }
         .satellite-grid { display: grid; gap: 1rem; }
         .planet-footer { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: 12px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.35); color: rgb(226, 232, 240); line-height: 1.6; }
+        
+        /* Estilos para logros y pistas */
+        .achievement-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .achievement-card.unlocked { border-color: rgba(251, 191, 36, 0.6); box-shadow: 0 0 15px rgba(251, 191, 36, 0.3); }
+        .achievement-card.locked { opacity: 0.5; }
+        .achievement-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+        .hint-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .hint-card.used { border-color: rgba(34, 197, 94, 0.6); }
+        .hint-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+        
+        /* Grids responsive para diferentes secciones */
+        .stats-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        .locks-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .locks-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .locks-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1400px) { .locks-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        .achievements-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .achievements-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .achievements-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1400px) { .achievements-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        .hints-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .hints-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .hints-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .legend-grid { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .legend-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .legend-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1400px) { .legend-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        /* Estilos para stat-card */
+        .stat-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; }
+        .stat-title { font-size: 0.9rem; font-weight: 600; color: rgb(148, 163, 184); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: rgb(226, 232, 240); font-family: 'Orbitron', sans-serif; }
+        .stat-description { font-size: 0.85rem; color: rgb(148, 163, 184); margin-top: 0.5rem; }
+        
+        /* Estilos para lock-system */
+        .lock-system { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.5rem; }
+        .lock-title { font-size: 1.1rem; font-weight: 700; color: rgb(226, 232, 240); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif; }
+        .lock-container { display: flex; flex-direction: column; gap: 0.75rem; }
+        .lock-display { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+        .lock-wheel { width: 48px; height: 48px; border: 2px solid rgba(148, 163, 184, 0.4); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: bold; background: rgba(15, 23, 42, 0.7); color: rgb(226, 232, 240); }
+        .lock-status { text-align: center; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -1354,6 +1410,14 @@
                     if (card) {
                         switchTab("planetasContent");
                         setTimeout(() => {
+                            // Expandir el acordeón si está cerrado
+                            if (!window.accordionState) window.accordionState = {};
+                            if (!window.accordionState[config.key]) {
+                                window.accordionState[config.key] = true;
+                                card.classList.add('expanded');
+                                const header = card.querySelector('.planet-card-header');
+                                if (header) header.setAttribute('aria-expanded', 'true');
+                            }
                             card.scrollIntoView({ behavior: "smooth", block: "start" });
                         }, 100);
                     }
@@ -1400,21 +1464,39 @@
                 const displayed = open ? code : code.padEnd(digits, "·");
                 const fragmentsSolved = planet.satellites.filter(sat => state.fragments[planet.key][sat.id]).length;
                 const totalFragments = planet.satellites.length;
+                const progressPercent = (fragmentsSolved / totalFragments) * 100;
                 
                 return `
-                    <div class="lock-system">
+                    <div class="lock-system" role="article" aria-label="Candado del ${planet.name}">
                         <div class="lock-title">${planet.icon} ${planet.name}</div>
                         <div class="lock-container">
-                            <div class="lock-display" role="group" aria-label="Candado del ${planet.name}">
+                            <div class="lock-display" role="group" aria-label="Código del candado del ${planet.name}">
                                 ${displayed.split("").map((ch, i) => `
-                                    <div class="lock-wheel text-center" aria-label="Dígito ${i + 1}: ${ch === '·' ? 'sin definir' : ch}">${ch}</div>
+                                    <div class="lock-wheel text-center" 
+                                         aria-label="Dígito ${i + 1}: ${ch === '·' ? 'sin definir' : ch}"
+                                         style="border-color: ${open ? 'rgba(34, 197, 94, 0.6)' : (ch !== '·' ? planet.ringColor : 'rgba(148, 163, 184, 0.4)')}; 
+                                                color: ${open ? 'rgb(34, 197, 94)' : (ch !== '·' ? planet.ringColor : 'rgb(148, 163, 184)')};">
+                                        ${ch}
+                                    </div>
                                 `).join("")}
                             </div>
                             <div class="lock-status" role="status" aria-live="polite">
-                                ${open ? '<span class="text-green-400">✅ Abierto</span>' : 
-                                 `<span class="text-slate-400">Fragmentos: ${fragmentsSolved}/${totalFragments}</span>`}
+                                ${open ? '<span style="color: rgb(34, 197, 94); font-weight: 600;">✅ Abierto</span>' : 
+                                 `<span style="color: rgb(148, 163, 184);">Fragmentos: ${fragmentsSolved}/${totalFragments}</span>`}
                             </div>
-                            <div class="text-xs text-slate-400 mt-2">${planet.lock.clue}</div>
+                            <div style="margin-top: 0.75rem;">
+                                <div style="width: 100%; height: 4px; background: rgba(148, 163, 184, 0.2); border-radius: 999px; overflow: hidden;">
+                                    <div style="width: ${progressPercent}%; height: 100%; background: ${open ? 'rgb(34, 197, 94)' : planet.ringColor}; transition: width 0.3s ease;" 
+                                         role="progressbar" 
+                                         aria-valuenow="${fragmentsSolved}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="${totalFragments}"
+                                         aria-label="Progreso de fragmentos"></div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: rgb(148, 163, 184); line-height: 1.5;">
+                                ${planet.lock.clue}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1476,25 +1558,47 @@
         const renderPlanetsDeck = () => {
             const deck = document.getElementById("planetsDeck");
             if (!deck) return;
+            
+            // Estado de acordeones (qué planetas están expandidos)
+            if (!window.accordionState) {
+                window.accordionState = {};
+                PLANETS.forEach(planet => {
+                    window.accordionState[planet.key] = false;
+                });
+            }
+            
             deck.innerHTML = PLANETS.map(planet => {
                 const code = computePlanetCode(planet.key);
                 const open = state.openPlanets[planet.key];
                 const statusColor = open ? "rgb(34, 197, 94)" : "rgb(148, 163, 184)";
+                const isExpanded = window.accordionState[planet.key];
+                const fragmentsSolved = planet.satellites.filter(sat => state.fragments[planet.key][sat.id]).length;
+                const totalFragments = planet.satellites.length;
                 
                 return `
-                    <section class="planet-card" id="planet-${planet.key}">
-                        <div class="planet-header">
+                    <section class="planet-card ${isExpanded ? 'expanded' : ''}" id="planet-${planet.key}" data-planet-key="${planet.key}">
+                        <div class="planet-card-header" role="button" tabindex="0" aria-expanded="${isExpanded}" aria-controls="planet-content-${planet.key}">
+                            <div class="planet-header" style="flex: 1;">
                             <div class="icon" style="border-color:${planet.ringColor}; background: rgba(15,23,42,0.8);">${planet.icon}</div>
                             <div class="meta">
                                 <h3>${planet.name}</h3>
-                                <div class="focus">${planet.focus} • ${planet.estimated}</div>
+                                    <div class="focus">${planet.focus} • ${planet.estimated} • ${fragmentsSolved}/${totalFragments} fragmentos</div>
                             </div>
                         </div>
+                            <div class="planet-meta" style="margin-bottom: 0;">
+                                <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `✅ Abierto` : '🔒 Pendiente'}</span>
+                            </div>
+                            <div class="planet-card-toggle" style="margin-left: 1rem; font-size: 1.2rem; color: rgb(148, 163, 184);">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="planet-card-content" id="planet-content-${planet.key}">
+                            <div class="planet-card-body">
                         <div class="planet-summary">${planet.summary}</div>
-                        <div class="planet-meta">
+                                <div class="planet-meta" style="margin-top: 1rem;">
                             <span class="planet-chip">${planet.satellites.length} satélites</span>
                             <span class="planet-chip">Candado: ${planet.lock.target.length} cifras</span>
-                            <span class="planet-chip" style="color:${statusColor}; border-color:${statusColor};">${open ? `✅ Abierto (${code})` : '🔒 Pendiente'}</span>
+                                    <span class="planet-chip">Código: ${code.padEnd(planet.lock.target.length, '·')}</span>
                         </div>
                         <div class="lock-panel">
                             <header>
@@ -1516,10 +1620,29 @@
                         <div class="planet-footer">
                             <strong>💡 Pro-tip:</strong> ${planet.generalHint}<br>
                             Anotad la cifra que aporta esta órbita al Motor final: <strong>${planet.finalContribution}</strong>.
+                                </div>
+                            </div>
                         </div>
                     </section>
                 `;
             }).join("");
+
+            // Event listeners para acordeones
+            deck.querySelectorAll('.planet-card-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const card = header.closest('.planet-card');
+                    const planetKey = card.dataset.planetKey;
+                    window.accordionState[planetKey] = !window.accordionState[planetKey];
+                    card.classList.toggle('expanded', window.accordionState[planetKey]);
+                    header.setAttribute('aria-expanded', window.accordionState[planetKey]);
+                });
+                header.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        header.click();
+                    }
+                });
+            });
 
             // Event listeners para validación y pistas
             deck.querySelectorAll('[data-validate]').forEach(button => {
@@ -1581,12 +1704,217 @@
             const fragmentsSolved = getSolvedFragments();
             const openPlanets = getUnlockedPlanets();
             
-            document.getElementById("progressText").textContent = `${openPlanets}/${PLANETS.length}`;
-            document.getElementById("fragmentsSolved").textContent = fragmentsSolved;
-            document.getElementById("hintsUsed").textContent = state.hintCount;
+            const progressTextEl = document.getElementById("progressText");
+            const fragmentsSolvedEl = document.getElementById("fragmentsSolved");
+            const hintsUsedEl = document.getElementById("hintsUsed");
+            const progressBarEl = document.getElementById("progressBar");
+            
+            if (progressTextEl) progressTextEl.textContent = `${openPlanets}/${PLANETS.length}`;
+            if (fragmentsSolvedEl) fragmentsSolvedEl.textContent = fragmentsSolved;
+            if (hintsUsedEl) hintsUsedEl.textContent = state.hintCount;
             
             const progressPercent = (openPlanets / PLANETS.length) * 100;
-            document.getElementById("progressBar").style.width = `${progressPercent}%`;
+            if (progressBarEl) {
+                progressBarEl.style.width = `${progressPercent}%`;
+                progressBarEl.setAttribute('aria-valuenow', openPlanets);
+            }
+        };
+
+        // ============================================================
+        // RENDERIZADO DE LOGROS
+        // ============================================================
+        const ACHIEVEMENTS = [
+            {
+                id: "multicanal",
+                title: "🛰️ Multicanal",
+                description: "Abre VISUAL y AUDITIVA sin usar pistas",
+                condition: (state) => {
+                    const visual = state.openPlanets.visual && !state.hints.visual?.S1 && !state.hints.visual?.S2 && !state.hints.visual?.S3;
+                    const auditiva = state.openPlanets.auditiva && !state.hints.auditiva?.S1 && !state.hints.auditiva?.S2 && !state.hints.auditiva?.S3;
+                    return visual && auditiva;
+                }
+            },
+            {
+                id: "ruta-clara",
+                title: "🧭 Ruta Clara",
+                description: "Abre TDAH en menos de 5 minutos",
+                condition: (state) => {
+                    return state.openPlanets.tdah; // Se verificaría el tiempo si lo guardáramos
+                }
+            },
+            {
+                id: "acuerdo",
+                title: "🤝 Acuerdo Perfecto",
+                description: "Abre TEA e INTELECTUAL sin fallos",
+                condition: (state) => {
+                    const tea = state.openPlanets.tea && Object.values(state.attempts.tea || {}).every(a => a === 0);
+                    const intelectual = state.openPlanets.intelectual && Object.values(state.attempts.intelectual || {}).every(a => a === 0);
+                    return tea && intelectual;
+                }
+            },
+            {
+                id: "velocidad",
+                title: "⚡ Velocidad Espacial",
+                description: "Completa todos los planetas en menos de 40 minutos",
+                condition: (state) => {
+                    const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
+                    const timeElapsed = Date.now() - state.startedAt;
+                    return allOpen && timeElapsed < 40 * 60 * 1000;
+                }
+            },
+            {
+                id: "sin-pistas",
+                title: "🧠 Sin Ayuda",
+                description: "Completa la misión sin usar ninguna pista",
+                condition: (state) => {
+                    const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
+                    return allOpen && state.hintCount === 0;
+                }
+            },
+            {
+                id: "perfecto",
+                title: "⭐ Perfecto",
+                description: "Completa todos los fragmentos sin ningún error",
+                condition: (state) => {
+                    const allOpen = PLANETS.every(p => state.openPlanets[p.key]);
+                    const noErrors = PLANETS.every(p => 
+                        Object.values(state.attempts[p.key] || {}).every(a => a === 0)
+                    );
+                    return allOpen && noErrors;
+                }
+            }
+        ];
+
+        const renderAchievements = () => {
+            const container = document.getElementById("achievementsContainer");
+            if (!container) return;
+            
+            container.innerHTML = ACHIEVEMENTS.map(achievement => {
+                const unlocked = achievement.condition(state);
+                const unlockedCount = ACHIEVEMENTS.filter(a => a.condition(state)).length;
+                const totalCount = ACHIEVEMENTS.length;
+                
+                return `
+                    <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}" 
+                         role="article" 
+                         aria-label="${achievement.title} - ${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
+                         tabindex="0">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem; min-width: 3rem; text-align: center;" aria-hidden="true">${achievement.title.split(' ')[0]}</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">${achievement.title}</h3>
+                                <p style="margin: 0.5rem 0 0; color: rgb(148, 163, 184); font-size: 0.9rem; line-height: 1.5;">${achievement.description}</p>
+                            </div>
+                            <div style="font-size: 1.5rem; min-width: 2rem; text-align: center;" 
+                                 role="status" 
+                                 aria-label="${unlocked ? 'Desbloqueado' : 'Bloqueado'}"
+                                 aria-live="polite">
+                                ${unlocked ? '✅' : '🔒'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+            
+            // Añadir resumen de logros al inicio si hay contenedor
+            const summaryHTML = `
+                <div style="grid-column: 1 / -1; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">🏆 Resumen de Logros</h3>
+                            <p style="margin: 0.5rem 0 0; color: rgb(148, 163, 184); font-size: 0.9rem;">
+                                Has desbloqueado <strong style="color: rgb(251, 191, 36);">${ACHIEVEMENTS.filter(a => a.condition(state)).length}</strong> de <strong>${ACHIEVEMENTS.length}</strong> logros
+                            </p>
+                        </div>
+                        <div style="font-size: 2rem;" aria-hidden="true">🏆</div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = summaryHTML + container.innerHTML;
+        };
+
+        // ============================================================
+        // RENDERIZADO DE PISTAS
+        // ============================================================
+        const renderHints = () => {
+            const container = document.getElementById("hintsContainer");
+            if (!container) return;
+            
+            const totalHintsUsed = state.hintCount;
+            const totalHintsAvailable = PLANETS.reduce((sum, p) => sum + p.satellites.length, 0);
+            
+            let hintsHTML = `
+                <div style="grid-column: 1 / -1; margin-bottom: 1.5rem; padding: 1.5rem; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                    <div style="display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0 0 0.5rem; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">📚 Pistas Generales por Planeta</h3>
+                            <p style="margin: 0; color: rgb(148, 163, 184); font-size: 0.9rem; line-height: 1.5;">
+                                Cada planeta tiene una pista general que puede ayudarte a resolver todos sus satélites.
+                            </p>
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(59, 130, 246, 0.2);">
+                                <p style="margin: 0; color: rgb(148, 163, 184); font-size: 0.85rem;">
+                                    Pistas usadas: <strong style="color: rgb(59, 130, 246);">${totalHintsUsed}</strong> de <strong>${totalHintsAvailable}</strong> disponibles
+                                </p>
+                            </div>
+                        </div>
+                        <div style="font-size: 2rem;" aria-hidden="true">💡</div>
+                    </div>
+                </div>
+            `;
+            
+            PLANETS.forEach(planet => {
+                const hasUsedHints = planet.satellites.some(sat => state.hints[planet.key]?.[sat.id]);
+                const hintsUsedInPlanet = planet.satellites.filter(sat => state.hints[planet.key]?.[sat.id]).length;
+                const totalSatellites = planet.satellites.length;
+                const planetUnlocked = state.openPlanets[planet.key];
+                
+                hintsHTML += `
+                    <div class="hint-card ${hasUsedHints ? 'used' : ''}" 
+                         role="article"
+                         aria-label="${planet.name} - ${hasUsedHints ? 'Pistas usadas' : 'Pistas disponibles'}"
+                         tabindex="0">
+                        <div style="display: flex; align-items: start; gap: 1rem;">
+                            <div style="font-size: 2rem; min-width: 3rem; text-align: center;" aria-hidden="true">${planet.icon}</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                    <h3 style="margin: 0; font-size: 1.1rem; color: rgb(226, 232, 240); font-weight: 700;">${planet.name}</h3>
+                                    <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: ${hasUsedHints ? 'rgba(34, 197, 94, 0.2)' : 'rgba(148, 163, 184, 0.2)'}; color: ${hasUsedHints ? 'rgb(34, 197, 94)' : 'rgb(148, 163, 184)'};">
+                                        ${hintsUsedInPlanet}/${totalSatellites} pistas
+                                    </span>
+                                </div>
+                                <p style="margin: 0 0 1rem; color: rgb(148, 163, 184); line-height: 1.6; font-size: 0.95rem;">${planet.generalHint}</p>
+                                <div style="padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.2);">
+                                    <div style="font-size: 0.85rem; color: rgb(148, 163, 184);">
+                                        <strong style="color: rgb(226, 232, 240);">Satélites:</strong>
+                                        <div style="margin-top: 0.75rem; display: grid; gap: 0.5rem;">
+                                            ${planet.satellites.map(sat => {
+                                                const hintUsed = state.hints[planet.key]?.[sat.id];
+                                                const fragmentObtained = state.fragments[planet.key]?.[sat.id];
+                                                return `
+                                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border-radius: 6px;">
+                                                        <div style="flex: 1;">
+                                                            <span style="font-weight: 600; color: rgb(226, 232, 240);">${sat.id}</span>
+                                                            <span style="color: rgb(148, 163, 184);"> ${sat.title}</span>
+                                                        </div>
+                                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                            ${fragmentObtained ? `<span style="color: rgb(34, 197, 94); font-size: 0.75rem;" aria-label="Fragmento obtenido">✅</span>` : ''}
+                                                            <span style="color: ${hintUsed ? 'rgb(34, 197, 94)' : 'rgb(148, 163, 184)'}; font-size: 0.85rem;" aria-label="${hintUsed ? 'Pista usada' : 'Pista disponible'}">
+                                                                ${hintUsed ? '✅ Usada' : '💡 Disponible'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            }).join("")}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = hintsHTML;
         };
 
         // ============================================================
@@ -1612,6 +1940,8 @@
             renderLocks();
             renderPlanetsDeck();
             renderStats();
+            renderAchievements();
+            renderHints();
         };
 
         const initTabs = () => {
